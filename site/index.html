@@ -456,8 +456,8 @@ pauseOnHover: true});
 <ul class="thumbnailList">
 <li class="SF-clearfix">
 <div class="newslistdata">
-<h4 class="newslistHeadlineStyle"><span class="mincho">SNS</span></h4>
-<p><div class="kome_line"><span class="gothic">Recommendation</span></div></p>
+<h4 class="newslistHeadlineStyle"><span class="mincho">営業日のご案内</span></h4>
+<p><div class="kome_line"><span class="gothic">Schedule</span></div></p>
 </div>
 </li>
 </ul>
@@ -469,58 +469,11 @@ pauseOnHover: true});
 		<div class="SF-col1"><div id="SF-row2 .SF-col1">
 <div id="B000000030" class="SF-module-container" style="min-width:15px;min-height:15px;">
 
-<div class="ifrm-container">
-<iframe class="coreRssFeed" src="./cgiFolder/core_rss_feed.html"></iframe>
-</div>
+<div class="lr-schedule" id="lr-schedule"></div>
 
-<style>
-/* RSS Feed デザイン PC */
-#SF-contents .coreRssFeed {
-   height: 408px;
-   border: none;
-   width: 100%;
-   overflow: auto;
-}
-
-/* RSS Feed デザイン SP */
-#SF-startPage .ifrm-container {
-   height: 300px;
-   width: 100%;
-   border: 1px solid #ccc;
-   border-radius: 0.2em;
-   overflow: auto;
-   -webkit-overflow-scrolling:touch !important;
-}
-#SF-startPage .coreRssFeed {
-   width:100%;
-   height: 100%;
-   border:none;
-}
-</style>
-
-<script>
-/* iframe 横幅対策 */
-function goIframeContentsResize(){
-  $('.ifrm-container').each(function(){
-     $(this).find('.coreRssFeed').contents().find('body').outerWidth($(this).width());
-  });
-}
-
-function goWindowResize(func) {
-      'use strict';
-      var timer = 0;
-      window.onresize = function () {
-        if (timer > 0) {
-          clearTimeout(timer);
-        }
-        timer = setTimeout(function () {
-          func();
-        }, 200);
-      };
-}
-
-goWindowResize(goIframeContentsResize);
-</script>
+<p class="lr-schedule-legend"><span class="lr-schedule-key" aria-hidden="true"></span>定休日 ／ 月曜日・第１第３日曜日</p>
+<p class="lr-schedule-note">営業時間 10:00～　※予約制<br />表示しているのは定休日のみです。臨時休業につきましては Instagram をご確認ください。</p>
+<noscript><p class="lr-schedule-note">定休日：月曜日・第１第３日曜日</p></noscript>
 
 </div>
 
@@ -684,5 +637,6 @@ element.style.cssText = "display:none;";}
 }}());
 //-->
 </script>
+<script src="./js/lr-schedule.js"></script>
 </body>
 </html>
