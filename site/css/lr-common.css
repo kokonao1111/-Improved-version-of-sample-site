@@ -399,6 +399,50 @@ a.lr-tel:hover {
 }
 
 
+/* ------------------------------------------------------------------
+   回遊カード（各ページ末尾「当店の施術について」の3枚）
+   ------------------------------------------------------------------
+   改修前、この <a> は中身が空で、写真も見出しも <a> の外にあった。
+   つまり画面上のどこを押しても反応しない。36箇所すべてが同じ状態。
+
+   マークアップを組み替えると生成側のフロート指定を壊しかねないので、
+   空の <a> をカード全面に伸ばして受け皿にする。器に position:relative を
+   与える必要があるが、.thumbnailList li は他所（矢印付きのコース札など）
+   でも使われているため、空アンカーを持つ器だけに .lr-card を付けた。
+
+   <a> は中身が空のままなので、読み上げ用に aria-label を持たせてある。
+   ------------------------------------------------------------------ */
+.lr-card {
+	position: relative;
+}
+.lr-card a.lr-cardlink {
+	position: absolute;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	z-index: 2;
+	/* IE で透明な要素が当たり判定を持たない問題への保険 */
+	background: url(data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7) repeat;
+	text-indent: -9999px;
+	overflow: hidden;
+}
+/* 押せることが分かるように、カード全体で反応させる */
+.lr-card {
+	-webkit-transition: opacity .2s;
+	transition: opacity .2s;
+}
+.lr-card:hover {
+	opacity: .82;
+	cursor: pointer;
+}
+/* キーボード操作時に、どのカードを選んでいるか見えるようにする */
+.lr-card a.lr-cardlink:focus {
+	outline: 2px solid #BC9C52;
+	outline-offset: -2px;
+}
+
+
 /* 読み上げ専用（定休日であることを視覚以外にも伝える） */
 .lr-sr {
 	position: absolute;
