@@ -1,0 +1,116 @@
+@charset "utf-8";
+/*Template:M010400053 Date:2013-07-19*/
+
+#B000000163 {
+	clear:both;
+	display:block;
+	width:%;
+	height:100%;
+	margin-top:0px;
+	margin-bottom:50px;
+	margin-left:0px;
+	margin-right:0px;
+	padding-top:0px;
+	padding-bottom:0px;
+	padding-left:0px;
+	padding-right:0px;
+	border-top:solid;
+	border-bottom:solid;
+	border-left:solid;
+	border-right:solid;
+	border-color:#D9C79D;
+	border-width:2px;
+	background-color:;
+	background-image:url(../../../assets/);
+	background-position:left top;
+	background-repeat:no-repeat;
+}
+
+#B000000163 ul.thumbnailList{
+	clear:both;
+	margin-left:0px;
+	margin-right:0px;
+}
+
+#B000000163 ul.thumbnailList li {
+	float:none;
+	width:auto;
+	height:auto;
+	margin-top:0px;
+	margin-bottom:20px;
+	margin-left:20px;
+	margin-right:20px;
+	padding-top:20px;
+	padding-bottom:40px;
+	padding-left:0px;
+	padding-right:0px;
+	border-top:none;
+	border-bottom:solid;
+	border-left:none;
+	border-right:none;
+	border-width:1px;
+	border-color:#cccccc;
+	background-color:;
+	background-image:url(../../../assets/);
+	background-position:left top;
+	background-repeat:no-repeat;
+	list-style:none;
+}
+
+#B000000163 ul.thumbnailList li .newslistdata {
+	display:inline;
+}
+#B000000163 ul.thumbnailList li .thumbnail {
+	display:inline;
+}
+
+#B000000163 ul.thumbnailList li .thumbnail img {
+	float: left;
+	border:none;
+	border-width:1px;
+	border-color:#cccccc;
+	margin-top:0px;
+	margin-left:0px;
+	margin-right:30px;
+	margin-bottom:0px;
+}
+
+#B000000163 ul.thumbnailList li p {
+	margin:0px;
+	padding:0px;
+	color: ;
+	text-decoration: none;
+	font-family: inherit;
+	font-size: 12px;;
+	font-weight: normal;
+	font-style: normal;
+	line-height: inherit;
+}
+
+#B000000163 ul.thumbnailList li .newslistHeadlineStyle {
+	display:block;
+	margin:0;
+	padding:0;
+	width:;
+	height:px;
+	margin-top:0px;
+	margin-bottom:10px;
+	margin-left:0px;
+	margin-right:0px;
+	padding-top:0px;
+	padding-bottom:0px;
+	padding-left:0px;
+	padding-right:0px;
+	background-color:;
+	background-image:url(../../../assets/);
+	background-position:left top;
+	background-repeat:no-repeat;
+	text-indent:0px;
+	color:;
+	font-family: inherit;
+	font-size:22px;
+	font-weight:bold;
+	font-style:normal;
+	line-height:px;
+	overflow:hidden;
+}

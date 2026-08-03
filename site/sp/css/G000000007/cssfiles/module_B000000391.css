@@ -1,0 +1,86 @@
+@charset "utf-8";
+/*SP-Template:M010400001 Date:2013-08-20*/
+
+#@[System:moduleUID]@ {
+margin-top:@[SpdefaultMarginTop]@;
+margin-bottom:@[SpdefaultMarginBottom]@;
+text-align:@[SpdefaultTextAlign]@;
+}
+
+#@[System:moduleUID]@ .headlineStyle {
+margin: 0.6em 0;
+padding:@[SpHeadlinePadding]@;
+background-color:@[SpHeadlineBgColor]@;
+color:@[SpHeadlineColor]@;
+text-shadow: @[textShadowH]@ @[textShadowV]@ @[textShadowB]@ @[textShadowC]@;
+}
+
+#@[System:moduleUID]@.SF-block-ls {
+background-color:@[mBlockBgColor]@;
+padding:15px;
+font-size:0.9em;
+-moz-border-radius-topright: @[mBlockRadius]@;
+-moz-border-radius-topleft: @[mBlockRadius]@;
+-moz-border-radius-bottomright: @[mBlockRadius]@;
+-moz-border-radius-bottomleft: @[mBlockRadius]@;
+-webkit-border-top-right-radius: @[mBlockRadius]@;
+-webkit-border-top-left-radius: @[mBlockRadius]@;
+-webkit-border-bottom-right-radius: @[mBlockRadius]@;
+-webkit-border-bottom-left-radius: @[mBlockRadius]@;
+border-top-left-radius: @[mBlockRadius]@;
+border-top-right-radius: @[mBlockRadius]@;
+border-bottom-left-radius: @[mBlockRadius]@;
+border-bottom-right-radius: @[mBlockRadius]@;
+-webkit-box-shadow: 0px 1px 4px rgba(119,119,119,0.3);
+-moz-box-shadow: 0px 1px 4px rgba(119,119,119,0.3);
+box-shadow: 0px 1px 4px rgba(119,119,119,0.3);
+border:@[mBlockBorder]@ @[mBlockBorderWidth]@ @[mBlockBorderColor]@;
+}
+
+#@[System:moduleUID]@.SF-block-ds {
+background-color:@[mBlockBgColor]@;
+padding:15px;
+font-size:0.9em;
+-moz-border-radius-topright: @[mBlockRadius]@;
+-moz-border-radius-topleft: @[mBlockRadius]@;
+-moz-border-radius-bottomright: @[mBlockRadius]@;
+-moz-border-radius-bottomleft: @[mBlockRadius]@;
+-webkit-border-top-right-radius: @[mBlockRadius]@;
+-webkit-border-top-left-radius: @[mBlockRadius]@;
+-webkit-border-bottom-right-radius: @[mBlockRadius]@;
+-webkit-border-bottom-left-radius: @[mBlockRadius]@;
+border-top-left-radius: @[mBlockRadius]@;
+border-top-right-radius: @[mBlockRadius]@;
+border-bottom-left-radius: @[mBlockRadius]@;
+border-bottom-right-radius: @[mBlockRadius]@;
+-webkit-box-shadow: 0px 1px 4px rgba(0,0,0,0.3);
+-moz-box-shadow: 0px 1px 4px rgba(0,0,0,0.3);
+box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+border:@[mBlockBorder]@ @[mBlockBorderWidth]@ @[mBlockBorderColor]@;
+}
+
+#@[System:moduleUID]@.SF-block-normal {
+background-color:@[mBlockBgColor]@;
+padding:15px;
+font-size:0.9em;
+-moz-border-radius-topright: @[mBlockRadius]@;
+-moz-border-radius-topleft: @[mBlockRadius]@;
+-moz-border-radius-bottomright: @[mBlockRadius]@;
+-moz-border-radius-bottomleft: @[mBlockRadius]@;
+-webkit-border-top-right-radius: @[mBlockRadius]@;
+-webkit-border-top-left-radius: @[mBlockRadius]@;
+-webkit-border-bottom-right-radius: @[mBlockRadius]@;
+-webkit-border-bottom-left-radius: @[mBlockRadius]@;
+border-top-left-radius: @[mBlockRadius]@;
+border-top-right-radius: @[mBlockRadius]@;
+border-bottom-left-radius: @[mBlockRadius]@;
+border-bottom-right-radius: @[mBlockRadius]@;
+border:@[mBlockBorder]@ @[mBlockBorderWidth]@ @[mBlockBorderColor]@;
+}
+
+#@[System:moduleUID]@.SF-block-none {
+}
+
+#@[System:moduleUID]@ p{
+	margin: 0.6em 0;
+}

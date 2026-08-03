@@ -1,0 +1,7 @@
+@charset "utf-8";
+#SF-row1 .SF-col1 {
+    width : 1000px;
+    float : left;
+    display : inline;
+    min-height : 1px;
+}

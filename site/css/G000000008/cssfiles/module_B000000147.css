@@ -1,0 +1,67 @@
+@charset "utf-8";
+/*Template:M010100002 Date:2010-11-19*/
+
+#Module-default-container{
+	display:block;
+	clear:both;
+	width:px;
+	height:145px;
+	margin-top:0px;
+	margin-bottom:0px;
+	margin-left:0px;
+	margin-right:0px;
+	padding-top:0px;
+	padding-bottom:0px;
+	padding-left:0px;
+	padding-right:0px;
+	border-top:none;
+	border-bottom:none;
+	border-left:none;
+	border-right:none;
+	border-color:#cccccc;
+	border-width:1px;
+	background-color:;
+	background-image:url(../../../assets/head_bg.png);
+	background-position:right 50px;
+	background-repeat:no-repeat;
+}
+
+#Module-default-container #Header-title{
+	display:inline;
+	float:left;
+	margin:0;
+	padding:0;
+	margin-top:5px;
+	margin-left:0px;
+	margin-right:0px;
+	font-size:9px;
+	color:;
+	font-weight:bold;
+	font-style:normal;
+	text-decoration:none;
+	line-height:inherit;
+	text-indent:0px;
+}
+
+#Module-default-container #Header-title a{
+	color:;
+}
+#Module-default-container #Header-title a:hover{
+	color:;
+}
+
+#Module-default-container p.header-discription-type2 {
+	clear:both;
+	margin:0;
+	padding:0;
+	margin-top:10px;
+	margin-right:10px;
+	margin-left:10px;
+	color:;
+	font-size:12px;
+	font-weight:normal;
+	font-style:normal;
+	text-decoration:none;
+	line-height:inherit;
+	text-indent:0px;
+}

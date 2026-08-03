@@ -1,0 +1,41 @@
+@charset "utf-8";
+/*Template:M010400076 Date:2013-03-15*/
+
+#B000000172 {
+	display:block;
+	width:%;
+	height:100%;
+	margin-top:0px;
+	margin-bottom:50px;
+	margin-left:0px;
+	margin-right:0px;
+	padding-top:0px;
+	padding-bottom:0px;
+	padding-left:5px;
+	padding-right:0px;
+	border-top:none;
+	border-bottom:none;
+	border-left:none;
+	border-right:none;
+	border-color:#cccccc;
+	border-width:1px;
+	background-color:;
+	background-image:url(../../../assets/);
+	background-position:left top;
+	background-repeat:no-repeat;
+}
+
+#B000000172 ul li {
+	float:left;
+	margin:0;
+	padding:0;
+	list-style:none;
+}
+
+#B000000172 ul li.SF-simpleImg img{
+	display:block;
+	margin-top:0px;
+	margin-bottom:30px;
+	margin-left:15px;
+	margin-right:15px;
+}

@@ -1,0 +1,632 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="Content-Style-Type" content="text/css" />
+<meta http-equiv="Content-Script-Type" content="text/javascript" />
+<meta name="generator" content="TieredWorks 1.4.1.3" />
+<title></title>
+<meta name="description" content="" />
+<meta name="keywords" content="" />
+<link rel="alternate" media="only screen and (max-width: 640px)" href="https://www.louiserever.com/sp/singlefolder/reservation.html" />
+<link href="../css/site.css" rel="stylesheet" type="text/css" />
+<link href="../css/G000000011/cssfiles/page.css" rel="stylesheet" type="text/css" media="all" />
+
+<script type="text/javascript" src="../cgiFolder/tieredworks_libs.js"></script>
+<link media="screen" rel="stylesheet" href="../cgiFolder/corestyle.css" />
+<script type="text/javascript" src="../cgiFolder/js/csLibrary.js"></script>
+
+
+<style type="text/css">
+
+@import url('https://fonts.googleapis.com/css?family=Noto+Sans+JP:400,700|Noto+Serif+JP:400,700&display=swap&subset=japanese');
+
+
+#SF-navigation li {
+  font-family: 'Noto Serif JP', serif;
+}
+
+.gothic {
+  font-family: 'Noto Sans JP', sans-serif;
+}
+
+.gothic2 {
+  font-family: 'Noto Sans JP', sans-serif;
+  font-size: 0.5em;
+  color: #BC9C52;
+}
+
+.mincho {
+  font-family: 'Noto Serif JP', serif;
+}
+
+
+/* ティーザー */
+#SF-teaser img{
+	margin-left:auto;
+	margin-right:auto;
+  	width: 100%;
+}
+
+
+.kome_line {
+  position: relative;
+  text-align: center;
+}
+
+.kome_line:before, .kome_line:after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  display: inline-block;
+  width: 40%;
+  height: 1px;
+  background-color: #BC9C52;
+}
+
+.kome_line:before {
+  left:0;
+}
+.kome_line:after {
+  right: 0;
+}
+
+
+.box_c {
+    border-radius: 5px;
+    padding: 2px 10px;
+    margin-right: 20px;
+    background: #BC9C52;
+    color: #ffffff;
+    text-align: center;
+    font-size: 13px;
+}
+
+</style>
+
+
+
+<style type="text/css">
+@media screen and ( min-width:1000px )
+{
+  body {
+  	overflow-x: hidden;
+}
+  #SF-outer-container {
+  	overflow: visible;
+}
+
+#B000000183 {
+  	width: 100vw;
+  	position: relative;
+  	margin-left: calc(50% - 50vw);
+  	margin-right: calc(50% - 50vw);
+  	max-width: 100vw;
+}
+</style>
+<script type="text/javascript" src="../cgiFolder/tieredworks_base.js"></script>
+<script type="text/javascript" src="../cgiFolder/tieredworks_ajax.js"></script>
+<script type="text/javascript" src="../cgiFolder/tieredworks_modules.js"></script>
+<script type="text/javascript" src="../cgiFolder/tieredworks_spry.js"></script>
+<script type="text/javascript" src="../cgiFolder/analysis/admin/js/ana.js"></script>
+<script type="text/javascript" src="../cgiFolder/tieredworks_exts.js"></script>
+</head>
+<body>
+<div id="SF-outer-container">
+<div id="SF-inner-container">
+<div id="SF-header">
+<div id="Module-default-container" class="SF-module-container" style="min-width:15px;min-height:15px;">
+<h1 id="Header-title"><a href="../index.html">フェイシャルエステ・ブライダルエステが人気の海南市のエステサロン【LOUISE REVER】</a></h1>
+<p class="header-discription-type2"><a id="HDLOGO" href="../index.html"><img src="../assets/logo.png" style="left: 0px; top:45px;" class="antiAlpha" /></a>
+
+
+<a href="https://line.me/R/ti/p/%40pnb6242x" target="_self"><img src="../assets/top_reserve_btn.png" alt="ご予約はこちら" style="position: absolute; top: 3px; right: 0;"></a></p>
+</div>
+
+</div>
+<div id="SF-navigation">
+<div id="B000000182" class="twKindNavi" style="min-width:15px;min-height:15px;">
+<ul class="SF-clearfix SF-dropdown">
+<li><a href="../index.html" id="catBgColorhome" title="HOME">HOME</a></li>
+
+<li class="SF-dropdown_trigger"><a href="../beginner/index.html" id="catBgColormmenu1" target="_self" title="初めての方へ">初めての方へ</a></li>
+
+<li class="SF-dropdown_trigger"><a href="../trial/index.html" id="catBgColormmenu2" target="_self" title="トライアル">トライアル</a></li>
+
+<li class="SF-dropdown_trigger"><a href="../course_plan/index.html" id="catBgColormmenu3" target="_self" title="コース・プランのご案内">コース・プランのご案内</a></li>
+
+<li class="SF-dropdown_trigger"><a href="../how_to_choose/index.html" id="catBgColormmenu4" target="_self" title="コース・プランの選び方">コース・プランの選び方</a></li>
+
+<li class="SF-dropdown_trigger"><a href="../faq/index.html" id="catBgColormmenu5" target="_self" title="よくある質問">よくある質問</a></li>
+
+<li class="SF-dropdown_trigger"><a href="../campaign/index.html" id="catBgColormmenu6" target="_self" title="キャンペーン">キャンペーン</a></li>
+
+<li class="SF-dropdown_trigger"><a href="../shopinfo/index.html" id="catBgColormmenu7" target="_self" title="店舗のご案内">店舗のご案内</a></li>
+
+</ul>
+</div>
+
+</div>
+<div id="SF-teaser">
+
+
+<div id="B000000183" class="SF-module-container" style="min-width:15px;min-height:15px;">
+<img width="1600" src="../assets/beginner_image.jpg" alt=""/>
+</div>
+
+
+</div>
+<div id="SF-contents">
+	<div id="SF-row1" class="SF-clearfix">
+		<div class="SF-col1"><div id="SF-row1 .SF-col1">
+<div id="B000000199" style="min-width:15px;min-height:15px;">
+</div>
+<div id="B000000188" class="SF-module-container" style="min-width:15px;min-height:15px">
+<ul class="thumbnailList">
+<li class="SF-clearfix">
+<div class="newslistdata">
+<h4 class="newslistHeadlineStyle"><span class="mincho">予約フォーム</span></h4>
+<p><div class="kome_line"><span class="gothic">Reservation</span></div>
+
+<div class="gothic"  style="padding-top:30px;">
+初めてのお客様のために、時間をかけて気になる所、悩んでいる所などしっかりとカウンセリングいたします。<br />
+またお試しコースも各種ご用意しております。まずは気軽にエステをお楽しみください。<br />
+その他、ご質問などございましたらお気軽に当サロンのスタッフへお聞きください。
+</div></p>
+</div>
+</li>
+</ul>
+</div>
+<div id="B000000311" class="SF-module-container" style="min-width:15px;min-height:15px;">
+<form id="SF-contact" name="SF-contact" action="javascript:TW_confirm('../cgiFolder/mail_send.php')">
+<input type="hidden" name="site_name" value="TG91aXNlIFJldmVy" />
+<input type="hidden" name="form_title" value="44GU5LqI57SE" />
+<input type="hidden" name="admin_email" value="aW5mb0Bsb3Vpc2VyZXZlci5jb20=" />
+<input type="hidden" name="admin_reply_email" value="aW5mb0Bsb3Vpc2VyZXZlci5jb20=" />
+<input type="hidden" name="admin_mail_subject" value="44GU5LqI57SE44GC44KK44GM44Go44GG44GU44GW44GE44G+44GX44Gf44CC" />
+<input type="hidden" name="auto_reply_mail_subject" value="44GU5LqI57SE44GC44KK44GM44Go44GG44GU44GW44GE44G+44GX44Gf44CC" />
+<input type="hidden" name="auto_reply_mail_header" value="44GU5LqI57SE44GC44KK44GM44Go44GG44GU44GW44GE44G+44GX44Gf44CCCuS4i+iomOOBruWGheWuueOBp+WPl+OBkeS7mOOBkeOBvuOBl+OBn+OAgg==" />
+<input type="hidden" name="auto_reply_mail_footer" value="5LiK6KiY44Gu5YaF5a6544Gr44GU5LiN5piO44Gq54K544Gq44Gp44GU44GW44GE44G+44GX44Gf44KJ44CB5LiL6KiY44G+44Gn44GU6YCj57Wh44GP44Gg44GV44GE44CCCuOBlOi/lOetlOOBr0Xjg6Hjg7zjg6vjgavjgablt67jgZfkuIrjgZLjgb7jgZnjga7jgafjgIHjgZfjgbDjgonjgY/jgYrlvoXjgaHjgY/jgaDjgZXjgYTjgIIK44GK5oCl44GO44Gu5pa544Gv5LiL6KiY44G+44Gn44GK6Zu76Kmx44GP44Gg44GV44GE44G+44GZ44KI44GG44GK6aGY44GE55Sz44GX5LiK44GS44G+44GZ44CCCu+8ne+8ne+8ne+8ne+8ne+8ne+8ne+8ne+8ne+8ne+8ne+8ne+8ne+8ne+8ne+8ne+8ne+8ne+8ne+8ne+8ne+8ne+8ne+8ne+8ne+8ne+8nQoK4pagTG91aXNlIFJldmVy77yI44Or44Kk44O844K644Os44O044Kn77yJCuKWoOOAkiA2NDItMDAwMgrilqDlkozmrYzlsbHnnIzmtbfljZfluILml6XmlrkxNTAwLTEtNDTjgIAg44Kw44Op44Oz44OJ44OP44Kk44OE5pel5pa5MUYK4pagVEVMOiAwNzMtNDgyLTM3NjUK4pagTUFJTDogaW5mb0Bsb3Vpc2VyZXZlci5jb20KCu+8ne+8ne+8ne+8ne+8ne+8ne+8ne+8ne+8ne+8ne+8ne+8ne+8ne+8ne+8ne+8ne+8ne+8ne+8ne+8ne+8ne+8ne+8ne+8ne+8ne+8ne+8nQ==" />
+<input type="hidden" name="auto_reply_mail_flag" value="0" />
+
+<input type="hidden" name="label_select_radio_button_03" value="予約種別" />
+<fieldset id="B0000003118">
+  <label class="label" for="value_select_radio_button_03">予約種別<span class="hissu">※必須</span></label>
+  <span class="control">
+  
+  <input type="radio" id="value_select_radio_button_03" class="radio" name="value_select_radio_button_03" value="新規予約"  />
+新規予約&nbsp;
+
+  <input type="radio" id="value_select_radio_button_03" class="radio" name="value_select_radio_button_03" value="リピート予約"  />
+リピート予約&nbsp;
+
+  <input type="radio" id="value_select_radio_button_03" class="radio" name="value_select_radio_button_03" value="無料カウンセリング予約"  />
+無料カウンセリング予約&nbsp;
+
+<img src="../assets/Spry_valid.gif" class="radioValidMsg" width="14" height="14" /><span class="radioRequiredMsg"><img src="../assets/Spry_required.gif" />値が入力されていません。</span></span>
+  <span class="control2"></span>
+</fieldset>
+<script type="text/javascript">
+<!--
+var B0000003118 = new Spry.Widget.ValidationRadio("B0000003118", {isRequired:true}); 
+//-->
+</script>
+
+<input type="hidden" name="label_user_name" value="お名前（漢字）" />
+<fieldset id="B0000003111">
+  <label class="label" for="value_user_name">お名前（漢字）<span class="hissu">※必須</span></label>
+  <span class="control"><input type="text" id="value_user_name" name="value_user_name" size="20" maxlength="20" value="" /><img src="../assets/Spry_valid.gif" class="textfieldValidMsg" width="14" height="14" /><span class="textfieldRequiredMsg"><img src="../assets/Spry_required.gif" width="14" height="14" />値が入力されていません。</span><span class="textfieldInvalidFormatMsg"><img src="../assets/Spry_required.gif" width="14" height="14" />無効な値が入力されています。</span></span>
+  <span class="control2">例)山田 花子</span>
+</fieldset>
+<script type="text/javascript">
+<!--
+var B0000003111 = new Spry.Widget.ValidationTextField("B0000003111", "none", {isRequired:true, hint:"", validateOn:["change"]}); 
+//-->
+</script>
+
+<input type="hidden" name="label_text_04" value="お名前（ひらがな）" />
+<fieldset id="B0000003112">
+  <label class="label" for="value_text_04">お名前（ひらがな）<span class="hissu">※必須</span></label>
+  <span class="control"><input type="text" id="value_text_04" name="value_text_04" size="20" maxlength="20" value="" /><img src="../assets/Spry_valid.gif" class="textfieldValidMsg" width="14" height="14" /><span class="textfieldRequiredMsg"><img src="../assets/Spry_required.gif" width="14" height="14" />値が入力されていません。</span><span class="textfieldInvalidFormatMsg"><img src="../assets/Spry_required.gif" width="14" height="14" />無効な値が入力されています。</span></span>
+  <span class="control2">例)やまだ はなこ</span>
+</fieldset>
+<script type="text/javascript">
+<!--
+var B0000003112 = new Spry.Widget.ValidationTextField("B0000003112", "none", {isRequired:true, hint:"", validateOn:["change"]}); 
+//-->
+</script>
+
+<input type="hidden" name="label_tel_no_05" value="電話番号" />
+<fieldset id="B0000003115">
+  <label class="label" for="value_tel_no_05">電話番号<span class="hissu">※必須</span></label>
+  <span class="control"><input type="text" id="value_tel_no_05" name="value_tel_no_05" size="20" maxlength="20" value="" /><img src="../assets/Spry_valid.gif" class="textfieldValidMsg" width="14" height="14" /><span class="textfieldRequiredMsg"><img src="../assets/Spry_required.gif" width="14" height="14" />値が入力されていません。</span><span class="textfieldInvalidFormatMsg"><img src="../assets/Spry_required.gif" width="14" height="14" />無効な値が入力されています。</span></span>
+  <span class="control2">例)000-000-0000</span>
+</fieldset>
+<script type="text/javascript">
+<!--
+var B0000003115 = new Spry.Widget.ValidationTextField("B0000003115", "none", {isRequired:true, hint:"", validateOn:["change"]}); 
+//-->
+</script>
+
+<input type="hidden" name="label_user_email" value="お客様メールアドレス" />
+<fieldset id="B0000003113">
+  <label class="label" for="value_user_email">お客様メールアドレス<span class="hissu">※必須</span></label>
+  <span class="control"><input type="text" id="value_user_email" name="value_user_email" size="30" maxlength="40" value="" /><img src="../assets/Spry_valid.gif" class="textfieldValidMsg" width="14" height="14" /><span class="textfieldRequiredMsg"><img src="../assets/Spry_required.gif" width="14" height="14" />値が入力されていません。</span><span class="textfieldInvalidFormatMsg"><img src="../assets/Spry_required.gif" width="14" height="14" />無効な値が入力されています。</span></span>
+  <span class="control2"></span>
+</fieldset>
+<script type="text/javascript">
+<!--
+var B0000003113 = new Spry.Widget.ValidationTextField("B0000003113", "email", {isRequired:true, hint:"", validateOn:["change"]}); 
+//-->
+</script>
+
+<input type="hidden" name="label_select_check_box_12" value="メニュー" />
+<fieldset id="B00000031111">
+  <label class="label" for="value_select_check_box_12">メニュー</label>
+  <span class="control">
+  
+  <input type="checkbox" id="value_select_check_box_12" class="checkbox" name="value_select_check_box_12" value="キャンペーン"  />
+キャンペーン&nbsp;
+
+  <input type="checkbox" id="value_select_check_box_12" class="checkbox" name="value_select_check_box_12" value="フェイシャルエステ"  />
+フェイシャルエステ&nbsp;
+
+  <input type="checkbox" id="value_select_check_box_12" class="checkbox" name="value_select_check_box_12" value="ブライダルコース"  />
+ブライダルコース&nbsp;
+
+  <input type="checkbox" id="value_select_check_box_12" class="checkbox" name="value_select_check_box_12" value="ワックス脱毛"  />
+ワックス脱毛&nbsp;
+
+  <input type="checkbox" id="value_select_check_box_12" class="checkbox" name="value_select_check_box_12" value="オプション"  />
+オプション&nbsp;
+
+<img src="../assets/Spry_valid.gif" class="checkboxValidMsg" width="14" height="14" /><span class="checkboxRequiredMsg"><img src="../assets/Spry_required.gif" />値が入力されていません。</span></span>
+  <span class="control2"></span>
+</fieldset>
+<script type="text/javascript">
+<!--
+var B00000031111 = new Spry.Widget.ValidationCheckbox("B00000031111", {isRequired:false}); 
+//-->
+</script>
+
+<input type="hidden" name="label_select_check_box_15" value="新規様 お試しメニュー [FACIAL CARE]" />
+<fieldset id="B00000031116">
+  <label class="label" for="value_select_check_box_15">新規様 お試しメニュー [FACIAL CARE]</label>
+  <span class="control">
+  
+  <input type="checkbox" id="value_select_check_box_15" class="checkbox" name="value_select_check_box_15" value="フェイシャルトリートメント"  />
+フェイシャルトリートメント&nbsp;
+
+  <input type="checkbox" id="value_select_check_box_15" class="checkbox" name="value_select_check_box_15" value="シミ・美白　ケア"  />
+シミ・美白　ケア&nbsp;
+
+  <input type="checkbox" id="value_select_check_box_15" class="checkbox" name="value_select_check_box_15" value="水素導入ケアコース"  />
+水素導入ケアコース&nbsp;
+
+<img src="../assets/Spry_valid.gif" class="checkboxValidMsg" width="14" height="14" /><span class="checkboxRequiredMsg"><img src="../assets/Spry_required.gif" />値が入力されていません。</span></span>
+  <span class="control2"></span>
+</fieldset>
+<script type="text/javascript">
+<!--
+var B00000031116 = new Spry.Widget.ValidationCheckbox("B00000031116", {isRequired:false}); 
+//-->
+</script>
+
+<input type="hidden" name="label_select_check_box_18" value="新規様 お試しメニュー [BODY CARE]" />
+<fieldset id="B00000031119">
+  <label class="label" for="value_select_check_box_18">新規様 お試しメニュー [BODY CARE]</label>
+  <span class="control">
+  
+  <input type="checkbox" id="value_select_check_box_18" class="checkbox" name="value_select_check_box_18" value="ボディトリートメント"  />
+ボディトリートメント&nbsp;
+
+  <input type="checkbox" id="value_select_check_box_18" class="checkbox" name="value_select_check_box_18" value="ポールシェリー　グラマラスボディ"  />
+ポールシェリー　グラマラスボディ&nbsp;
+
+  <input type="checkbox" id="value_select_check_box_18" class="checkbox" name="value_select_check_box_18" value="ポールシェリー　モホロジー"  />
+ポールシェリー　モホロジー&nbsp;
+
+<img src="../assets/Spry_valid.gif" class="checkboxValidMsg" width="14" height="14" /><span class="checkboxRequiredMsg"><img src="../assets/Spry_required.gif" />値が入力されていません。</span></span>
+  <span class="control2"></span>
+</fieldset>
+<script type="text/javascript">
+<!--
+var B00000031119 = new Spry.Widget.ValidationCheckbox("B00000031119", {isRequired:false}); 
+//-->
+</script>
+
+<input type="hidden" name="label_text_18" value="予約希望日（第1希望）" />
+<fieldset id="B00000031122">
+  <label class="label" for="value_text_18">予約希望日（第1希望）</label>
+  <span class="control"><input type="text" id="value_text_18" name="value_text_18" size="20" maxlength="20" value="" /><img src="../assets/Spry_valid.gif" class="textfieldValidMsg" width="14" height="14" /><span class="textfieldRequiredMsg"><img src="../assets/Spry_required.gif" width="14" height="14" />値が入力されていません。</span><span class="textfieldInvalidFormatMsg"><img src="../assets/Spry_required.gif" width="14" height="14" />無効な値が入力されています。</span></span>
+  <span class="control2">例） 2019/05/20</span>
+</fieldset>
+<script type="text/javascript">
+<!--
+var B00000031122 = new Spry.Widget.ValidationTextField("B00000031122", "none", {isRequired:false, hint:"", validateOn:["change"]}); 
+//-->
+</script>
+
+<input type="hidden" name="label_select_radio_button_30" value="予約時間（第1希望）" />
+<fieldset id="B00000031123">
+  <label class="label" for="value_select_radio_button_30">予約時間（第1希望）</label>
+  <span class="control">
+  
+  <input type="radio" id="value_select_radio_button_30" class="radio" name="value_select_radio_button_30" value="10時"  />
+10時&nbsp;
+
+  <input type="radio" id="value_select_radio_button_30" class="radio" name="value_select_radio_button_30" value="11時"  />
+11時&nbsp;
+
+  <input type="radio" id="value_select_radio_button_30" class="radio" name="value_select_radio_button_30" value="12時"  />
+12時&nbsp;
+
+  <input type="radio" id="value_select_radio_button_30" class="radio" name="value_select_radio_button_30" value="13時"  />
+13時&nbsp;
+
+  <input type="radio" id="value_select_radio_button_30" class="radio" name="value_select_radio_button_30" value="14時"  />
+14時&nbsp;
+
+  <input type="radio" id="value_select_radio_button_30" class="radio" name="value_select_radio_button_30" value="15時"  />
+15時&nbsp;
+
+  <input type="radio" id="value_select_radio_button_30" class="radio" name="value_select_radio_button_30" value="16時"  />
+16時&nbsp;
+
+  <input type="radio" id="value_select_radio_button_30" class="radio" name="value_select_radio_button_30" value="17時"  />
+17時&nbsp;
+
+  <input type="radio" id="value_select_radio_button_30" class="radio" name="value_select_radio_button_30" value="18時"  />
+18時&nbsp;
+
+  <input type="radio" id="value_select_radio_button_30" class="radio" name="value_select_radio_button_30" value="19時"  />
+19時&nbsp;
+
+  <input type="radio" id="value_select_radio_button_30" class="radio" name="value_select_radio_button_30" value="20時"  />
+20時&nbsp;
+
+<img src="../assets/Spry_valid.gif" class="radioValidMsg" width="14" height="14" /><span class="radioRequiredMsg"><img src="../assets/Spry_required.gif" />値が入力されていません。</span></span>
+  <span class="control2"></span>
+</fieldset>
+<script type="text/javascript">
+<!--
+var B00000031123 = new Spry.Widget.ValidationRadio("B00000031123", {isRequired:false}); 
+//-->
+</script>
+
+<input type="hidden" name="label_text_30" value="予約希望日（第2希望）" />
+<fieldset id="B00000031124">
+  <label class="label" for="value_text_30">予約希望日（第2希望）</label>
+  <span class="control"><input type="text" id="value_text_30" name="value_text_30" size="20" maxlength="20" value="" /><img src="../assets/Spry_valid.gif" class="textfieldValidMsg" width="14" height="14" /><span class="textfieldRequiredMsg"><img src="../assets/Spry_required.gif" width="14" height="14" />値が入力されていません。</span><span class="textfieldInvalidFormatMsg"><img src="../assets/Spry_required.gif" width="14" height="14" />無効な値が入力されています。</span></span>
+  <span class="control2">例） 2019/05/20</span>
+</fieldset>
+<script type="text/javascript">
+<!--
+var B00000031124 = new Spry.Widget.ValidationTextField("B00000031124", "none", {isRequired:false, hint:"", validateOn:["change"]}); 
+//-->
+</script>
+
+<input type="hidden" name="label_select_radio_button_42" value="予約時間（第2希望）" />
+<fieldset id="B00000031125">
+  <label class="label" for="value_select_radio_button_42">予約時間（第2希望）</label>
+  <span class="control">
+  
+  <input type="radio" id="value_select_radio_button_42" class="radio" name="value_select_radio_button_42" value="10時"  />
+10時&nbsp;
+
+  <input type="radio" id="value_select_radio_button_42" class="radio" name="value_select_radio_button_42" value="11時"  />
+11時&nbsp;
+
+  <input type="radio" id="value_select_radio_button_42" class="radio" name="value_select_radio_button_42" value="12時"  />
+12時&nbsp;
+
+  <input type="radio" id="value_select_radio_button_42" class="radio" name="value_select_radio_button_42" value="13時"  />
+13時&nbsp;
+
+  <input type="radio" id="value_select_radio_button_42" class="radio" name="value_select_radio_button_42" value="14時"  />
+14時&nbsp;
+
+  <input type="radio" id="value_select_radio_button_42" class="radio" name="value_select_radio_button_42" value="15時"  />
+15時&nbsp;
+
+  <input type="radio" id="value_select_radio_button_42" class="radio" name="value_select_radio_button_42" value="16時"  />
+16時&nbsp;
+
+  <input type="radio" id="value_select_radio_button_42" class="radio" name="value_select_radio_button_42" value="17時"  />
+17時&nbsp;
+
+  <input type="radio" id="value_select_radio_button_42" class="radio" name="value_select_radio_button_42" value="18時"  />
+18時&nbsp;
+
+  <input type="radio" id="value_select_radio_button_42" class="radio" name="value_select_radio_button_42" value="19時"  />
+19時&nbsp;
+
+  <input type="radio" id="value_select_radio_button_42" class="radio" name="value_select_radio_button_42" value="20時"  />
+20時&nbsp;
+
+<img src="../assets/Spry_valid.gif" class="radioValidMsg" width="14" height="14" /><span class="radioRequiredMsg"><img src="../assets/Spry_required.gif" />値が入力されていません。</span></span>
+  <span class="control2"></span>
+</fieldset>
+<script type="text/javascript">
+<!--
+var B00000031125 = new Spry.Widget.ValidationRadio("B00000031125", {isRequired:false}); 
+//-->
+</script>
+
+<input type="hidden" name="label_text_area_42" value="問い合わせ内容" />
+<fieldset id="B0000003116">
+<label class="label" for="value_text_area_42">問い合わせ内容</label>
+<span class="control"><textarea id="value_text_area_42" name="value_text_area_42" rows="5" cols="30"></textarea><img src="../assets/Spry_valid.gif" class="textareaValidMsg" width="14" height="14" /><span class="textareaRequiredMsg"><img src="../assets/Spry_required.gif" />値が入力されていません。</span><span class="textareaMaxCharsMsg">最大文字数を超えています。</span></span>
+<span class="control2"></span>
+<script type="text/javascript">
+<!--
+	var B0000003116;
+	// IE6の場合
+	if (typeof(document.body.style.maxHeight) == 'undefined') {
+		B0000003116 = new Spry.Widget.ValidationTextarea("B0000003116", {isRequired:false, maxChars:200, validateOn:["submit"], hint:"", useCharacterMasking:false}); 
+	} else {
+		B0000003116 = new Spry.Widget.ValidationTextarea("B0000003116", {isRequired:false, maxChars:200, validateOn:["change"], hint:"", useCharacterMasking:false}); 
+	}
+//-->
+</script>
+</fieldset>
+
+<input type="hidden" name="label_select_check_box_47" value="当店を何でお知りになりましたか？" />
+<fieldset id="B00000031126">
+  <label class="label" for="value_select_check_box_47">当店を何でお知りになりましたか？</label>
+  <span class="control">
+  
+  <input type="checkbox" id="value_select_check_box_47" class="checkbox" name="value_select_check_box_47" value="ご紹介"  />
+ご紹介&nbsp;
+
+  <input type="checkbox" id="value_select_check_box_47" class="checkbox" name="value_select_check_box_47" value="広告媒体"  />
+広告媒体&nbsp;
+
+  <input type="checkbox" id="value_select_check_box_47" class="checkbox" name="value_select_check_box_47" value="ホームページ"  />
+ホームページ&nbsp;
+
+  <input type="checkbox" id="value_select_check_box_47" class="checkbox" name="value_select_check_box_47" value="その他"  />
+その他&nbsp;
+
+<img src="../assets/Spry_valid.gif" class="checkboxValidMsg" width="14" height="14" /><span class="checkboxRequiredMsg"><img src="../assets/Spry_required.gif" />値が入力されていません。</span></span>
+  <span class="control2"></span>
+</fieldset>
+<script type="text/javascript">
+<!--
+var B00000031126 = new Spry.Widget.ValidationCheckbox("B00000031126", {isRequired:false}); 
+//-->
+</script>
+
+<div id="submit">
+<p>上記の内容でよろしければ、送信ボタンをクリックしてください。<br />
+<input type="submit" value="入力内容確認" name="submitButtonName" /><input type="reset" value="リセット" name="reset" />
+</p>
+</div>
+</form>
+</div>
+<div id="B000000312" class="SF-module-container" style="min-width:15px;min-height:15px;">
+<h2 class="headlineStyle">プライバシーポリシー</h2>
+</div>
+<div id="B000000313" class="SF-module-container" style="min-width:15px;min-height:15px;">
+Louise Reverはお客様の大切な情報を如何なる事があっても、事前の同意を得ずに本来の目的以外の目的で、第三者に公開する事はいたしません。<br />
+Louise Reverは、いかなる業務においても個人を特定できる内容について、そのプライバシー保護、情報の機密を保持するよう努めます。<br />
+<br />
+■個人情報とはあらゆる業務でご提供していただくお客様の氏名・メールアドレス・電話番号など、お客様個人を特定する事のできる情報を言います。<br />
+■お客様より収集させていただいた個人情報は、不正アクセス・紛失・窃取がないよう適切に管理し、収集目的の範囲内でのみ利用いたします。<br />
+■個人情報はお客様の承諾が無い限り、第三者への情報の開示・提供を一切いたしません。<br />
+<br />
+ただし、以下に該当する場合はこの限りではありません。<br />
+1.個人情報の開示について、お客様の同意がある時。<br />
+2.法律または、官公庁の要請により開示を求められた時。<br />
+3.人の生命、身体または財産の保護の為に必要がある場合であって、本人の同意を得る事が困難である時。<br />
+4.個人情報の利用目的<br />
+弊社は、取得した個人情報を当該業務の遂行に必要な範囲内で利用します。<br />
+また、それら以外の他の目的に利用する事はありません。<br />
+会社における具体的な個人情報の利用目的は、弊社が取り扱う業務（エステサロン業務）および、これらに付帯・関連するサービスの提供上記の利用目的を変更する場合には、その内容をご本人に対し原則として書面などにより通知し 、またはホームページなどでも公表いたします。<br />
+5.Louise Reverが保有する個人情報に関して適用される法令・規範を遵守するとともに、上記各項におけるポリシーを適宜見直し改善していきます。<br />
+<br />
+個人情報保護方針に関するご質問などは、お問い合わせフォームまたはお電話にてお問い合わせください。<br /><br />
+
+
+
+
+<style>
+/* スクロール */
+#B000000313 {
+  height: 200px;
+  overflow: auto;
+}
+</style>
+</div>
+<div id="B000000315" style="min-width:15px;min-height:15px;">
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous"></div>
+
+</div></div>
+</div>
+</div>
+
+<div id="SF-footer">
+<div id="B000000184" class="SF-module-container" style="min-width:15px;min-height:15px;">
+<p>© Louise Rever
+
+
+<p id="page-top"><a href="#wrap">PAGE TOP</a></p>
+
+
+<style type="text/css">
+#page-top {
+    position: fixed;
+    bottom: 10px;
+    right: 20px;
+    font-size: 90%;
+}
+#page-top a {
+    background: #70592C;
+    text-decoration: none;
+    color: #fff;
+    width: 100px;
+    padding: 30px 0;
+    text-align: center;
+    display: block;
+    border-radius: 5px;
+}
+#page-top a:hover {
+    text-decoration: none;
+    background: #C4A764;
+}
+</style>
+
+
+<script>
+$(function() {
+    var topBtn = $('#page-top');    
+    topBtn.hide();
+    //スクロールが100に達したらボタン表示
+    $(window).scroll(function () {
+        if ($(this).scrollTop() > 100) {
+            topBtn.fadeIn();
+        } else {
+            topBtn.fadeOut();
+        }
+    });
+    //スクロールしてトップ
+    topBtn.click(function () {
+        $('body,html').animate({
+            scrollTop: 0
+        }, 500);
+        return false;
+    });
+});
+</script></p>
+</div>
+
+</div>
+</div>
+</div>
+
+<div id="ADDBGBOTTOM"></div>
+
+<script type="text/javascript">
+<!--
+var req= ana.exec('../cgiFolder/analysis/admin/index.php','Louise Rever','D000000500','予約フォーム','G000000011','','','userId','0');
+if( req) document.write('<img src="' + req+ '" width="0" height="0">');
+req= undefined;
+ana= undefined;
+//-->
+</script>
+<div id="SF-switch-link" style="margin-left:auto;margin-right:auto;padding:15px;margin-bottom:40px;text-align:center;position:relative;clear:both;width:375px;font-size:x-large;">表示：<a href="https://www.louiserever.com/sp/singlefolder/reservation.html">モバイル</a><span style="margin-left:10px;margin-right:10px;">|</span><span style="font-weight:bold;">パソコン</span></div>
+<script type="text/javascript">
+<!--
+(function(){
+if(document.cookie.indexOf("tw_redirect=false") == -1){
+if ((navigator.userAgent.indexOf("iPhone") > 0 && navigator.userAgent.indexOf("iPad") == -1) ||
+navigator.userAgent.indexOf("iPod") > 0 || navigator.userAgent.indexOf("Android") > 0) {
+location.href = "https://www.louiserever.com/sp/singlefolder/reservation.html";
+}else{
+var element = document.getElementById("SF-switch-link");
+element.style.cssText = "display:none;";}
+}}());
+//-->
+</script>
+</body>
+</html>

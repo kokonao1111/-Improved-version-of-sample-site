@@ -1,0 +1,41 @@
+@charset "utf-8";
+/*Template:M010400076 Date:2013-03-15*/
+
+#B000000024 {
+	display:block;
+	width:%;
+	height:150px;
+	margin-top:-15px;
+	margin-bottom:0px;
+	margin-left:0px;
+	margin-right:0px;
+	padding-top:0px;
+	padding-bottom:0px;
+	padding-left:0px;
+	padding-right:0px;
+	border-top:none;
+	border-bottom:none;
+	border-left:none;
+	border-right:none;
+	border-color:#cccccc;
+	border-width:1px;
+	background-color:;
+	background-image:url(../../../assets/contents_bg.png);
+	background-position:left top;
+	background-repeat:repeat-x;
+}
+
+#B000000024 ul li {
+	float:left;
+	margin:0;
+	padding:0;
+	list-style:none;
+}
+
+#B000000024 ul li.SF-simpleImg img{
+	display:block;
+	margin-top:15px;
+	margin-bottom:0px;
+	margin-left:5px;
+	margin-right:5px;
+}

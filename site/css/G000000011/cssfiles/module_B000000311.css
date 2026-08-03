@@ -1,0 +1,249 @@
+/*▽お問い合わせモジュール　開始*/
+/*Template:M010400011 Date:2013-03-15*/
+
+#B000000311 {
+	clear:both;
+	display:block;
+	width:auto;
+	height:auto;
+	margin-top:20px;
+	margin-bottom:20px;
+	margin-left:50px;
+	margin-right:50px;
+	padding-top:0px;
+	padding-bottom:0px;
+	padding-left:20px;
+	padding-right:20px;
+	border-top:none;
+	border-bottom:none;
+	border-left:none;
+	border-right:none;
+	border-color:#cccccc;
+	border-width:1px;
+	background-color:;
+	background-image:url(../../../assets/);
+	background-position:left top;
+	background-repeat:no-repeat;
+}
+
+#B000000311 fieldset {
+	padding: 10px 0 10px 0;
+	border-width: 1px;
+	border-color: #cccccc;
+	border-style: none none dotted none;
+	background-color:;
+	background-image:url(../../../assets/);
+	background-position:left top;
+	background-repeat:no-repeat;
+}
+
+#B000000311 fieldset #last {
+  border-bottom: none;
+}
+
+#B000000311 .grouplabelname {
+	color:#000000;
+	font-size:12px;
+	font-weight:normal;
+	padding-left:10px;
+	padding-top:10px;
+}
+
+
+#B000000311 .label {
+	clear:both;
+	display:block;
+	float:left;
+	width:270px;
+	padding-top:0.8em;
+	padding-left:10px;
+	color:#000000;
+	font-size:12px;
+	font-weight:normal;
+	line-height: 12px;
+}
+#B000000311 .control {
+	display: block;
+	margin: 0 0 0 270px;
+	padding-top: 0.8em;
+	padding-left:10px;
+	color:;
+	font-size:12px;
+	line-height: 12px;
+/*  white-space: nowrap;*/
+}
+#B000000311 img {
+	padding-left:5px;
+	vertical-align:middle;
+}
+#B000000311 .control2 {
+	display: block;
+	padding-left:10px;
+	color:;
+	font-size:10px;
+	margin: 0 0 0 270px;
+	padding-top:0;
+}
+#B000000311 input, select, textarea {
+	border-style: solid;
+	border-width: 1px;
+	border-color: #aaaa94 #dfdfd6 #dfdfd6 #aaaa94;
+	vertical-align: middle;
+	color:;
+/*background: #f1f1ed;*/
+}
+#B000000311 input.radio {
+	border-style: none;
+	margin-bottom:5px;
+	color:;
+	background: transparent;
+}
+#B000000311 input.checkbox {
+	border-style: none;
+	margin-bottom:5px;
+	color:;
+	background: transparent;
+}
+
+#B000000311 .hissu {
+	padding-left:5px;
+	color:#ff3333;
+	font-size:10px;
+	vertical-align: baseline;
+ }
+ 
+ /* For Adobe Spry Widgetの設定
+---------------------------------------------------- */
+.selectRequiredMsg,
+.selectInvalidMsg,
+.selectValidMsg,
+.textfieldRequiredMsg, 
+.textfieldInvalidFormatMsg, 
+.textfieldMinValueMsg,
+.textfieldMaxValueMsg,
+.textfieldMinCharsMsg,
+.textfieldMaxCharsMsg,
+.textfieldValidMsg,
+.checkboxRequiredMsg,
+.checkboxMinSelectionsMsg,
+.checkboxMaxSelectionsMsg,
+.checkboxValidMsg,
+.textareaRequiredMsg,
+.textareaMinCharsMsg,
+.textareaMaxCharsMsg,
+.textareaValidMsg,
+.radioRequiredMsg,
+.radioInvalidMsg,
+.radioValidMsg {
+	display: none;
+}
+.selectRequiredState .selectRequiredMsg,
+.selectInvalidState .selectInvalidMsg,
+.textfieldRequiredState .textfieldRequiredMsg, 
+.textfieldInvalidFormatState .textfieldInvalidFormatMsg, 
+.textfieldMinValueState .textfieldMinValueMsg,
+.textfieldMaxValueState .textfieldMaxValueMsg,
+.textfieldMinCharsState .textfieldMinCharsMsg,
+.textfieldMaxCharsState .textfieldMaxCharsMsg,
+.checkboxRequiredState .checkboxRequiredMsg,
+.checkboxMinSelectionsState .checkboxMinSelectionsMsg,
+.checkboxMaxSelectionsState .checkboxMaxSelectionsMsg,
+.textareaRequiredState .textareaRequiredMsg,
+.textareaMinCharsState .textareaMinCharsMsg,
+.textareaMaxCharsState .textareaMaxCharsMsg,
+.radioRequiredState .radioRequiredMsg,
+.radioInvalidState .radioInvalidMsg{
+ 	color:#ff3333;
+	display: inline;
+	font-size:10px;
+	padding-left:5px;
+	vertical-align: baseline;
+}
+.selectValidState select, select.selectValidState,
+.textfieldValidState input, input.textfieldValidState,
+.textareaValidState textarea, textarea.textareaValidState {
+	background-color:#b8f5b1;
+}
+select.selectRequiredState, .selectRequiredState select,
+select.selectInvalidState, .selectInvalidState select,
+input.textfieldRequiredState, .textfieldRequiredState input, 
+input.textfieldInvalidFormatState, .textfieldInvalidFormatState input, 
+input.textfieldMinValueState, .textfieldMinValueState input, 
+input.textfieldMaxValueState, .textfieldMaxValueState input, 
+input.textfieldMinCharsState, .textfieldMinCharsState input, 
+input.textfieldMaxCharsState, .textfieldMaxCharsState input,
+textarea.textareaRequiredState, .textareaRequiredState textarea, 
+textarea.textareaMinCharsState, .textareaMinCharsState textarea, 
+textarea.textareaMaxCharsState, .textareaMaxCharsState textarea {
+	background-color:#ff9f9f;
+}
+.selectFocusState select, select.selectFocusState,
+.textfieldFocusState input, input.textfieldFocusState,
+.textareaFocusState textarea, textarea.textareaFocusState {
+	background-color:#ffffcc;
+}
+.textfieldFlashText input, input.textfieldFlashText,
+.textareaFlashState textarea, textarea.textareaFlashState{
+	color:red;
+}
+.textfieldValidState .textfieldValidMsg,
+.textareaValidState .textareaValidMsg,
+.checkboxValidState .checkboxValidMsg,
+.selectValidState .selectValidMsg,
+.radioValidState .radioValidMsg {
+	display: inline;
+}
+ 
+ 
+
+/* 入力部品の幅設定
+---------------------------------------------------- */
+
+/*
+設定画面の文字数による指定の為、利用不可
+#email,#comment {
+  width: 380px;
+}
+#username, #furigana, #todoufuken, #telnumber, #postcode, #toiawase {
+  width: 180px;
+}*/
+
+/* 送信ボタン
+---------------------------------------------------- */
+#submit {
+  margin-top:15px;
+}
+#submit p {
+	padding:10px;
+	color:#444444;
+	font-size:12px;
+	text-align:center;
+}
+#submit input {
+	margin:10px;
+	padding:3px 5px 3px 5px;
+	color:#ffffff;
+	background-color:#7f7f7f;
+	font-weight:bold;
+	font-size:12px;
+	border-width:1px;
+	border-color:#bdbdbd #696969 #696969 #bdbdbd;
+	vertical-align: middle;
+}
+
+/* 送信ボタン(確認画面用)
+---------------------------------------------------- */
+
+#SF-confirmarea input {
+	margin:10px;
+	padding:3px 5px 3px 5px;
+	color:#ffffff;
+	background-color:#7f7f7f;
+	font-weight:bold;
+	font-size:12px;
+	border-width:1px;
+	border-color:#bdbdbd #696969 #696969 #bdbdbd;
+	vertical-align: middle;
+}
+
+/*△お問い合わせモジュール　終了*/

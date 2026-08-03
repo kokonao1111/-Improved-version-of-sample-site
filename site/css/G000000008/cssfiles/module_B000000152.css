@@ -1,0 +1,107 @@
+@charset "utf-8";
+/*Template:M010400068 Date:2013-08-06*/
+
+#B000000152 {
+	clear:both;
+	display:block;
+	width:%;
+	height:100%;
+	margin-top:0px;
+	margin-bottom:0px;
+	margin-left:0px;
+	margin-right:0px;
+	padding-top:0px;
+	padding-bottom:0px;
+	padding-left:0px;
+	padding-right:0px;
+	border-top:none;
+	border-bottom:none;
+	border-left:none;
+	border-right:none;
+	border-color:#cccccc;
+	border-width:1px;
+	background-color:;
+	background-image:url(../../../assets/);
+	background-position:left top;
+	background-repeat:no-repeat;
+}
+
+#B000000152 ul.thumbnailList{
+	clear:both;
+	margin-left:0px;
+	margin-right:0px;
+}
+
+#B000000152 ul.thumbnailList li {
+	float:none;
+	width:auto;
+	height:auto;
+	margin-top:0px;
+	margin-bottom:80px;
+	margin-left:0px;
+	margin-right:0px;
+	padding-top:0px;
+	padding-bottom:0px;
+	padding-left:0px;
+	padding-right:0px;
+	border-top:none;
+	border-bottom:none;
+	border-left:none;
+	border-right:none;
+	border-width:1px;
+	border-color:#cccccc;
+	background-color:;
+	background-image:url(../../../assets/);
+	background-position:left top;
+	background-repeat:no-repeat;
+	list-style:none;
+}
+
+#B000000152 ul.thumbnailList li .newslistdata {
+	display:block;
+	text-align:left;
+}
+#B000000152 ul.thumbnailList li .thumbnail {
+	display:inline;
+}
+
+#B000000152 ul.thumbnailList li p {
+	margin:0px;
+	padding:0px;
+	color: ;
+	text-decoration: none;
+	font-family: inherit;
+	font-size: ;
+	font-weight: normal;
+	font-style: normal;
+	line-height: inherit;
+}
+
+#B000000152 ul.thumbnailList li .newslistHeadlineStyle {
+	display:block;
+	margin:0;
+	padding:0;
+	width:;
+	height:;
+	margin-top:0px;
+	margin-bottom:5px;
+	margin-left:0px;
+	margin-right:0px;
+	padding-top:0px;
+	padding-bottom:0px;
+	padding-left:0px;
+	padding-right:0px;
+	background-color:;
+	background-image:url(../../../assets/);
+	background-position:left top;
+	background-repeat:no-repeat;
+	text-indent:0px;
+	color: #666666;
+	font-family: inherit;
+	font-size:24px;
+	font-weight:bold;
+	font-style:normal;
+	text-align:left;
+	line-height:;
+	overflow:hidden;
+}

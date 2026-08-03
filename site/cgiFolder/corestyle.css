@@ -1,0 +1,628 @@
+@charset "utf-8";
+/* CSS Document */
+
+/*スマートフォン文字大きさ変化対策*/
+body{
+-webkit-text-size-adjust: 100%;
+}
+
+/**
+ * アナリティクス画像の無駄なスペース対策
+ * これを使用する場合は、
+ * 中間ファイルのアナリティクスimgタグにクラスを付加して下さい。
+ * 例）<img src="' + req+ '" width="0" height="0" class="analysisImg">
+ */
+body{
+  position: relative;
+}
+.analysisImg {
+  position: absolute;
+  bottom: 0;
+  margin-bottom: 10px;
+  margin-left: -10px;
+}
+
+/* ページにスクロールバーを常に表示させる場合 */
+/*html { overflow-y: scroll; }*/
+
+/* フッターのリンク文字が見えにくい場合 */
+/*#SF-footer a{ color:#FFFFFF; }*/
+
+/* リンク周りの点線を表示させない */
+a:focus {
+    outline:none;
+}
+
+/* クリア関連 */
+.SF-clearfix:after {
+    content: "";
+}
+.clear { clear:both; }
+
+.clearfix:before,
+.clearfix:after {
+    content: " ";
+    display: table;
+}
+.clearfix:after {
+    clear: both;
+}
+.clearfix {
+    *zoom: 1;
+}
+
+/* サイト高さ上限拡大 */
+#SF-outer-container,
+.SF-module-container {
+  max-height: 100000px;
+}
+
+/* SP用タグ非表示 */
+.forSP {
+  display: none !important;
+}
+
+
+/* フォント指定 */
+h1 a { text-decoration: none!important; }
+
+h1,h2,h3,h4,p,ul,li,strong,div,span,td,th,input,textarea {
+	font-family:"メイリオ", Meiryo, "ヒラギノ角ゴ Pro W3", "Hiragino Kaku Gothic Pro", Osaka, "ＭＳ Ｐゴシック", "MS PGothic", sans-serif;
+}
+
+
+
+/* ナビゲーションプルダウン */
+#SF-navigation ul li ul li a {
+  text-decoration: none;
+}
+#SF-navigation ul li ul li a:hover {
+  text-decoration: underline;
+}
+
+
+/* 徐々に色変化 */
+#SF-navigation ul li a {
+    transition: 0.3s;
+}
+
+
+/* テーブルの基礎設定 */
+.tablebase {
+	width: 100%;
+	border-collapse:collapse; /* セル同士のボーダーをくっつける時は collapse 、離す時は separate */
+	border-spacing: 1px; /* separate する場合の間隔。IE7 以前は 2px 強制 */
+	border: 1px solid #999; /* 外枠 普通の線は solid 、点線は dotted */
+	/*background-color: #666;*/
+}
+.tablebase th { /* セルの設定 */
+	padding: 8px;
+	border: 1px solid #999;
+	background-color: #CCC;
+}
+.tablebase td { /* セルの設定 */
+	padding: 8px;
+	border: 1px solid #999;
+	/*background-color: #CCC;*/
+}
+
+/* テーブルモジュールのヘッダー使わない */
+.SF-trheader {
+  display: none;
+}
+
+
+
+/* 各ページ共通コンテンツ設定 */
+#LEFTLINK {
+	width:280px;
+	height:700px;
+	border:none;
+}
+#RIGHTLINK {
+	width:280px;
+	height:700px;
+	border:none;
+}
+#BOTTOMLINK {
+	width:960px;
+	height:200px;
+	border:none;
+}
+
+
+
+/** ナビゲーション はみ出し部分非表示
+ * その他ページの代わりに通常のカテゴリを使用する際、
+ * 溢れたカテゴリボタンをナビゲーションに表示させない様にします。
+ * 念のため、ナビゲーションのカテゴリの幅は0pxにする事をお勧めします。
+ * 68px の部分はナビゲーションの高さです。
+ * 200px の部分はプルダウンも含めた高さです。
+#SF-navigation {
+	height: 68px;
+}
+#SF-inner-container #SF-navigation .twKindNavi {
+	overflow-x: hidden;
+	height: 200px;
+}
+ */
+
+
+
+/* 追加上背景設定 */
+#ADDBGTOP {
+  position: absolute;
+  top: 0;
+  z-index: -10;
+  width: 100%;
+  min-width: 960px; /* ページの幅を入れます */
+}
+#ADDCONTENTTOP {
+  margin-left: auto;
+  margin-right: auto;
+  background-image: url("../assets/bg_top.jpg");
+  background-position: center top;
+  background-repeat: repeat-x;
+  height: 172px; /* 背景画像の高さを入れます */
+}
+
+
+
+/* 追加下背景設定 */
+#SF-outer-container {
+  overflow: visible;
+}
+#ADDBGBOTTOM {
+  bottom: 0;
+  width: 100%;
+  z-index: -10;
+  position: relative;
+  height: 100px; /* フッターの高さを入れます */
+  min-width:1000px; /* ページの横幅を入れます */
+  /* 背景画像が有る場合は下を設定します */
+  border-top: 2px solid #D9C79D;
+  background-color: #222222;
+  background-position: center top;
+  background-repeat: repeat-x;
+}
+#SF-footer {
+  position:relative;
+  margin-bottom: -100px; /* TWで設定したフッターの高さ（ height + padding ）を入れます */
+}
+
+/* フッターリンク */
+#SF-footer a {
+  text-decoration: none;
+}
+#SF-footer a:hover {
+  text-decoration: underline;
+}
+
+
+
+
+
+
+
+/* ロゴリンクをナビゲーションに重ねる */
+#Module-default-container {
+  overflow: visible;
+  position: relative;
+  z-index: 100;
+}
+#Module-default-container p.header-discription-type2 img {
+  position: absolute;
+}
+
+
+
+/* お問い合わせフォーム調整 */
+#SF-contact textarea {
+    width: 100%;
+    max-width: 100%;
+}
+
+
+/**
+ * リストスタイル
+ * 本来のリストアイコンを取り戻します。
+ * csListItems クラスを付けて下さい。
+ */
+#SF-contents ul.csListItems,
+#SF-contents ol.csListItems {
+  margin-left: 0;
+  padding: 0 0 0 0.8em;
+}
+#SF-contents ul.csListItems li,
+#SF-contents ol.csListItems li {
+  float: none;
+  border: none;
+  padding: 0;
+  width: auto;
+  margin: 0.5em 0 0.5em 0.5em;
+}
+#SF-contents ul.csListItems > li {
+  list-style-type: disc;
+}
+#SF-contents ol.csListItems > li {
+  list-style-type: decimal;
+}
+
+
+/************ csLibrary start *************/
+
+/* scrollbtnFollow */
+#backtopbox {
+	width:100%;
+	text-align:left;
+}
+#back-top {
+	/*width: 98%;*/
+	height: 86px;  /* 画像の縦幅 */
+	position: fixed;
+	bottom: 70px; /* ページ下端からの距離 */
+	/*margin-left: 1000px;  ページ左端からの距離 */
+	right: 10px; /* ページ右端からの距離 */
+}
+#back-top a {
+	width: 86px;  /* 画像の横幅 */
+	display: block;
+	text-align: center;
+	font: 11px/100% Arial, Helvetica, sans-serif;
+	text-transform: uppercase;
+	text-decoration: none;
+	color: #bbb;
+	float: right;
+
+	/* transition */
+	-webkit-transition: 1s;
+	-moz-transition: 1s;
+	transition: 1s;
+}
+#back-top a:focus {
+    outline:none;
+}
+/* arrow icon (span tag) */
+#back-top span {
+	width: 86px;  /* 画像の横幅 */
+	height: 86px;  /* 画像の縦幅 */
+	display: block;
+	margin-bottom: 7px;
+	background:  url(../assets/pagetoplink.png) no-repeat center center;
+	/* transition */
+	-webkit-transition: 1s;
+	-moz-transition: 1s;
+	transition: 1s;
+}
+
+
+/* 1x1スペーサ画像使用時非表示 */
+.hideElement {
+  display: none !important;
+}
+
+
+/* リストモジュールにアンカー追加（β） */
+.addAncr {
+  height: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+#SF-contents ul li.addAncr {
+	border: none;
+}
+
+
+/* リストモジュールのテーブルを分割する */
+.devidedTable {
+	float: left;
+}
+
+
+/* リストモジュールType01の画像配置を左右交互にする（β） */
+.csArticleLeft {
+  float: left !important;
+  margin-left: 0 !important;
+}
+.csArticleLeft img {
+  margin-left: 0 !important;
+}
+.csArticleRight {
+  float: right !important;
+  margin-right: 0 !important;
+}
+.csArticleRight img {
+  margin-right: 0 !important;
+}
+
+
+/* （全）リストモジュール高さ合わせ 161020 */
+#SF-contents .SF-module-container ul.thumbnailList:before,
+#SF-contents .SF-module-container ul.thumbnailList:after {
+    content: " ";
+    display: table;
+}
+#SF-contents .SF-module-container ul.thumbnailList:after {
+    clear: both;
+}
+#SF-contents .SF-module-container ul.thumbnailList {
+    *zoom: 1;
+}
+
+
+/* 紙浮き表現 */
+.shadowBox {
+  /*float: left;*/
+  display: inline-block;
+  position: relative;
+  z-index: 0;
+}
+.shadow:after {
+  background-color: #000;
+  bottom: 7px;
+  box-shadow: 0 10px 4px #000;
+  content: "　";
+  display: block;
+  left: 0;
+  margin: 8px auto;
+  opacity: 0.5;
+  position: absolute;
+  right: 0;
+  transform: rotate(2deg);
+  width: 90%;
+  z-index: -1;
+  height: calc(3% + 3px);
+}
+/* IE8非表示 */
+.shadow:after {
+  display:none\9;
+}
+
+
+/* CSカレンダー次月表示 */
+.csCalender {
+  margin: 0 auto 20px;
+}
+.csCalender #calen {
+  height: 210px;
+  margin: 0 auto 5px;
+  width: 100%;
+}
+.csCalender #calen td {
+  height: auto;
+}
+.csCalender #calen .titleber {
+  height: 20px;
+}
+.csCalender #calen .weekber {
+  height: 20px;
+}
+
+.csCalender {
+  position: relative;
+}
+.csCalender .csCalenChangeBtn {
+  position: absolute;
+  top: 0;
+  font-size: 12px;
+  line-height: 32px;
+  padding: 0 5px;
+  width: 95%;
+  width: calc(100% - 10px);
+}
+.csCalender .csCalenChangeBtn.next {
+  text-align: right;
+}
+.csCalender .cmnt{
+  padding: 0;
+}
+.csCalender .cmnt .exColor {
+  font-size: 1.4em;
+  vertical-align: middle;
+}
+
+
+/* 自動タイル並べβ */
+.floatItem {
+    width: 205px;
+    margin: 0 10px;
+}
+
+
+/*　メニューリスト用リーダー横幅自動リサイズ 　*/
+.plParent {
+  display: inline-block;
+  width: 100%;
+}
+.plName,
+.plLeader,
+.plPrice {
+  display: table-cell !important;
+  vertical-align: top;
+}
+.plName {
+  padding-right: 1em;
+  white-space: nowrap;
+}
+.plLeader {
+  display: inline-block;
+  overflow: hidden;
+}
+.plLeaderDiv {
+  word-break: break-all;
+  max-height: 1em;
+  line-height: 1em;
+  display: block;
+  overflow: hidden;
+}
+.plPrice {
+  padding-left: 1em;
+  white-space: nowrap;
+}
+.plBlock {
+  display: block!important;
+  width: auto!important;
+  white-space: normal;
+}
+/**
+ * リーダーの数が足りない場合
+.plLeaderDiv:before {
+    content: '……………………………………………………………………………';
+}
+ */
+
+
+
+/**
+ * 画像ホバーエフェクト設定
+ * この設定は Javascript の
+ * 「リストモジュール画像ホバーエフェクト用要素追加 Type-01」
+ * 等を使用してモジュールに要素を追加する必要が有ります。
+ */
+
+/* エフェクト親要素 */
+.effectParent {
+	position: relative;
+	overflow: hidden;
+	display: block;
+}
+.effectParent:before {
+	content: '';
+	display: block;
+	padding-top: 100%;
+}
+
+/* 画像拡大エフェクト */
+.effectParent img {
+	display: block !important;
+	width: 100%;
+	position: absolute;
+	top: 0;
+	left: 0;
+	transform: scale(1);
+	transition: transform 0.5s ease;
+}
+.effectParent:hover img {
+	transform: scale(1.1);
+}
+
+/* エフェクト位置基準(画像拡大以外) */
+.effectParent .effectPositionReference {
+	position: absolute;
+	height: 100%;
+	width: 100%;
+	top: 0;
+	left: 0;
+}
+
+/* カラーフィルター透明度エフェクト */
+.effectParent .effectPositionReference .effect_colorFilter {
+	position: absolute;
+	height: 100%;
+	width: 100%;
+	top: 0;
+	left: 0;
+	transition: opacity 0.5s ease;
+}
+.effectParent .effect_colorFilter {
+    background-color: #000;
+    opacity: 0;
+}
+.effectParent:hover .effect_colorFilter {
+    opacity: 0.5;
+}
+
+/* ライン成長エフェクト */
+.effectParent .effectPositionReference .effect_lineGrowUp {
+	position: absolute;
+	height: calc(100% - (5px * 2));
+	width: calc(100% - (5px * 2));
+	top: 5px;
+	left: 5px;
+}
+.effectParent .effectPositionReference .effect_lineGrowUp .effect_lineGrowUp_item {
+	background-color: #fff;
+	position: absolute;
+	margin: auto;
+	transition: transform 0.5s ease;
+}
+.effectParent .effectPositionReference .effect_lineGrowUp .effect_lineGrowUp_item.top {
+	height: 1px;
+	width: 100%;
+	top: 0;
+	left: 0;
+	transform: scale(0,1);
+	transform-origin: top left;
+}
+.effectParent .effectPositionReference .effect_lineGrowUp .effect_lineGrowUp_item.right {
+	height: 100%;
+	width: 1px;
+	right: 0;
+	top: 0;
+	transform: scale(1,0);
+	transform-origin: top right;
+}
+.effectParent .effectPositionReference .effect_lineGrowUp .effect_lineGrowUp_item.bottom {
+	height: 1px;
+	width: 100%;
+	top: 100%;
+	right: 0;
+	bottom: 0;
+	transform: scale(0,1);
+	transform-origin: bottom right;
+}
+.effectParent .effectPositionReference .effect_lineGrowUp .effect_lineGrowUp_item.left {
+	height: 100%;
+	width: 1px;
+	left: 0;
+	bottom: 0;
+	transform: scale(1,0);
+	transform-origin: bottom left;
+}
+.effectParent:hover .effectPositionReference .effect_lineGrowUp .effect_lineGrowUp_item.top,
+.effectParent:hover .effectPositionReference .effect_lineGrowUp .effect_lineGrowUp_item.right,
+.effectParent:hover .effectPositionReference .effect_lineGrowUp .effect_lineGrowUp_item.bottom,
+.effectParent:hover .effectPositionReference .effect_lineGrowUp .effect_lineGrowUp_item.left {
+	transform: scale(1);
+}
+
+
+
+/* サブナビゲーションモジュールプルダウン */
+#SF-contents .sbtn {
+  display: none;
+}
+#SF-contents .hover .sbtn {
+  display: block;
+  position: absolute;
+  z-index: 10000;
+}
+#SF-contents .hover .sbtn li {
+  float: none !important;
+}
+
+
+
+/* 表示切替スイッチ */
+#SF-switch-link .icon {
+    text-indent: -9999px;
+    background-position: center center;
+    background-size: contain;
+    background-repeat: no-repeat;
+    display: inline-block;
+    width: 30px;
+    height: 30px;
+    vertical-align: middle;
+}
+#SF-switch-link .sp {
+    /* background-image: url(../assets/icon_dark_smartphone.png); */
+    background-image: url(../assets/icon_light_smartphone.png);
+}
+#SF-switch-link .pc {
+    /* background-image: url(../assets/icon_dark_pcdisplay.png); */
+    background-image: url(../assets/icon_light_pcdisplay.png);
+}
+
+
+
+/*************** csLibrary end ****************/

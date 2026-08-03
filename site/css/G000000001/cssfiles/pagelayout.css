@@ -1,0 +1,13 @@
+@charset "utf-8";
+#SF-outer-container {
+    width : 1000px;
+    margin-left : auto;
+    margin-right : auto;
+}
+#SF-inner-container {
+    margin-left : auto;
+    margin-right : auto;
+}
+#SF-footer {
+    clear : both;
+}

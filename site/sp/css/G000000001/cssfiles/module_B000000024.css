@@ -1,0 +1,29 @@
+@charset "utf-8";
+/*SP-Template:M010400076 Date:2013-03-15*/
+
+#B000000024 {
+margin-top:30px;
+margin-bottom:20px;
+}
+
+#B000000024 ul{
+	margin:0;
+	padding:0;
+	margin-left:0px;
+	margin-right:0px;
+}
+
+#B000000024 ul li {
+	float:none;
+	margin:0;
+	padding:0;
+	list-style:none;
+}
+
+#B000000024 ul li.SF-simpleImg img{
+	display:block;
+	margin-top:0px;
+	margin-bottom:0px;
+	margin-left:auto;
+	margin-right:auto;
+}

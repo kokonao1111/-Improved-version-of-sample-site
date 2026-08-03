@@ -1,0 +1,77 @@
+@charset "utf-8";
+/*SP-Template:M010400004 Date:2013-08-20*/
+
+#B000000251 {
+margin-top:;
+margin-bottom:;
+}
+
+#B000000251.SF-block-ls {
+background-color:#ffffff;
+padding:15px;
+font-size:0.9em;
+-moz-border-radius-topright: 0.5em;
+-moz-border-radius-topleft: 0.5em;
+-moz-border-radius-bottomright: 0.5em;
+-moz-border-radius-bottomleft: 0.5em;
+-webkit-border-top-right-radius: 0.5em;
+-webkit-border-top-left-radius: 0.5em;
+-webkit-border-bottom-right-radius: 0.5em;
+-webkit-border-bottom-left-radius: 0.5em;
+border-top-left-radius: 0.5em;
+border-top-right-radius: 0.5em;
+border-bottom-left-radius: 0.5em;
+border-bottom-right-radius: 0.5em;
+-webkit-box-shadow: 0px 1px 4px rgba(119,119,119,0.3);
+-moz-box-shadow: 0px 1px 4px rgba(119,119,119,0.3);
+box-shadow: 0px 1px 4px rgba(119,119,119,0.3);
+border:none 1px #cccccc;
+}
+
+#B000000251.SF-block-ds {
+background-color:#ffffff;
+padding:15px;
+font-size:0.9em;
+-moz-border-radius-topright: 0.5em;
+-moz-border-radius-topleft: 0.5em;
+-moz-border-radius-bottomright: 0.5em;
+-moz-border-radius-bottomleft: 0.5em;
+-webkit-border-top-right-radius: 0.5em;
+-webkit-border-top-left-radius: 0.5em;
+-webkit-border-bottom-right-radius: 0.5em;
+-webkit-border-bottom-left-radius: 0.5em;
+border-top-left-radius: 0.5em;
+border-top-right-radius: 0.5em;
+border-bottom-left-radius: 0.5em;
+border-bottom-right-radius: 0.5em;
+-webkit-box-shadow: 0px 1px 4px rgba(0,0,0,0.3);
+-moz-box-shadow: 0px 1px 4px rgba(0,0,0,0.3);
+box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+border:none 1px #cccccc;
+}
+
+#B000000251.SF-block-normal {
+background-color:#ffffff;
+padding:15px;
+font-size:0.9em;
+-moz-border-radius-topright: 0.5em;
+-moz-border-radius-topleft: 0.5em;
+-moz-border-radius-bottomright: 0.5em;
+-moz-border-radius-bottomleft: 0.5em;
+-webkit-border-top-right-radius: 0.5em;
+-webkit-border-top-left-radius: 0.5em;
+-webkit-border-bottom-right-radius: 0.5em;
+-webkit-border-bottom-left-radius: 0.5em;
+border-top-left-radius: 0.5em;
+border-top-right-radius: 0.5em;
+border-bottom-left-radius: 0.5em;
+border-bottom-right-radius: 0.5em;
+border:none 1px #cccccc;
+}
+
+#B000000251.SF-block-none {
+}
+
+#B000000251 p{
+	margin: 0.6em 0;
+}

@@ -1,0 +1,34 @@
+@charset "utf-8";
+/*Template:M010300001 Date:2010-11-19*/
+
+#SF-teaser #B000000165 {
+	display:block;
+	clear:both;
+	width:px;
+	height:100%;
+	margin-top:0px;
+	margin-bottom:0px;
+	margin-left:px;
+	margin-right:px;
+	padding-top:0px;
+	padding-bottom:0px;
+	padding-left:0px;
+	padding-right:0px;
+	border-top:none;
+	border-bottom:none;
+	border-left:none;
+	border-right:none;
+	border-color:#cccccc;
+	border-width:1px;
+	background-color:;
+	background-image:url(../../../assets/);
+	background-position:left top;
+	background-repeat:no-repeat;
+}
+
+#SF-teaser #B000000165 img{
+	display:block;
+	margin-top:0px;
+	margin-left:0px;
+
+}

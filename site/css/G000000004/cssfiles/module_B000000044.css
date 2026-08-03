@@ -1,0 +1,53 @@
+@charset "utf-8";
+/*Template:M010400001 Date:2013-08-20*/
+
+#B000000044 {
+	display:block;
+	width:%;
+	height:100%;
+	margin-top:0px;
+	margin-bottom:30px;
+	margin-left:0px;
+	margin-right:0px;
+	padding-top:0px;
+	padding-bottom:0px;
+	padding-left:0px;
+	padding-right:0px;
+	border-top:none;
+	border-bottom:solid;
+	border-left:none;
+	border-right:none;
+	border-color:#cccccc;
+	border-width:1px;
+	background-color:;
+	background-image:url(../../../assets/);
+	background-position:left top;
+	background-repeat:no-repeat;
+	text-align:left;
+}
+
+#B000000044 .headlineStyle {
+	display: block;
+	width: auto;
+	height: px;
+	margin-top: px;
+	margin-bottom: 0px;
+	margin-left: 0px;
+	margin-right: 0px;
+	padding-top: 0px;
+	padding-bottom: 0px;
+	padding-left: 0px;
+	padding-right: 0px;
+	background-color:;
+	background-image:url(../../../assets/);
+	background-position:left top;
+	background-repeat:no-repeat;
+	color: ;
+	font-family: inherit;
+	font-size: 25px;
+	font-weight: bold;
+	font-style: normal;
+	line-height: px;
+	text-indent: 0px;
+	overflow: hidden;
+}
