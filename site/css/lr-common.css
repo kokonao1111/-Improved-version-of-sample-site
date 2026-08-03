@@ -152,6 +152,253 @@
 	color: #7E6838;
 }
 
+/* ------------------------------------------------------------------
+   PC版ヘッダーの連絡先（電話・営業時間・定休日）
+   ------------------------------------------------------------------
+   もとは assets/head_bg.png（200×65）を #Module-default-container の
+   背景画像として敷いていた。画像なので電話番号をタップできず、
+   検索エンジンにも読み上げにも届かない。同じ見た目のまま文字に戻す。
+
+   寸法・色は元画像から採寸した実測値。
+     tel  … #927839 ／ 字面の高さ 19px（= 24px 相当の明朝）
+     下段 … #BB9B52 ／ 字面の高さ 11px（= 12px 相当）
+   ただし下段の #BB9B52 は白地で 2.67:1 しかなく、文字にすると
+   読めないため #7E6838（5.35:1）へ落とす。同じ金茶の系統で、
+   見た目の印象は変えずに AA を満たす。
+   ------------------------------------------------------------------ */
+#Module-default-container {
+	background-image: none;
+}
+.lr-headinfo {
+	position: absolute;
+	top: 48px;
+	right: 0;
+	width: 212px;
+	text-align: center;
+	font-family: 'Noto Serif JP', serif;
+	line-height: 1;
+}
+a.lr-headtel:link,
+a.lr-headtel:visited,
+a.lr-headtel:active,
+.lr-headtel {
+	display: block;
+	font-size: 22px;
+	line-height: 1;
+	letter-spacing: .02em;
+	color: #927839;
+	text-decoration: none;
+	white-space: nowrap;
+}
+a.lr-headtel:hover {
+	color: #70592C;
+	text-decoration: none;
+}
+.lr-headhours {
+	display: block;
+	margin-top: 9px;
+	font-size: 12px;
+	line-height: 1.5;
+	color: #7E6838;
+	white-space: nowrap;
+}
+
+
+/* 本文中の電話番号。見た目は据え置きのまま、タップで発信できるようにする。
+   置かれている場所によって地色が違う（フッターは濃地に白、店舗案内は白地に
+   本文色）ため、色は inherit で周囲に従わせる。 */
+/* sitetheme.css の a:link{color:#70592C}（詳細度 0,1,1）が効いてしまうため、
+   a.lr-tel:link（0,2,1）で上回らせる。濃地のフッターで暗色になるのを防ぐ。 */
+a.lr-tel:link,
+a.lr-tel:visited,
+a.lr-tel:active {
+	color: inherit;
+	text-decoration: none;
+}
+a.lr-tel:hover {
+	color: inherit;
+	text-decoration: underline;
+}
+
+
+/* ------------------------------------------------------------------
+   スマートフォンの予約バー（固定フッター内）
+   ------------------------------------------------------------------
+   改修前、SP版の下層ページには予約導線が1本もなかった。
+   固定要素を増やすと画面が二重に食われるので、すでにある
+   data-role="footer" data-position="fixed" の中へ入れる。
+
+   地色はヘッダーと同じ #D9C79D。上下をベージュで挟むことで
+   「このサイトの一部」として読める。角丸・影・グラデーションは使わず、
+   1px のヘアラインだけで三分割する。既存の .button-rink が
+   「2px の金枠・角丸なし」であるのと同じ規範。
+
+   文字は #5A4823。既存ヘッダーの #70592C は #D9C79D 地では
+   3.95:1 しかなく AA に届かないため、同じ茶を一段深めて 5.28:1 にした。
+   ------------------------------------------------------------------ */
+.lr-cta {
+	display: -webkit-box;
+	display: -ms-flexbox;
+	display: flex;
+	background: #D9C79D;
+	border-top: 1px solid #BC9C52;
+}
+/* jQuery Mobile は生成時にアンカーへ .ui-link を付け、
+   .ui-bar-a a.ui-link{color:#7cc4e7;font-weight:bold}（詳細度 0,2,1）が当たる。
+   .lr-cta a.lr-cta-i:link（0,3,1）で確実に上回らせる。 */
+.lr-cta a.lr-cta-i,
+.lr-cta a.lr-cta-i:link,
+.lr-cta a.lr-cta-i:visited,
+.lr-cta a.lr-cta-i:active {
+	-webkit-box-flex: 1;
+	-ms-flex: 1 1 29%;
+	flex: 1 1 29%;
+	box-sizing: border-box;
+	padding: 7px 2px 8px;
+	text-align: center;
+	text-decoration: none;
+	color: #5A4823;
+	border-left: 1px solid rgba(90, 72, 35, .28);
+	line-height: 1;
+	font-weight: 400;
+}
+/* 電話は番号を出すぶん幅が要る */
+.lr-cta a.lr-cta-i:first-child {
+	-ms-flex: 1 1 42%;
+	flex: 1 1 42%;
+	border-left: 0;
+}
+.lr-cta a.lr-cta-i:hover,
+.lr-cta a.lr-cta-i:focus {
+	background: #CDB786;
+	color: #5A4823;
+	text-decoration: none;
+}
+.lr-cta-t {
+	display: block;
+	font-family: 'Noto Serif JP', serif;
+	font-size: 13px;
+	letter-spacing: .06em;
+	white-space: nowrap;
+}
+.lr-cta-s {
+	display: block;
+	margin-top: 5px;
+	font-family: 'Noto Sans JP', sans-serif;
+	font-size: 11px;
+	letter-spacing: .02em;
+	white-space: nowrap;
+}
+
+/* 固定フッターは本文に覆いかぶさる。CTA のぶん背が高くなったので、
+   最後の内容が隠れないよう下に逃がす。 */
+#SF-startPage .ui-content {
+	padding-bottom: 96px;
+}
+/* © の帯は詰めて、CTA に場所を譲る */
+[data-id="spfooter"] > p {
+	margin: 0;
+	padding: 9px 0;
+}
+
+
+/* ------------------------------------------------------------------
+   PC版の予約ブロック（各ページ末尾）
+   ------------------------------------------------------------------
+   PC は固定バーを足さない。PAGE TOP がすでに固定で浮いており、
+   これ以上重ねると画面の隅が渋滞する。読み終えた位置に置くほうが素直。
+
+   ボタンはこのサイトが既に持っている .button-rink の規範をそのまま使う。
+     2px の金枠 ／ 角丸なし ／ 地は透明 ／ ホバーで金に塗り白抜き ／ 0.2s
+   見出しは .kome_line と同じ「金のヘアラインで文字を挟む」装置。
+   新しい様式は持ち込まない。
+   ------------------------------------------------------------------ */
+.lr-book {
+	clear: both;
+	width: 1000px;
+	margin: 56px auto 46px;
+	text-align: center;
+}
+.lr-book-h {
+	position: relative;
+	margin: 0;
+	font-size: 21px;
+	line-height: 1.4;
+	color: #70592C;
+}
+.lr-book-h:before,
+.lr-book-h:after {
+	content: '';
+	position: absolute;
+	top: 50%;
+	display: inline-block;
+	width: 34%;
+	height: 1px;
+	background-color: #BC9C52;
+}
+.lr-book-h:before { left: 0; }
+.lr-book-h:after  { right: 0; }
+
+.lr-book-en {
+	margin: 9px 0 26px;
+	font-family: 'Noto Sans JP', sans-serif;
+	font-size: 12px;
+	letter-spacing: .16em;
+	color: #7E6838;
+}
+
+.lr-book-row {
+	display: -webkit-box;
+	display: -ms-flexbox;
+	display: flex;
+	-webkit-box-pack: center;
+	-ms-flex-pack: center;
+	justify-content: center;
+}
+.lr-book-row a.lr-book-b,
+.lr-book-row a.lr-book-b:link,
+.lr-book-row a.lr-book-b:visited,
+.lr-book-row a.lr-book-b:active {
+	width: 290px;
+	margin: 0 9px;
+	padding: 17px 0 18px;
+	box-sizing: border-box;
+	border: 2px solid #BC9C52;
+	color: #70592C;
+	text-decoration: none;
+	cursor: pointer;
+	-webkit-transition: .2s;
+	transition: .2s;
+}
+.lr-book-row a.lr-book-b:hover {
+	background: #BC9C52;
+	color: #ffffff;
+	text-decoration: none;
+}
+.lr-book-t {
+	display: block;
+	font-family: 'Noto Serif JP', serif;
+	font-size: 17px;
+	line-height: 1;
+	letter-spacing: .08em;
+}
+.lr-book-s {
+	display: block;
+	margin-top: 9px;
+	font-family: 'Noto Sans JP', sans-serif;
+	font-size: 12px;
+	line-height: 1;
+	letter-spacing: .04em;
+}
+.lr-book-note {
+	margin: 22px 0 0;
+	font-family: 'Noto Sans JP', sans-serif;
+	font-size: 12px;
+	letter-spacing: .04em;
+	color: #7E6838;
+}
+
+
 /* 読み上げ専用（定休日であることを視覚以外にも伝える） */
 .lr-sr {
 	position: absolute;
