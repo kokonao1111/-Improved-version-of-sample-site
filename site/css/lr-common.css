@@ -24,6 +24,12 @@
    色は本文 #70592C を一段淡くした #7E6838。白背景でのコントラスト比は
    5.35:1 で、WCAG AA（4.5:1）を満たす。
    ------------------------------------------------------------------ */
+/* 右端は器に合わせる。course_plan だけ表が padding:15px+border:1px を持つので
+   16px 内側へ寄せ、金額の右端と注記の右端を揃える。他ページには金枠表が無い。 */
+#B000000131 .lr-taxnote,
+#B000000132 .lr-taxnote {
+	margin-right: 16px;
+}
 .lr-taxnote {
 	margin: 0 0 .6em;
 	text-align: right;
@@ -51,14 +57,14 @@
 	display: flex;
 	-ms-flex-wrap: wrap;
 	flex-wrap: wrap;
-	margin: 2px -17px 16px;
+	margin: 0 -15px 15px;
 }
 .lr-cal-wrap {
 	-webkit-box-flex: 1;
 	-ms-flex: 1 1 200px;
 	flex: 1 1 200px;
 	box-sizing: border-box;
-	padding: 0 17px;
+	padding: 0 15px;
 	margin-bottom: 20px;
 }
 
@@ -66,7 +72,7 @@
    中央に置く。PC は左カラム 480px を2ヶ月で分けるので上限には当たらない。 */
 .lr-cal {
 	width: 100%;
-	max-width: 292px;
+	max-width: 290px;
 	margin: 0 auto;
 	border-collapse: collapse;
 	font-family: 'Noto Sans JP', sans-serif;
@@ -77,7 +83,7 @@
 .lr-cal-cap {
 	caption-side: top;
 	text-align: left;
-	padding: 0 0 9px;
+	padding: 0 0 10px;
 	white-space: nowrap;
 }
 .lr-cal-year {
@@ -100,7 +106,7 @@
 }
 
 .lr-cal th {
-	padding: 0 0 7px;
+	padding: 0 0 5px;
 	font-size: 11px;
 	font-weight: 400;
 	letter-spacing: .08em;
@@ -108,16 +114,16 @@
 	border-bottom: 1px solid #C4A764;
 }
 .lr-cal td {
-	padding: 4px 0;
+	padding: 5px 0;
 	text-align: center;
 	font-size: 13px;
 	line-height: 1;
 }
 .lr-cal-d {
 	display: inline-block;
-	width: 26px;
-	height: 26px;
-	line-height: 26px;
+	width: 25px;
+	height: 25px;
+	line-height: 25px;
 	border-radius: 50%;
 }
 /* 定休日：#EBE2D0 の地に本文色。白地・ベージュ地とも AA を満たす */
@@ -139,7 +145,7 @@
 	display: inline-block;
 	width: 13px;
 	height: 13px;
-	margin-right: 8px;
+	margin-right: 10px;
 	border-radius: 50%;
 	background: #EBE2D0;
 	vertical-align: -2px;
@@ -196,7 +202,7 @@ a.lr-headtel:hover {
 }
 .lr-headhours {
 	display: block;
-	margin-top: 9px;
+	margin-top: 10px;
 	font-size: 12px;
 	line-height: 1.5;
 	color: #7E6838;
@@ -254,7 +260,7 @@ a.lr-tel:hover {
 	-ms-flex: 1 1 29%;
 	flex: 1 1 29%;
 	box-sizing: border-box;
-	padding: 7px 2px 8px;
+	padding: 10px 2px;
 	text-align: center;
 	text-decoration: none;
 	color: #5A4823;
@@ -293,12 +299,12 @@ a.lr-tel:hover {
 /* 固定フッターは本文に覆いかぶさる。CTA のぶん背が高くなったので、
    最後の内容が隠れないよう下に逃がす。 */
 #SF-startPage .ui-content {
-	padding-bottom: 96px;
+	padding-bottom: 100px;
 }
 /* © の帯は詰めて、CTA に場所を譲る */
 [data-id="spfooter"] > p {
 	margin: 0;
-	padding: 9px 0;
+	padding: 10px 0;
 }
 
 
@@ -316,13 +322,13 @@ a.lr-tel:hover {
 .lr-book {
 	clear: both;
 	width: 1000px;
-	margin: 56px auto 46px;
+	margin: 100px auto 50px;
 	text-align: center;
 }
 .lr-book-h {
 	position: relative;
 	margin: 0;
-	font-size: 21px;
+	font-size: 28px;
 	line-height: 1.4;
 	color: #70592C;
 }
@@ -332,7 +338,7 @@ a.lr-tel:hover {
 	position: absolute;
 	top: 50%;
 	display: inline-block;
-	width: 34%;
+	width: 40%;
 	height: 1px;
 	background-color: #BC9C52;
 }
@@ -340,7 +346,7 @@ a.lr-tel:hover {
 .lr-book-h:after  { right: 0; }
 
 .lr-book-en {
-	margin: 9px 0 26px;
+	margin: 10px 0 25px;
 	font-family: 'Noto Sans JP', sans-serif;
 	font-size: 12px;
 	letter-spacing: .16em;
@@ -360,15 +366,15 @@ a.lr-tel:hover {
 .lr-book-row a.lr-book-b:visited,
 .lr-book-row a.lr-book-b:active {
 	width: 290px;
-	margin: 0 9px;
-	padding: 17px 0 18px;
+	margin: 0 10px;
+	padding: 15px 0;
 	box-sizing: border-box;
 	border: 2px solid #BC9C52;
 	color: #70592C;
 	text-decoration: none;
 	cursor: pointer;
-	-webkit-transition: .2s;
-	transition: .2s;
+	-webkit-transition: background-color var(--lr-t) var(--lr-e), color var(--lr-t) var(--lr-e), border-color var(--lr-t) var(--lr-e);
+	transition: background-color var(--lr-t) var(--lr-e), color var(--lr-t) var(--lr-e), border-color var(--lr-t) var(--lr-e);
 }
 .lr-book-row a.lr-book-b:hover {
 	background: #BC9C52;
@@ -384,14 +390,14 @@ a.lr-tel:hover {
 }
 .lr-book-s {
 	display: block;
-	margin-top: 9px;
+	margin-top: 10px;
 	font-family: 'Noto Sans JP', sans-serif;
 	font-size: 12px;
 	line-height: 1;
 	letter-spacing: .04em;
 }
 .lr-book-note {
-	margin: 22px 0 0;
+	margin: 20px 0 0;
 	font-family: 'Noto Sans JP', sans-serif;
 	font-size: 12px;
 	letter-spacing: .04em;
@@ -575,8 +581,8 @@ img[width][height] {
 	line-height: 1;
 	letter-spacing: .08em;
 	cursor: pointer;
-	-webkit-transition: .2s;
-	transition: .2s;
+	-webkit-transition: background-color var(--lr-t) var(--lr-e), color var(--lr-t) var(--lr-e);
+	transition: background-color var(--lr-t) var(--lr-e), color var(--lr-t) var(--lr-e);
 }
 .lr-submit:hover {
 	background: #BC9C52;
@@ -604,4 +610,528 @@ img[width][height] {
 }
 .lr-reset:hover {
 	color: #70592C;
+}
+
+
+/* ==================================================================
+   ここから下は、版面監査（余白・組版・階層・部品・構図／確定86件）の是正
+   ================================================================== */
+
+
+/* ------------------------------------------------------------------
+   how_to_choose の骨格2本 ― サイトで唯一の無彩色を外す
+   ------------------------------------------------------------------
+   modulestyle.css:942 / :2646 が #B000000200「お悩みから選ぶ」と
+   #B000000377「気になる部位から選ぶ」に background:#cccccc・color:#000000 を
+   与えている。12枚のカードを6+6に割る、ページの骨格そのものだ。
+   #cccccc も #000000 も、この店の5色（#D9C79D #C4A764 #BC9C52 #70592C #F3EDE2）
+   のどれでもなく、サイト全体を走査して純黒の見出しはここだけ。
+   他ページの同じ役割の帯（#B000000397 など）は全て #F3EDE2 なので、そちらへ揃える。
+   ------------------------------------------------------------------ */
+#B000000200,
+#B000000377 {
+	background-color: #F3EDE2;
+	border-color: #F3EDE2;
+}
+#B000000200 .mincho,
+#B000000377 .mincho {
+	color: #70592C;
+}
+
+
+/* ------------------------------------------------------------------
+   料金表に行罫を引く
+   ------------------------------------------------------------------
+   品名から金額まで最大611pxを罫なしで横断させていた（「・土のケア」611px、
+   「・グラマラス」599px）。13pxの文字を600px追いかけることになり、
+   1行ずれれば 13,200円 と 25,300円 を取り違える。
+
+   罫は #C4A764 の1px。この店では「1px＝面を仕切る（押せない）／
+   2px＝押せる」が11箇所すべてで成立しているので、押せない表に
+   2pxの外枠を与えていた現状はその符号を崩している。外枠は HTML 側の
+   インラインstyleを 2px→1px に直した（!important を持ち込まないため）。
+   ------------------------------------------------------------------ */
+.course_l,
+.course_c,
+.course_r {
+	border-bottom: 1px solid #EBE2D0;
+}
+tr:last-child .course_l,
+tr:last-child .course_c,
+tr:last-child .course_r {
+	border-bottom: 0;
+}
+
+
+/* ------------------------------------------------------------------
+   3列カードの原点を版面の左端 140px に戻す
+   ------------------------------------------------------------------
+   course_plan と how_to_choose のページ末尾にある回遊カードだけ、
+   li に margin:0 15px が付いていて 155..455 / 485..785 / 815..1115 に置かれる。
+   同ページの表・kome_line・h2 は全部 140 から始まるので、
+   締めくくりの3枚だけが右に15pxずれ、右端に25pxの死に幅が残っていた。
+   15pxという半端な量なので「ずらした」ではなく「ずれた」と読める。
+
+   index の同じ3列（w=300 / 段間50 / 140..1140）が版面の正で、
+   1000 = 300×3 + 50×2 はこの店の割り付けそのもの。そこへ揃える。
+   ------------------------------------------------------------------ */
+#B000000124 ul.thumbnailList li,
+#B000000397 ul.thumbnailList li {
+	margin-left: 0;
+	margin-right: 50px;
+}
+#B000000124 ul.thumbnailList li:last-child,
+#B000000397 ul.thumbnailList li:last-child {
+	margin-right: 0;
+}
+
+
+/* ------------------------------------------------------------------
+   本文の行長
+   ------------------------------------------------------------------
+   index.html:158 の `#B000000083 .SF-module-container` は、
+   B000000083 の中の「モジュール容器」を 1000px に収める意図だが、
+   実際の本文は同ブロック直下の div.gothic で、こちらは 100vw のまま
+   流れている。ウィンドウを広げるほど1行が伸び、日本語の本文として
+   追える長さを超える。同ブロックの中身だけを版面幅に戻す。
+   ------------------------------------------------------------------ */
+#B000000083 > div.gothic,
+#B000000009 > div.gothic {
+	max-width: 1000px;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+
+/* ------------------------------------------------------------------
+   書体 ― 本文の62%がOS任せになっていたのを店の指定に戻す
+   ------------------------------------------------------------------
+   cgiFolder/corestyle.css:69-70 が h1〜h4,p,ul,li,strong,div,span,td,th,
+   input,textarea の全部に「メイリオ, Meiryo, ヒラギノ角ゴ, Osaka, MS Pゴシック」を
+   一括で当てている。メイリオは macOS/iOS に無いのでヒラギノへ、Android では
+   端末既定へ落ちる。実測で PC の how_to_choose は可視文字の80.1%、
+   course_plan 71.3%、trial 69.5% がこの系統で描かれていた。
+   つまり「見出しは明朝／本文はゴシック」という店の決めごとが効いていたのは
+   全文字の約2割で、残りは閲覧端末しだいで字面も太さも変わっていた。
+
+   corestyle.css は生成物なので触らず、同じ列挙の先頭に Noto を足した形で
+   後勝ちさせる。フォールバックはそのまま残すので、Noto が落ちても
+   従来と同じ見え方になる。
+   ------------------------------------------------------------------ */
+h1, h2, h3, h4, p, ul, li, strong, div, span, td, th, input, textarea, button, select {
+	font-family: 'Noto Sans JP', "メイリオ", Meiryo, "ヒラギノ角ゴ Pro W3", "Hiragino Kaku Gothic Pro", Osaka, "ＭＳ Ｐゴシック", "MS PGothic", sans-serif;
+}
+/* 見出しは明朝。.mincho は既にあるが、素の見出しタグにも効かせる */
+.mincho,
+h2.headlineStyle,
+h4.newslistHeadlineStyle {
+	font-family: 'Noto Serif JP', "ヒラギノ明朝 ProN W3", "Hiragino Mincho ProN", "游明朝", YuMincho, serif;
+}
+
+/* 存在しない書体名の是正。'Noto Sans Japanese' / 'Noto Serif Japanese' は
+   Google Fonts に無い綴りで、指定は素通りしていた（extends_style.css:267,293,417
+   / trial:153 / faq:109 の計5箇所）。正しい名前で後から当て直す。 */
+.gothic {
+	font-family: 'Noto Sans JP', sans-serif;
+}
+
+/* FAQ の Q./A.
+   .q_l は font-family:'Noto Serif Japanese'（存在しない綴り）+ font-style:italic。
+   書体名が効かないため実体は Times の合成斜体で、本文とも見出しとも違う
+   三つ目の書体になっていた。正しい明朝を与え、斜体は外す。
+   ローマン体の Q. A. は、明朝の版面では立てて置くほうが締まる。 */
+.q_l {
+	font-family: 'Noto Serif JP', "ヒラギノ明朝 ProN W3", "Hiragino Mincho ProN", serif;
+	font-style: normal;
+}
+
+
+/* ------------------------------------------------------------------
+   グローバルナビ（PC）
+   ------------------------------------------------------------------
+   module_B000000002.css:8 が帯を height:30px と宣言しているのに、
+   :39 の line-height が 13px のままで、文字が帯の上寄りに沈んでいた。
+   帯の高さは既に決まっているので、行送りをそれに合わせるだけでよい。
+   項目幅 75/120/96/168/168/108/108/108（合計951px、内容幅952pxに
+   手で追い込んだ値）には一切触らない。ここは手作業の跡そのもの。
+
+   現在地の表示が無いので、2px の #BC9C52 で下線を引く。
+   2px＝押せる印なので、ナビ項目には正しい太さ。
+   ------------------------------------------------------------------ */
+#SF-navigation ul li a {
+	line-height: 30px;
+}
+#SF-navigation ul li a[id^="catBgColor"]:hover {
+	color: #8C6F2E;
+}
+/* 現在地。各ページの本文側で body に効かせる手段が無いので、
+   ナビの現在ページのリンクが持つ id を使う（生成側が付けている）。 */
+#SF-navigation ul li a.lr-current {
+	border-bottom: 2px solid #BC9C52;
+}
+
+
+/* ------------------------------------------------------------------
+   SPのメニューパネル
+   ------------------------------------------------------------------
+   list-divider が7行あるが、文言が直下のリンクと完全に同一で
+   （「初めての方へ」→「初めての方へ」）情報量がゼロ。
+   7行ぶんスクロールを増やしているだけなので隠す。
+   リンクの内側は器の家族の15pxへ。
+   ------------------------------------------------------------------ */
+#SF-grovalnaviPage li.ui-li-divider {
+	display: none;
+}
+#SF-grovalnaviPage .ui-li .ui-btn-inner {
+	padding-top: 15px;
+	padding-bottom: 15px;
+}
+
+
+/* ------------------------------------------------------------------
+   kome_line を1つの装置に戻す
+   ------------------------------------------------------------------
+   PC15ページの <style> 内に同じ定義が複製され、SP側の
+   extends_style.css:303-311 だけ幅が30%になっていた。
+   金のヘアラインはこの店の基本語彙なので、比率は40%ただ一つに揃える。
+   （PCページ内の複製は後勝ちで上書きされる。物理削除は生成物の改変に
+   あたるので行わない。）
+   ------------------------------------------------------------------ */
+.kome_line:before,
+.kome_line:after {
+	width: 40%;
+	background-color: #BC9C52;
+}
+
+
+/* ------------------------------------------------------------------
+   見出しの階層 ― SPで全部16pxに潰れているのを戻す
+   ------------------------------------------------------------------
+   実測でSPは H4「くすみ・しみ・美白」16px / H3「おすすめメニュー▼」16px /
+   H2「当店の施術について」16px と、5段の見出しが全部16px。本文14pxに対して
+   1.14倍しかなく、7700pxスクロールするページで見出しが見出しに見えない。
+   金のヘアラインだけが区切りを担い、飛ばし読みが成立しない。
+
+   新しい数を作らない。この店の級数は sitetheme.css:11-25 が最初に書いた
+   26/22/18/16/12 に、後から手で 28/24/15/13 が足された8段。
+   SPの本文14pxの上に、その梯子から 22 / 18 / 16 の3段だけを取る。
+   ------------------------------------------------------------------ */
+#SF-startPage h4.newslistHeadlineStyle {
+	font-size: 22px;
+	line-height: 1.5;
+}
+#SF-startPage h2.headlineStyle {
+	font-size: 18px;
+	line-height: 1.5;
+}
+#SF-startPage h3.newslistHeadlineStyle {
+	font-size: 16px;
+	line-height: 1.5;
+}
+
+/* PC のページ最上部 h1（サイト説明）が 9px bold で、見出しタグでありながら
+   本文より小さい。12px normal にして、階層の逆転だけ解く。
+   位置も色もそのままなので、版面の見え方は変わらない。 */
+#Module-default-container #Header-title {
+	font-size: 12px;
+	font-weight: normal;
+}
+
+
+/* ==================================================================
+   モーション設計（4視点監査＋3案審査の結論）
+   原則：動きは操作の返事にだけ許す。
+   ------------------------------------------------------------------
+   実測すると、このサイトに足りないのは動きではなく動きの規範だった。
+   持続時間は 0.125/0.2/0.225/0.3/0.4/0.5/0.6/1.0秒 の9種が根拠なく並存し、
+   cubic-bezier は0件、自作 @keyframes も0件。画面上の動きは一つ残らず
+   誰かの既定値だった。ここへ新しい演出を足せば不統一が増えるだけなので、
+   壊れているものを直し、時間を一本に畳むことに徹する。
+   ================================================================== */
+:root {
+	/* 200ms は発明ではなく実測。.button-rink は幅も padding も font-size も
+	   ページごとに違うのに、transition だけは8ファイル16宣言すべてが 0.2s。
+	   既に事実上の正典なので、これを抜けている場所へ配る。 */
+	--lr-t: 200ms;
+	/* 罫を1本引くときだけ。0.35秒未満だと400pxの線が閃光に見え、
+	   0.6秒超だと見出しを読み始めた後まで動いている。その間を採る。 */
+	--lr-t-draw: 500ms;
+	/* 面と色。ホバーもフォーカスも「利用者が既に動き終わった後」の応答なので、
+	   CSS 既定 ease の起筆の溜めは原理的に誤り。触れた瞬間に立ち上げる。 */
+	--lr-e: cubic-bezier(.1, .45, .15, 1);
+	/* 線を引くときだけ。遅い立ち上がりが起筆、長い減速が収筆。面には使わない。
+	   曲線が2本なのは「面は満ちる／線は引かれる」に対応する。3本目は作らない。 */
+	--lr-e-draw: cubic-bezier(.35, .02, .1, 1);
+}
+
+
+/* ------------------------------------------------------------------
+   G-1 白ベールの非対称を断ち、自分が足した二重掛けを撤回する
+   ------------------------------------------------------------------
+   既存の画像ホバーは transition が :hover の中にしか無く、
+   500ms かけて曇り 0ms で晴れる。主要6ページの施術メニュー画像すべて。
+   基底側に置き直して入りと戻りを揃える。
+
+   あわせて .lr-card:hover{opacity:.82} を撤回する。カードの .lr-cardlink は
+   同じ `#B000000148 li a` に含まれており、改修前から白ベールを持っていた。
+   私の指定はその上への二重掛けで、見出し帯（#705A2C 地に白15px）の対比を
+   6.59:1 → 4.40:1 に落として WCAG AA を割っていた。
+   ------------------------------------------------------------------ */
+#B000000054 li a, #B000000071 li a, #B000000124 li a, #B000000141 li a,
+#B000000148 li a, #B000000158 li a, #B000000397 li a,
+#B000000010 li a, #B000000033 li a, #B000000205 li a {
+	-webkit-transition: opacity var(--lr-t) var(--lr-e), background-color var(--lr-t) var(--lr-e);
+	transition: opacity var(--lr-t) var(--lr-e), background-color var(--lr-t) var(--lr-e);
+}
+/* 二重掛けの撤回。カードは既存のベールに任せる */
+.lr-card {
+	-webkit-transition: none;
+	transition: none;
+}
+.lr-card:hover {
+	opacity: 1;
+}
+
+
+/* ------------------------------------------------------------------
+   G-2 押下の返事 ― 押した瞬間に画面上で変わるものを作る
+   ------------------------------------------------------------------
+   jQuery Mobile が -webkit-tap-highlight-color を全域で殺し、
+   lr-common.css の :active は全て :link と同じ宣言に束ねられていた。
+   結果、SPでは固定CTAも金枠ボタンも、押しても画面が変わらない。
+   これは「動きが足りない」ではなく「返事が無い」欠落で、押し直し＝
+   二重送信の温床になる。
+
+   押下だけは時間を持たせない。指が触れている間に0.2秒の途中経過を
+   挟むのは、返事を速くするどころか鈍くする。
+   色はホバーの金より一段濃い本文色 #70592C まで沈める（白抜き 6.66:1）。
+   ------------------------------------------------------------------ */
+.lr-cta a.lr-cta-i:active,
+.lr-book-row a.lr-book-b:active,
+a.button-rink:active,
+#B000000311 input.lr-submit:active,
+.lr-submit:active {
+	background: #70592C;
+	color: #ffffff;
+	-webkit-transition: none;
+	transition: none;
+}
+.lr-card:active {
+	background: #EBE2D0;
+}
+
+
+/* ------------------------------------------------------------------
+   G-3 フォーカスを戻す
+   ------------------------------------------------------------------
+   cgiFolder/corestyle.css:31-34 の a:focus{outline:none} が
+   PC15ページ全アンカーに効いており、8,800〜88,000円の予約導線が
+   キーボードで辿れない。WCAG 2.4.7 の明確な失敗。
+
+   輪郭色に金 #BC9C52 は使えない。白地 2.62:1 / ベージュ地 2.25:1 で
+   非テキストの3:1（1.4.11）を満たさないため。本文色 #70592C なら
+   白地 6.62:1 / ベージュ地 5.70:1。私が lr-cardlink に書いた金2pxも
+   同じ理由で誤りだったので訂正する。
+   ------------------------------------------------------------------ */
+a:focus,
+button:focus,
+input:focus,
+textarea:focus,
+select:focus {
+	outline: 2px solid #70592C;
+	outline-offset: 2px;
+}
+/* マウス操作でリングを出さない環境では :focus-visible に譲る */
+a:focus:not(:focus-visible),
+button:focus:not(:focus-visible),
+input:focus:not(:focus-visible) {
+	outline: none;
+}
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+	outline: 2px solid #70592C;
+	outline-offset: 2px;
+}
+.lr-card a.lr-cardlink:focus {
+	outline: 2px solid #70592C;
+	outline-offset: -2px;
+}
+
+
+/* ------------------------------------------------------------------
+   G-5 ホバーの所要時間を 0.2s 一本に畳む
+   ------------------------------------------------------------------
+   同じ「色が変わるだけのホバー」に 0.2s / 0.3s / 0s の3通りがあった。
+   値そのものは 0.2s が正典なので、抜けている場所へ配る。
+   プロパティ名を明示して all をやめる（将来ホバーに1行足したときに
+   勝手に補間が始まるのを防ぐ）。
+   ------------------------------------------------------------------ */
+a.button-rink,
+a.button-rink2,
+#SF-navigation ul li a,
+.lr-cta a.lr-cta-i,
+.lr-book-row a.lr-book-b,
+.lr-submit,
+.lr-reset,
+.lr-choice,
+a.lr-tel,
+a.lr-headtel {
+	-webkit-transition: background-color var(--lr-t) var(--lr-e), color var(--lr-t) var(--lr-e), border-color var(--lr-t) var(--lr-e);
+	transition: background-color var(--lr-t) var(--lr-e), color var(--lr-t) var(--lr-e), border-color var(--lr-t) var(--lr-e);
+}
+
+
+/* G-7 アコーディオンの高さ 0.3s → 200ms
+   csLibrary.js:481 が要素へインラインで書くので、!important で殴らず
+   その1行を直した。サイトに残る最後の余分な数値。 */
+
+
+/* ------------------------------------------------------------------
+   追加①：着地の罫 ― .kome_line:target を1度だけ引く
+   ------------------------------------------------------------------
+   既製の出現演出は例外なく「スクロールしたら現れる」＝閲覧が引き金。
+   これは着地という一回きりの事実が引き金で、同じ画面を何度スクロールしても
+   二度と起きない。トップのブライダルバナー等から course_plan#bridal へ
+   直接着地したときにだけ、見出しを挟む金のヘアラインが外側の端から
+   見出しへ向かって引かれ、そのまま静止する。
+
+   足場も新設していない。.kome_line の :before/:after は left:0 / right:0 に
+   固定された幅40%の罫で、幾何そのものが既に「外側の端から見出しへ向かう」
+   向きを持っている。与えるのはその向きに時間だけ。
+   サイト全体で「引かれる」動きをここ1箇所に限定するので、
+   他所で見た所作の再生産にならない。
+   ------------------------------------------------------------------ */
+.kome_line:target:before,
+.kome_line:target:after {
+	-webkit-animation: lr-draw var(--lr-t-draw) var(--lr-e-draw) both;
+	animation: lr-draw var(--lr-t-draw) var(--lr-e-draw) both;
+}
+.kome_line:target:before { -webkit-transform-origin: left center; transform-origin: left center; }
+.kome_line:target:after  { -webkit-transform-origin: right center; transform-origin: right center; }
+@-webkit-keyframes lr-draw { from { -webkit-transform: scaleX(0); } to { -webkit-transform: scaleX(1); } }
+@keyframes lr-draw { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+
+
+/* ------------------------------------------------------------------
+   追加②：開閉の罫 ― アコーディオンが開いていることを、動かずに示す
+   ------------------------------------------------------------------
+   定型は「▼を180度回す」。回転は奥行きを匂わせるが、影も角丸も重なりも
+   持たないこの意匠は「奥行きを主張しない」という宣言なので、
+   装飾がZ軸を作るのは越権になる。
+   ::after の罫ならマークアップ差（テキストの▼ と <i>）を跨いで
+   how_to_choose の12箇所と trial の6箇所すべてに当たる。
+   transition は付けない＝アニメーションしない。版面は1pxも動かない。
+   「引く」動きを付けない判断そのものが、既製のアコーディオン演出との差になる。
+   ------------------------------------------------------------------ */
+.js-opcls-open .csOpenClose {
+	position: relative;
+}
+.js-opcls-open .csOpenClose:after {
+	content: '';
+	position: absolute;
+	left: 0;
+	right: 0;
+	bottom: -5px;
+	height: 1px;
+	background: #BC9C52;
+}
+
+
+/* ------------------------------------------------------------------
+   追加③：予約3ボタン ― 選ばれなかった枠が退く
+   ------------------------------------------------------------------
+   3つ並ぶ場所で迷いを短くする定石は「選んだものを目立たせる」で、
+   その実装は塗り・影・拡大のどれかになる。ここでやるのは逆。
+   新しい色も形も足さず、既にある2px金枠の濃度を下げるだけで成立する。
+   「輪郭が先にあり、ホバーで中身が満ちる」という .button-rink の
+   発想の裏返しで、このサイト以外から持ってこられない一手。
+   ------------------------------------------------------------------ */
+.lr-book-row:hover a.lr-book-b {
+	border-color: #E4D6B2;
+}
+.lr-book-row:hover a.lr-book-b:hover {
+	border-color: #BC9C52;
+}
+
+
+/* ------------------------------------------------------------------
+   動きを減らす設定への対応（サイト全体で0件だった）
+   0 ではなく .01ms にするのは、transitionend / animationend を待つ
+   jQuery Mobile 1.3.2 の内部処理を固まらせないため。
+   ------------------------------------------------------------------ */
+@media (prefers-reduced-motion: reduce) {
+	*,
+	*:before,
+	*:after {
+		-webkit-animation-duration: .01ms !important;
+		animation-duration: .01ms !important;
+		-webkit-animation-iteration-count: 1 !important;
+		animation-iteration-count: 1 !important;
+		-webkit-transition-duration: .01ms !important;
+		transition-duration: .01ms !important;
+		scroll-behavior: auto !important;
+	}
+}
+
+
+/* ------------------------------------------------------------------
+   回遊ブロック（店舗案内・スタッフ紹介に複製したもの）
+   ------------------------------------------------------------------
+   shopinfo とスタッフ6ページは、読み終えた人に次の行き先が無かった。
+   他6ページが持っている3枚組をここにも置く。
+   ただし生成側のモジュールCSS（#B000000148 等）はページ群ごとに別ファイルで、
+   複製先には存在しない。そこで見た目はここで自己完結させる。
+   寸法は index の3列と同じ 300px + 段間50px、地は #F3EDE2、
+   見出しの帯は #70592C（回遊札の色）。すべて店が既に持っている値。
+   ------------------------------------------------------------------ */
+.lr-nav3 {
+	clear: both;
+	background: #F3EDE2;
+	padding: 50px 0;
+	margin-top: 100px;
+	text-align: center;
+}
+.lr-nav3-h {
+	margin: 0 0 30px;
+	font-size: 24px;
+	font-weight: normal;
+	color: #70592C;
+}
+.lr-nav3-list {
+	list-style: none;
+	margin: 0 auto;
+	padding: 0;
+	width: 1000px;
+	font-size: 0;
+}
+.lr-nav3-list li {
+	display: inline-block;
+	width: 300px;
+	margin-right: 50px;
+	vertical-align: top;
+	text-align: left;
+	position: relative;
+}
+.lr-nav3-list li:last-child { margin-right: 0; }
+.lr-nav3-list img { display: block; width: 100%; }
+.lr-nav3-t {
+	display: block;
+	background: #70592C;
+	color: #ffffff;
+	font-family: 'Noto Sans JP', sans-serif;
+	font-size: 15px;
+	line-height: 40px;
+	padding: 0 15px;
+	box-sizing: border-box;
+}
+
+/* スマートフォンでは1列。版面幅にも収める */
+@media screen and (max-width: 640px) {
+	.lr-nav3 { padding: 30px 0; margin-top: 50px; }
+	.lr-nav3-list { width: auto; padding: 0 15px; }
+	.lr-nav3-list li { display: block; width: auto; margin: 0 0 20px; }
+	.lr-nav3-list li:last-child { margin-bottom: 0; }
 }

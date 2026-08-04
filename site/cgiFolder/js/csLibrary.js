@@ -478,7 +478,7 @@ function csOpenClose() {
       $(opclsObj).css({
         'min-height': 'inherit',
         'height': '0px',
-        'transition': 'height 0.3s ease 0s'
+        'transition': 'height 200ms cubic-bezier(.1,.45,.15,1) 0s'
       }).addClass('js-opcls-contents');
     }
   });
@@ -538,7 +538,7 @@ function csOpenClose2(modules) {
           'min-height': 'inherit',
           'height': '0px',
           'overflow': 'hidden',
-          'transition': 'height 0.3s ease 0s'
+          'transition': 'height 200ms cubic-bezier(.1,.45,.15,1) 0s'
         });
 
         // クリック処理
