@@ -509,3 +509,99 @@ img[width][height] {
 #B000000397 div.SF-block-normal[data-role="none"] img {
 	height: auto;
 }
+
+
+/* ------------------------------------------------------------------
+   予約フォームの選択肢（PC版）
+   ------------------------------------------------------------------
+   改修前、40個の radio/checkbox が id を7種しか持たず33個が重複していた。
+   選択肢の文字は素のテキストで label が無く、押しても入らない。
+   逆にグループ見出しに <label for> が付いていたため、見出しを押すと
+   先頭の選択肢（「新規予約」「10時」など）が黙って選ばれ、
+   本人の意図と違う値がそのままサロンへ送信されていた。
+
+   SP版には正しい実装（id連番＋label）が最初から入っていたので、
+   新しく設計せずそれをPC版へ移した。見出しは span に替えて for を外し、
+   fieldset に role="group" aria-labelledby を与えて読み上げの関連は残した。
+
+   当たり判定の高さ32pxは、この店の箱の高さ 50/40/30 のうち最小の30に
+   合わせた値（12px の字面＋上下10px）。44px は外から持ち込む数字なので採らない。
+   横の15pxは器の内側の余白と同じ家族。
+   ------------------------------------------------------------------ */
+.lr-choice {
+	display: inline-block;
+	margin-left: 5px;
+	padding: 10px 15px 10px 0;
+	vertical-align: middle;
+	cursor: pointer;
+}
+.lr-choice:hover {
+	color: #70592C;
+}
+
+
+/* ------------------------------------------------------------------
+   送信とリセット
+   ------------------------------------------------------------------
+   改修前、SP版では両者が 341×40.8px・同じ地色・同じ枠・同じ文字色で
+   7px間隔で縦に隣接していた。14項目を入力し終えた指が下に触れると
+   全消去され、取り消す手段は無い。PC版も横並びで幅だけが違う。
+
+   送信はこの店の「押せる」符号（2px の #BC9C52）をそのまま使う。
+   サイト内で 2px の金枠は11箇所すべてがボタンで、例外がない。
+   リセットは枠を持たせない。破壊的な操作を、押せる印と同じ形にしない。
+   文字リンクへ降格し、50px 離して、文言も「リセット」から
+   「入力内容をすべて消去」に変えて何が起きるかを先に伝える。
+   ------------------------------------------------------------------ */
+/* module_B000000311.css:87 の `#B000000311 input, select, textarea`（詳細度 1,0,1）が
+   4辺別色の疑似3Dベベル（#aaaa94 #dfdfd6 #dfdfd6 #aaaa94）を全 input に当てている。
+   影を使わないこの意匠と衝突するので、送信ボタンだけ (1,1,1) で上回らせて剥がす。 */
+#B000000311 input.lr-submit,
+.lr-submit,
+.lr-submit:link {
+	display: block;
+	width: 300px;
+	margin: 0 auto;
+	padding: 15px 0;
+	box-sizing: border-box;
+	background: transparent;
+	border: 2px solid #BC9C52;
+	border-radius: 0;
+	-webkit-appearance: none;
+	appearance: none;
+	color: #70592C;
+	font-family: 'Noto Serif JP', serif;
+	font-size: 16px;
+	line-height: 1;
+	letter-spacing: .08em;
+	cursor: pointer;
+	-webkit-transition: .2s;
+	transition: .2s;
+}
+.lr-submit:hover {
+	background: #BC9C52;
+	color: #ffffff;
+}
+
+.lr-resetwrap {
+	display: block;
+	margin-top: 50px;
+	text-align: center;
+}
+#B000000311 input.lr-reset,
+.lr-reset {
+	background: none;
+	border: 0;
+	-webkit-appearance: none;
+	appearance: none;
+	padding: 5px;
+	color: #7E6838;
+	font-family: 'Noto Sans JP', sans-serif;
+	font-size: 12px;
+	letter-spacing: .04em;
+	text-decoration: underline;
+	cursor: pointer;
+}
+.lr-reset:hover {
+	color: #70592C;
+}
