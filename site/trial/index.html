@@ -771,7 +771,7 @@ $(function() {
 <script type="text/javascript">
 <!--
 var req= ana.exec('../cgiFolder/analysis/admin/index.php','Louise Rever','D000000500','トライアル','G000000005','','','userId','0');
-if( req) document.write('<img src="' + req+ '" width="0" height="0">');
+if( req && req.indexOf('undefined') < 0) { var _b=new Image(); _b.src=req; }
 req= undefined;
 ana= undefined;
 //-->
@@ -790,5 +790,6 @@ element.style.cssText = "display:none;";}
 }}());
 //-->
 </script>
+<script src="../js/lr-reveal.js"></script>
 </body>
 </html>

@@ -1135,3 +1135,164 @@ a.lr-headtel {
 	.lr-nav3-list li { display: block; width: auto; margin: 0 0 20px; }
 	.lr-nav3-list li:last-child { margin-bottom: 0; }
 }
+
+
+/* ==================================================================
+   出現（js/lr-reveal.js と対）
+   ------------------------------------------------------------------
+   .lr-anim は JS だけが付ける。付かない限り以下は1つも効かないので、
+   JS が落ちた環境では罫は最初から引かれた状態で見えている。
+
+   動かすのは ::before / ::after の装飾罫だけ。本文・写真・価格の
+   不透明度には一切触れない。内容が消える経路を構造的に持たない。
+   ================================================================== */
+.lr-anim [data-lr="rule"]:before,
+.lr-anim [data-lr="rule"]:after {
+	-webkit-animation: lr-draw var(--lr-t-draw) var(--lr-e-draw) var(--lr-d, 0ms) both;
+	animation: lr-draw var(--lr-t-draw) var(--lr-e-draw) var(--lr-d, 0ms) both;
+}
+.lr-anim [data-lr="rule"]:before { -webkit-transform-origin: right center; transform-origin: right center; }
+.lr-anim [data-lr="rule"]:after  { -webkit-transform-origin: left center;  transform-origin: left center; }
+
+
+/* ==================================================================
+   視覚設計 ― 金は線であって面ではない
+   ------------------------------------------------------------------
+   1440pxで15ページを描画して数えた結果、古く見えている面は例外なく
+   「塗った面」だった。形でも寸法でも書体でもない。しかも塗りは、
+   この店が既に持っている符号（1px＝仕切る／2px＝押せる、11箇所で例外なし）の
+   どちらでもない第3の状態なので、意味を運べない。
+   塗りを剥ぎ、その面が担っていた仕事を1本の罫に引き継ぐ。
+   足す要素はゼロ。新しい色も級数も余白の数も導入しない。
+   ================================================================== */
+
+/* ------------------------------------------------------------------
+   ① ダマスクの壁紙を剥ぐ
+   タイル幅131pxは235とも1000とも約数を持たず、継ぎ目がバナーの縁と必ずずれる。
+   しかも本物のダマスクはこの店の施術室の壁として写真の中に陰影付きで写っており、
+   平タイルの複製をその真下に敷くと本物が見本帳に見える。
+   剥いだだけではバナー4枚が白い空中に散るので、上下を1pxの罫で締めて
+   「欄」にする。剥ぐことと引き継ぐことは同じ一手。
+   ------------------------------------------------------------------ */
+#B000000024 {
+	background-image: none;
+	background-color: #ffffff;
+	border-top: 1px solid #C4A764;
+	border-bottom: 1px solid #C4A764;
+}
+
+/* ------------------------------------------------------------------
+   ② 金のべた塗りを剥ぐ ― 帯・チップ・ピル・三角
+   金を面で塗った瞬間に品が消える。塗りが担っていた「ここが名前だ」は、
+   明朝と級数と、見出し幅の1本の罫が引き継ぐ。
+   ------------------------------------------------------------------ */
+/* コース札・悩み札・回遊札の見出し帯 */
+#SF-contents .newslistHeadlineStyle,
+#SF-contents ul.thumbnailList li .newslistHeadlineStyle {
+	background-color: transparent;
+	color: #70592C;
+	border-bottom: 1px solid #C4A764;
+	text-align: left;
+	padding-left: 0;
+	padding-right: 0;
+}
+.lr-nav3-t {
+	background: transparent;
+	color: #70592C;
+	border-bottom: 1px solid #C4A764;
+	padding-left: 0;
+	padding-right: 0;
+	font-family: 'Noto Serif JP', serif;
+	font-size: 16px;
+	line-height: 40px;
+}
+/* trial のラベルチップと角丸ピル */
+#SF-contents .box,
+#SF-contents .box_c {
+	background: transparent;
+	color: #7E6838;
+	border: 0;
+	border-radius: 0;
+	padding: 0;
+	font-family: 'Noto Sans JP', sans-serif;
+	font-size: 12px;
+	letter-spacing: .16em;
+}
+#SF-contents .box2 {
+	background: transparent;
+	color: #7E6838;
+	border: 0;
+	border-radius: 0;
+	padding: 0 0 0 .2em;
+	font-family: 'Noto Sans JP', sans-serif;
+	font-size: 12px;
+	letter-spacing: .16em;
+}
+/* 札の右下に貼り付いた塗り三角。押せることは 2px の枠が既に語っている */
+#SF-contents .c_box > a > img[src*="arrow"],
+#SF-contents .c_box2 > a > img[src*="arrow"] {
+	display: none;
+}
+
+/* ------------------------------------------------------------------
+   ③ 赤と桃を落とす
+   #FF7D7D はベージュ地で輝度比 2.1:1。最も読ませたい数字が版面で
+   最も読みにくい文字になっていた。しかも同じ色が割引価格・スタッフの
+   小見出し・入力必須の3つを兼ねていて、色が何も区別していない。
+   価格は既に付いている級数（1.3em / 1.5em）だけで立つ。
+   ------------------------------------------------------------------ */
+#SF-contents .trial,
+#SF-contents .price,
+#SF-startPage .trial,
+#SF-startPage .price {
+	color: #70592C;
+}
+.q_l { color: #70592C; }
+
+/* ------------------------------------------------------------------
+   ④ ページの終わりを1回にする
+   灰 #555 も黒 #222 も、この店が選んだ色ではなくテンプレートの既定値。
+   しかも最後の黒帯は中身が1文字も無い（白文字の © が白地に載っている）。
+   このサイトで最も出来のいい「ご予約・お問い合わせ」が、
+   人が「終わった」と判断した後ろに置かれている状態を解く。
+   ------------------------------------------------------------------ */
+#B000000031 {
+	background-color: #ffffff;
+}
+#B000000031 .t_l,
+#B000000031 .t_r,
+#B000000031 .t_r_tel,
+#B000000031 .t_l2,
+#B000000031 .t_r2 {
+	color: #70592C;
+}
+#ADDBGBOTTOM,
+#SF-footer {
+	background-color: #ffffff;
+	border-top: 1px solid #C4A764;
+}
+#SF-footer p,
+#ADDBGBOTTOM p {
+	color: #7E6838;
+	font-size: 12px;
+	letter-spacing: .08em;
+}
+
+/* ------------------------------------------------------------------
+   ⑤ 常駐する部品を店の語彙に戻す
+   PAGE TOP は全15ページ・全スクロール位置で出続けるので露出量が最大。
+   角丸と茶のべた塗りを外し、1pxの金枠に戻す。
+   ------------------------------------------------------------------ */
+#page-top a {
+	background-color: rgba(255, 255, 255, .92);
+	border: 1px solid #BC9C52;
+	border-radius: 0;
+	color: #70592C;
+	font-family: 'Noto Sans JP', sans-serif;
+	font-size: 11px;
+	letter-spacing: .12em;
+}
+#page-top a:hover {
+	background-color: #BC9C52;
+	color: #ffffff;
+}
