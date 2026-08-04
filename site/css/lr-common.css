@@ -1140,12 +1140,16 @@ a.lr-headtel {
 /* ==================================================================
    出現（js/lr-reveal.js と対）
    ------------------------------------------------------------------
-   .lr-anim は JS だけが付ける。付かない限り以下は1つも効かないので、
-   JS が落ちた環境では罫は最初から引かれた状態で見えている。
-
-   動かすのは ::before / ::after の装飾罫だけ。本文・写真・価格の
-   不透明度には一切触れない。内容が消える経路を構造的に持たない。
+   .lr-anim は JS だけが付ける。付かない限り以下は1つも効かない。
+   animation-fill-mode: both なので走り終えれば必ず不透明で止まる。
+   「透明のまま残る」状態を作れない構造にしてある。
    ================================================================== */
+@-webkit-keyframes lr-fill { from { opacity: 0; } to { opacity: 1; } }
+@keyframes lr-fill { from { opacity: 0; } to { opacity: 1; } }
+
+/* 線は見出しから外へ向かって引かれる。.kome_line の :before/:after は
+   left:0 / right:0 に固定された幅40%の罫で、幾何が既に向きを持っている。
+   与えるのはその向きに時間だけ。 */
 .lr-anim [data-lr="rule"]:before,
 .lr-anim [data-lr="rule"]:after {
 	-webkit-animation: lr-draw var(--lr-t-draw) var(--lr-e-draw) var(--lr-d, 0ms) both;
@@ -1153,6 +1157,12 @@ a.lr-headtel {
 }
 .lr-anim [data-lr="rule"]:before { -webkit-transform-origin: right center; transform-origin: right center; }
 .lr-anim [data-lr="rule"]:after  { -webkit-transform-origin: left center;  transform-origin: left center; }
+
+/* 面は位置も大きさも変えない。満ちるだけ。 */
+.lr-anim [data-lr="fill"] {
+	-webkit-animation: lr-fill var(--lr-t-draw) var(--lr-e) var(--lr-d, 0ms) both;
+	animation: lr-fill var(--lr-t-draw) var(--lr-e) var(--lr-d, 0ms) both;
+}
 
 
 /* ==================================================================
@@ -1295,4 +1305,100 @@ a.lr-headtel {
 #page-top a:hover {
 	background-color: #BC9C52;
 	color: #ffffff;
+}
+
+
+/* ------------------------------------------------------------------
+   ⑥ 料金表を三本罫にする
+   ------------------------------------------------------------------
+   和文の表組は縦罫を引かない。天地の表罫で範囲を決め、行は中罫で分け、
+   列は位置だけで揃える。これは流行ではなく組版の作法で、しかも
+   SP版の同じ表は既に行罫を持っている。PCだけが四方の囲みで構造を
+   失っていた。だからこれは「戻す」であって「作る」ではない。
+   ------------------------------------------------------------------ */
+#SF-contents .course table {
+	border-left: 0;
+	border-right: 0;
+	padding-left: 0;
+	padding-right: 0;
+}
+
+/* ------------------------------------------------------------------
+   ⑦ 下層7ページの扉写真を版面に戻して額装する
+   ------------------------------------------------------------------
+   全幅の裁ち落としが8箇所あり、8箇所あるから効いていない。
+   この店の造形語彙は最初から額装で通っている ―― 料金表は1pxの枠の中、
+   予約ボタンは枠の中、手描きの駐車場地図も枠の中。写真だけが
+   その語彙の外にあった。裁ち落としは表紙（トップのスライダー）1枚に絞る。
+   ------------------------------------------------------------------ */
+#B000000035, #B000000056, #B000000120, #B000000137,
+#B000000145, #B000000155, #B000000165 {
+	width: 1000px;
+	max-width: 1000px;
+	margin-left: auto;
+	margin-right: auto;
+	position: static;
+	padding-top: 30px;
+}
+#B000000035 img, #B000000056 img, #B000000120 img, #B000000137 img,
+#B000000145 img, #B000000155 img, #B000000165 img {
+	display: block;
+	width: 100%;
+	height: auto;
+	border: 1px solid #C4A764;
+	box-sizing: border-box;
+}
+
+/* ------------------------------------------------------------------
+   ⑧ 本文の行頭を決める
+   ------------------------------------------------------------------
+   5行の日本語の段落が中央揃えで、行頭が毎行ずれて菱形に散っていた。
+   SP版は同じ原稿を左揃えで組んでいるので、左揃えはこの店にとって
+   外来ではない。箱の中心軸は残したまま、行頭だけを決める。
+   ------------------------------------------------------------------ */
+#SF-contents .gothic.sp_left,
+#SF-contents .gothic.lr-lead,
+#SF-startPage .gothic.lr-lead {
+	text-align: left;
+	max-width: 700px;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+/* ------------------------------------------------------------------
+   ⑨ SPヘッダーを店の語彙に戻す
+   ------------------------------------------------------------------
+   jQuery Mobile 1.3.2 の既定意匠（角丸1em・box-shadow・グラデーション・
+   text-shadow・円形アイコン）が、SP全15ページの最初に目に入る。
+   同じ画面の下端では、この店の語彙で作った3分割CTAバー
+   （#D9C79D地・明朝・縦罫1本・角丸なし）が既に正解を出している。
+   上端をそれに合わせる。新しいハンバーガーもドロワーも設計しない。
+   ------------------------------------------------------------------ */
+#SF-startPage .ui-header,
+#SF-startPage .ui-header .ui-btn,
+#SF-startPage .ui-footer .ui-btn {
+	background-image: none;
+	text-shadow: none;
+	box-shadow: none;
+	-webkit-box-shadow: none;
+	border-radius: 0;
+	-webkit-border-radius: 0;
+}
+#SF-startPage .ui-header .ui-btn-inner {
+	border-radius: 0;
+	-webkit-border-radius: 0;
+	border-top: 0;
+}
+#SF-startPage .ui-header .ui-btn-up-a,
+#SF-startPage .ui-header .ui-btn-hover-a {
+	border: 1px solid #BC9C52;
+	background: transparent;
+	color: #5A4823;
+}
+#SF-startPage .ui-header .ui-title {
+	font-family: 'Noto Serif JP', serif;
+	font-weight: 400;
+	letter-spacing: .08em;
+	text-shadow: none;
+	color: #5A4823;
 }
