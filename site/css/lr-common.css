@@ -51,22 +51,33 @@
    定休日は淡いベージュの円で示す。枠線のない表では、面で塗るより
    円のほうが破綻しない。
    ------------------------------------------------------------------ */
+/* 器の枠を外す。#B000000030 は元々ブログのiframeを収めるための箱で、
+   1px #cccccc という、この店の5色にない灰色の枠を持っていた。
+   カレンダーに箱は要らない ―― 曜日見出しの下の金のヘアラインが
+   既に面をまとめている。枠を外すと締めつけが消え、
+   「1本の罫で仕切る」というこの店の作法にも戻る。 */
+#B000000030 {
+	border: 0;
+	padding: 0;
+}
 .lr-schedule {
 	display: -webkit-box;
 	display: -ms-flexbox;
 	display: flex;
 	-ms-flex-wrap: wrap;
 	flex-wrap: wrap;
-	margin: 0 -15px 15px;
+	/* 負のマージンで器から溢れていたのをやめる */
+	margin: 0 0 20px;
 }
 .lr-cal-wrap {
 	-webkit-box-flex: 1;
-	-ms-flex: 1 1 200px;
-	flex: 1 1 200px;
+	-ms-flex: 1 1 190px;
+	flex: 1 1 190px;
 	box-sizing: border-box;
-	padding: 0 15px;
+	padding-right: 30px;
 	margin-bottom: 20px;
 }
+.lr-cal-wrap:last-child { padding-right: 0; }
 
 /* 1カラムに落ちたとき（スマートフォン）に横へ間延びしないよう幅を締め、
    中央に置く。PC は左カラム 480px を2ヶ月で分けるので上限には当たらない。 */
@@ -135,7 +146,7 @@
 }
 
 .lr-schedule-legend {
-	margin: 0 0 5px;
+	margin: 0 0 15px;
 	font-family: 'Noto Sans JP', sans-serif;
 	font-size: 12px;
 	letter-spacing: .04em;
@@ -154,7 +165,7 @@
 	margin: 0;
 	font-family: 'Noto Sans JP', sans-serif;
 	font-size: 12px;
-	line-height: 1.8;
+	line-height: 1.9;
 	color: #7E6838;
 }
 
@@ -1202,8 +1213,9 @@ a.lr-headtel {
 #B000000024 {
 	background-image: none;
 	background-color: #ffffff;
-	border-top: 1px solid #C4A764;
-	border-bottom: 1px solid #C4A764;
+	/* 罫は中の ul が持つ。器にも引くと二重線になる */
+	border: 0;
+	padding: 0;
 }
 
 /* ------------------------------------------------------------------
@@ -1216,6 +1228,11 @@ a.lr-headtel {
    金のヘアラインで英字副題を挟む装置（.kome_line）を既に伴っている。
    そこへ下罫を足すと金の線が二重になり、中央揃えを崩すと
    この店の署名そのものが壊れる。触らない。 */
+/* 写真を伴う札の見出し。how_to_choose の悩み札12枚は h4 で組まれているので、
+   タグではなく「同じ器に写真があるか」で見分ける。
+   ページ見出しの h4 は写真を持たないので巻き込まれない。
+   :has() 非対応の環境では、この行が無視されて従来の見え方に戻るだけで壊れない。 */
+#SF-contents li.SF-clearfix:has(> .thumbnail) h4.newslistHeadlineStyle,
 #SF-contents ul.thumbnailList li h3.newslistHeadlineStyle,
 #SF-contents h3.newslistHeadlineStyle {
 	background-color: transparent;
@@ -1424,21 +1441,23 @@ a.lr-headtel {
 
 
 /* ------------------------------------------------------------------
-   ⑩ トップの4つの入口 ― 焼き込み画像をやめる
+   ⑩ トップの構成 ― 写真 → 店の言葉 → 4つの入口
    ------------------------------------------------------------------
-   240×120 の等倍JPEGに文字を焼き込んでいたため、2倍解像度の画面では
-   この4枚だけが滲み、すぐ隣の生テキストが鋭いぶん「古い」と読まれていた。
-   しかも4枚は書体も写真の切り方も文字位置もバラバラで、
-   関連のない広告を並べたように見えていた。
+   最初にやった案（240×120の焼き込み画像を、金枠の箱4つに置換）は失敗だった。
+   塗りを剥ぐことばかり考えて、代わりに置いたものが空虚になった。
+   ・箱4つの横並びは、どのサイトにもある既製の型そのもの
+   ・写真の切れ目に箱が食い込み、意図ではなく事故に見える
+   ・箱→空白200px→言葉→空白300px という間は「間」ではなく未完成
 
-   写真に差し替えようとしたが、コラーゲンライトとカウンセリング以外に
-   同じ被写体の清潔な素材が無い。半分だけ写真にすると、いま直そうと
-   している不揃いを別の形で作り直すことになるので採らない。
-
-   代わりに、この店が既に11箇所で使っている符号「2px の金枠＝押せる」で
-   4つを揃える。ページ末尾の予約ブロックと同じ語彙なので、
-   入口と出口が同じ顔になる。文字は生テキストなので鋭く、
-   サロンが自分で書き換えられる。
+   組み直す。
+   ・順番を「写真 → 店の言葉 → 入口」にする。写真の直後に店の言葉が来るのが
+     いちばん素直で、入口はその後ろで用が足りる。
+   ・入口は箱を4つ置くのをやめ、1本の帯を縦のヘアラインで割る。
+     この店の造形は「金の細い線で面を仕切る」であって「枠で囲む」ではない。
+     SP下端のCTAバー（#D9C79D地・明朝・縦罫1本）が既に同じ形で成立している。
+   ・押せることは、ホバーで下の罫が 1px→2px に太るだけで示す。
+     この店では 1px＝仕切る／2px＝押せる が11箇所で例外なく成立しているので、
+     太さが変わること自体が「押せる」の合図になる。新しい色も面も足さない。
    ------------------------------------------------------------------ */
 #B000000024 ul.lr-tiles,
 .lr-tiles {
@@ -1450,10 +1469,10 @@ a.lr-headtel {
 	display: -webkit-box;
 	display: -ms-flexbox;
 	display: flex;
+	border-top: 1px solid #C4A764;
+	border-bottom: 1px solid #C4A764;
 	font-size: 0;
 }
-/* ページ内 <style> の #B000000024 ul li（旧バナー用の float と固定幅）が
-   後ろに置かれているので、ID を含めた同等以上の詳細度で上書きする。 */
 #B000000024 ul.lr-tiles > li,
 .lr-tiles > li {
 	-webkit-box-flex: 1;
@@ -1461,28 +1480,45 @@ a.lr-headtel {
 	flex: 1 1 25%;
 	width: auto;
 	float: none;
-	margin: 0 20px 0 0;
+	margin: 0;
 	padding: 0;
 	list-style: none;
+	border-left: 1px solid #E4D6B2;
 }
-#B000000024 ul.lr-tiles > li:last-child,
-.lr-tiles > li:last-child { margin-right: 0; }
+#B000000024 ul.lr-tiles > li:first-child,
+.lr-tiles > li:first-child { border-left: 0; }
 
 .lr-tiles a.lr-tile,
 .lr-tiles a.lr-tile:link,
 .lr-tiles a.lr-tile:visited {
 	display: block;
-	padding: 25px 10px 20px;
+	position: relative;
+	padding: 26px 10px 30px;
 	box-sizing: border-box;
-	border: 2px solid #BC9C52;
+	border: 0;
 	color: #70592C;
 	text-align: center;
 	text-decoration: none;
-	-webkit-transition: background-color var(--lr-t) var(--lr-e), color var(--lr-t) var(--lr-e);
-	transition: background-color var(--lr-t) var(--lr-e), color var(--lr-t) var(--lr-e);
 }
-.lr-tiles a.lr-tile:hover { background: #BC9C52; color: #ffffff; }
-.lr-tiles a.lr-tile:active { background: #70592C; color: #ffffff; -webkit-transition: none; transition: none; }
+/* 平常時は文字とヘアラインの仕切りだけ。すぐ上のグローバルナビと同じ作法で、
+   ここが押せることは文脈が示している。ホバーで初めて 2px の線が引かれる。
+   1px＝仕切る／2px＝押せる、というこの店の符号を、そのまま出し入れに使う。 */
+.lr-tiles a.lr-tile:after {
+	content: '';
+	position: absolute;
+	left: 32px;
+	right: 32px;
+	bottom: 18px;
+	height: 2px;
+	background: #BC9C52;
+	-webkit-transform: scaleX(0);
+	transform: scaleX(0);
+	-webkit-transition: -webkit-transform var(--lr-t) var(--lr-e);
+	transition: transform var(--lr-t) var(--lr-e);
+}
+.lr-tiles a.lr-tile:hover:after,
+.lr-tiles a.lr-tile:focus:after { -webkit-transform: scaleX(1); transform: scaleX(1); }
+.lr-tiles a.lr-tile:active:after { background: #70592C; -webkit-transition: none; transition: none; }
 .lr-tile-t {
 	display: block;
 	font-family: 'Noto Serif JP', serif;
@@ -1492,78 +1528,252 @@ a.lr-headtel {
 }
 .lr-tile-s {
 	display: block;
-	margin-top: 10px;
+	margin: 8px 0 0;
 	font-family: 'Noto Sans JP', sans-serif;
 	font-size: 12px;
 	letter-spacing: .1em;
 	color: #7E6838;
 }
-.lr-tiles a.lr-tile:hover .lr-tile-s { color: #ffffff; }
 
 /* ------------------------------------------------------------------
    ⑪ 店の言葉を、画像の中から版面へ出す
-   ------------------------------------------------------------------
    「輝く女性のための サロンです／内側から輝く美のお手伝いをいたします」は
    この店が自分で書いた言葉なのに、1000×230 の写真に白抜きで焼き込まれ、
    SPでは読めない大きさに潰れていた。宝を画像の中に閉じ込めていた状態。
    新しいコピーは1文字も書かず、そのまま生テキストで置き直す。
-   ヒーロー写真の直後に来るので、読者は最初のスクロールで店の言葉に出会う。
+   写真の直後に置くので、読者は最初のスクロールで店の言葉に出会う。
    ------------------------------------------------------------------ */
 .lr-words {
 	width: 1000px;
 	margin: 0 auto;
-	padding: 100px 0 50px;
+	padding: 70px 0 50px;
 	text-align: center;
 }
 .lr-words-main {
 	margin: 0;
-	font-size: 28px;
+	font-size: 26px;
 	line-height: 1.6;
-	letter-spacing: .06em;
+	letter-spacing: .1em;
 	color: #70592C;
 }
 .lr-words-sub {
-	margin: 20px 0 0;
+	margin: 15px 0 0;
 	font-family: 'Noto Sans JP', sans-serif;
-	font-size: 14px;
+	font-size: 13px;
 	line-height: 1.7;
-	letter-spacing: .08em;
+	letter-spacing: .1em;
 	color: #7E6838;
 }
-.lr-words-link { margin: 30px 0 0; }
+/* 枠で囲まない。金の細い罫を1本引くだけの、静かな行き先表示 */
+.lr-words-link { margin: 25px 0 0; }
 .lr-words a.lr-words-a,
 .lr-words a.lr-words-a:link,
 .lr-words a.lr-words-a:visited {
 	display: inline-block;
-	padding: 15px 50px;
-	border: 1px solid #C4A764;
+	padding: 0 0 6px;
+	border: 0;
+	border-bottom: 1px solid #C4A764;
 	color: #70592C;
 	font-family: 'Noto Serif JP', serif;
 	font-size: 15px;
-	letter-spacing: .08em;
+	letter-spacing: .1em;
 	text-decoration: none;
-	-webkit-transition: background-color var(--lr-t) var(--lr-e), color var(--lr-t) var(--lr-e);
-	transition: background-color var(--lr-t) var(--lr-e), color var(--lr-t) var(--lr-e);
+	-webkit-transition: border-color var(--lr-t) var(--lr-e);
+	transition: border-color var(--lr-t) var(--lr-e);
 }
-.lr-words a.lr-words-a:hover { background: #C4A764; color: #ffffff; }
+.lr-words a.lr-words-a:hover { background: transparent; color: #70592C; border-bottom-color: #70592C; }
 .lr-words-note {
-	display: block;
-	margin-top: 5px;
+	display: inline;
+	margin: 0 0 0 12px;
 	font-family: 'Noto Sans JP', sans-serif;
 	font-size: 11px;
 	letter-spacing: .12em;
 	color: #7E6838;
 }
-.lr-words a.lr-words-a:hover .lr-words-note { color: #ffffff; }
 
 /* スマートフォン */
 @media screen and (max-width: 640px) {
 	#B000000024 ul.lr-tiles,
-	.lr-tiles { width: 100%; max-width: 100%; padding: 0 15px; -ms-flex-wrap: wrap; flex-wrap: wrap; }
+	.lr-tiles { width: 100%; max-width: 100%; padding: 0; -ms-flex-wrap: wrap; flex-wrap: wrap; }
+	/* li が border-left を持つので border-box にしないと 50% を超えて1列に落ちる */
 	#B000000024 ul.lr-tiles > li,
-	.lr-tiles > li { -ms-flex: 1 1 calc(50% - 10px); flex: 1 1 calc(50% - 10px); margin: 0 20px 20px 0; }
-	#B000000024 ul.lr-tiles > li:nth-child(2n),
-	.lr-tiles > li:nth-child(2n) { margin-right: 0; }
-	.lr-words { width: auto; padding: 50px 15px 30px; }
-	.lr-words-main { font-size: 20px; }
+	.lr-tiles > li { -ms-flex: 1 1 50%; flex: 1 1 50%; max-width: 50%; margin: 0; box-sizing: border-box; }
+	#B000000024 ul.lr-tiles > li:nth-child(2n+1),
+	.lr-tiles > li:nth-child(2n+1) { border-left: 0; }
+	#B000000024 ul.lr-tiles > li:nth-child(n+3),
+	.lr-tiles > li:nth-child(n+3) { border-top: 1px solid #E4D6B2; }
+	.lr-tiles a.lr-tile { padding: 20px 5px 24px; }
+	.lr-tile-t { font-size: 14px; }
+	.lr-tile-s { font-size: 11px; margin: 6px 0 0; }
+	.lr-tiles a.lr-tile:after { left: 22px; right: 22px; bottom: 13px; }
+	.lr-words { width: auto; padding: 45px 15px 35px; }
+	/* 「サロンで／す。」と2文字だけ落ちるので、級数と字送りを詰めて1行に収める */
+	.lr-words-main { font-size: 19px; letter-spacing: .04em; }
+	.lr-words-sub { font-size: 12px; letter-spacing: .06em; }
+	.lr-words a.lr-words-a { font-size: 14px; letter-spacing: .06em; }
+	.lr-words-note { display: block; margin: 6px 0 0; }
 }
+
+
+/* ------------------------------------------------------------------
+   ⑫ trial の「ご利用の流れ」の帯
+   ------------------------------------------------------------------
+   #E6E6DB という灰緑の面が6箇所に敷かれている。この店の5色
+   （#D9C79D / #C4A764 / #BC9C52 / #70592C / #F3EDE2）のどれでもない色で、
+   trial にしか存在しない。塗りをやめ、上下のヘアラインだけにする。
+   アコーディオンの見出しなので、面で囲うより線で挟むほうが
+   「開くと下に続く」ことが読める。
+   ------------------------------------------------------------------ */
+/* 対象は trial のアコーディオン見出しだけ。目印は中の .csOpenClose。
+   INSTAGRAM / LINE@ / 当店の施術について などの h2 は、器がすでに
+   下罫を1本持っているので、ここに上下罫を足すと1つの見出しに3本の線が並ぶ。
+   :has() 非対応の環境では灰緑の帯が残るだけで、壊れない。 */
+#SF-contents h2.headlineStyle:has(.csOpenClose) {
+	background-color: transparent;
+	border-top: 1px solid #C4A764;
+	border-bottom: 1px solid #C4A764;
+	color: #70592C;
+}
+
+/* ------------------------------------------------------------------
+   ⑬ 扉写真の扱いを1つに戻す
+   ------------------------------------------------------------------
+   下層7ページだけ版面1000pxに額装し、トップだけ全幅にしていたが、
+   ページを行き来すると「2種類のサイト」に見える。
+   1600×400 という素材は額装しても迫力が出ず、差が意図に見えない。
+   全ページ同じ扱い（全幅）に統一し、トップは素材の高さ（1600×700）で
+   自然に大きくなる、という差だけを残す。
+   ------------------------------------------------------------------ */
+#B000000035, #B000000056, #B000000120, #B000000137,
+#B000000145, #B000000155, #B000000165 {
+	width: 100vw;
+	max-width: 100vw;
+	margin-left: calc(50% - 50vw);
+	margin-right: calc(50% - 50vw);
+	position: relative;
+	padding-top: 0;
+}
+#B000000035 img, #B000000056 img, #B000000120 img, #B000000137 img,
+#B000000145 img, #B000000155 img, #B000000165 img {
+	border: 0;
+}
+
+
+/* ------------------------------------------------------------------
+   ⑭ INSTAGRAM / LINE@ ― 焼き込み画像をやめる
+   ------------------------------------------------------------------
+   500×150 の等倍JPEGに文字も枠も焼き込まれていた。
+   ・枠が画像の中に描かれていて（#D6C99F）、見出しの罫と重なって線が増えていた
+   ・Retina で文字が滲む
+   ・そして Instagram のアカウント名が @louise.rever_waayama と綴りを誤っており、
+     画像を見て手入力した人は辿り着けなかった（リンク自体は正しい）
+   丸写真とQRコードだけを元画像から切り出し、文字は生テキストに戻す。
+   これで綴りも直り、鋭くなり、サロンが自分で書き換えられる。
+   線は見出しの下の1本だけになる。
+   ------------------------------------------------------------------ */
+.lr-sns,
+a.lr-sns:link,
+a.lr-sns:visited {
+	display: -webkit-box;
+	display: -ms-flexbox;
+	display: flex;
+	-webkit-box-align: center;
+	-ms-flex-align: center;
+	align-items: center;
+	padding: 20px 0 30px;
+	color: #70592C;
+	text-decoration: none;
+}
+.lr-sns-ph {
+	-ms-flex: 0 0 auto;
+	flex: 0 0 auto;
+	width: 130px;
+	height: auto;
+	margin-right: 30px;
+	border-radius: 50%;
+}
+.lr-sns-qr {
+	-ms-flex: 0 0 auto;
+	flex: 0 0 auto;
+	width: 120px;
+	height: auto;
+	margin-right: 30px;
+}
+.lr-sns-body { display: block; }
+.lr-sns-id {
+	display: block;
+	font-family: 'Noto Serif JP', serif;
+	font-size: 18px;
+	letter-spacing: .04em;
+	line-height: 1.4;
+}
+.lr-sns-txt {
+	display: block;
+	margin-top: 12px;
+	font-family: 'Noto Sans JP', sans-serif;
+	font-size: 12px;
+	line-height: 1.9;
+	letter-spacing: .02em;
+	color: #7E6838;
+}
+a.lr-sns:hover .lr-sns-id { color: #BC9C52; }
+
+@media screen and (max-width: 640px) {
+	.lr-sns { padding: 15px; }
+	.lr-sns-ph { width: 90px; margin-right: 20px; }
+	.lr-sns-qr { width: 90px; margin-right: 20px; }
+	.lr-sns-id { font-size: 15px; }
+	.lr-sns-txt { font-size: 11px; margin-top: 8px; }
+}
+
+
+/* ------------------------------------------------------------------
+   ⑮ トップ最終行を版面に戻す
+   ------------------------------------------------------------------
+   index.html:146-157 の
+     #B000000031 { margin-left: calc(50% - 50vw); padding-left: 42vw }
+     #B000000032 { margin-right: calc(50% - 50vw); padding-right: 260px }
+   により、サイト全体が 1000px 固定で組まれているのに、この最終行だけが
+   窓の大きさに追従していた。実測すると 1440px 幅で
+   左ブロックは -250px から始まり（padding-left 604.8px で中身を押し戻し）、
+   地図は 1430px まで飛び出す。ウィンドウを広げるほど住所が右へ逃げ、
+   地図の右にはどの幅でも余りが残る。トップの締めが幅ごとに違う顔になっていた。
+
+   #SF-row3 は col1:500px + col2:500px = 1000px と既に宣言済みなので、
+   vw の指定を捨てるだけで版面に戻る。新しい寸法は足さない。
+   ------------------------------------------------------------------ */
+#B000000031,
+#B000000032 {
+	position: static;
+	width: auto;
+	max-width: none;
+	margin-left: 0;
+	margin-right: 0;
+	padding-left: 0;
+	padding-right: 0;
+}
+/* 左の連絡先は、右の地図と天を揃えて置く */
+#B000000031 {
+	padding-top: 10px;
+	padding-right: 50px;
+	box-sizing: border-box;
+}
+#B000000031 table { width: 100%; }
+#B000000031 .t_l { width: 90px; white-space: nowrap; }
+/* 地図は列の幅いっぱいに。高さは連絡先の分量に合わせて詰める */
+#B000000032 iframe {
+	display: block;
+	width: 100%;
+	height: 360px;
+	border: 0;
+}
+
+/* 連絡先ブロックのロゴ。地を #555 から白へ戻したとき、中の logo2.png が
+   白抜き版のままで見えなくなっていた。明度をそのまま金（#BC9C52）の濃淡へ
+   写した logo2_gold.png に差し替え、天の余りも詰める。 */
+#B000000031 h4.newslistHeadlineStyle {
+	margin: 0 0 25px;
+	padding: 0;
+	text-align: left;
+}
+#B000000031 h4.newslistHeadlineStyle img { display: block; }
