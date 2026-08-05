@@ -332,6 +332,21 @@ a.lr-tel:hover {
 	line-height: 1.4;
 	color: #70592C;
 }
+.lr-book-h > span,
+.kome_line > span {
+	position: relative;
+	z-index: 1;
+	padding: 0 30px;
+	background: #ffffff;
+}
+/* ベージュ地の節では、伏せる色も地に合わせる */
+#B000000131 .kome_line > span,
+#B000000132 .kome_line > span,
+#B000000200 .kome_line > span,
+#B000000377 .kome_line > span,
+.lr-nav3 .kome_line > span {
+	background: #F3EDE2;
+}
 .lr-book-h:before,
 .lr-book-h:after {
 	content: '';
@@ -1197,8 +1212,12 @@ a.lr-headtel {
    明朝と級数と、見出し幅の1本の罫が引き継ぐ。
    ------------------------------------------------------------------ */
 /* コース札・悩み札・回遊札の見出し帯 */
-#SF-contents .newslistHeadlineStyle,
-#SF-contents ul.thumbnailList li .newslistHeadlineStyle {
+/* 対象は h3 ＝ 札の見出しだけ。h4 はページ見出し／節見出しで、
+   金のヘアラインで英字副題を挟む装置（.kome_line）を既に伴っている。
+   そこへ下罫を足すと金の線が二重になり、中央揃えを崩すと
+   この店の署名そのものが壊れる。触らない。 */
+#SF-contents ul.thumbnailList li h3.newslistHeadlineStyle,
+#SF-contents h3.newslistHeadlineStyle {
 	background-color: transparent;
 	color: #70592C;
 	border-bottom: 1px solid #C4A764;
@@ -1401,4 +1420,150 @@ a.lr-headtel {
 	letter-spacing: .08em;
 	text-shadow: none;
 	color: #5A4823;
+}
+
+
+/* ------------------------------------------------------------------
+   ⑩ トップの4つの入口 ― 焼き込み画像をやめる
+   ------------------------------------------------------------------
+   240×120 の等倍JPEGに文字を焼き込んでいたため、2倍解像度の画面では
+   この4枚だけが滲み、すぐ隣の生テキストが鋭いぶん「古い」と読まれていた。
+   しかも4枚は書体も写真の切り方も文字位置もバラバラで、
+   関連のない広告を並べたように見えていた。
+
+   写真に差し替えようとしたが、コラーゲンライトとカウンセリング以外に
+   同じ被写体の清潔な素材が無い。半分だけ写真にすると、いま直そうと
+   している不揃いを別の形で作り直すことになるので採らない。
+
+   代わりに、この店が既に11箇所で使っている符号「2px の金枠＝押せる」で
+   4つを揃える。ページ末尾の予約ブロックと同じ語彙なので、
+   入口と出口が同じ顔になる。文字は生テキストなので鋭く、
+   サロンが自分で書き換えられる。
+   ------------------------------------------------------------------ */
+#B000000024 ul.lr-tiles,
+.lr-tiles {
+	list-style: none;
+	margin: 0 auto;
+	padding: 0;
+	width: 1000px;
+	box-sizing: border-box;
+	display: -webkit-box;
+	display: -ms-flexbox;
+	display: flex;
+	font-size: 0;
+}
+/* ページ内 <style> の #B000000024 ul li（旧バナー用の float と固定幅）が
+   後ろに置かれているので、ID を含めた同等以上の詳細度で上書きする。 */
+#B000000024 ul.lr-tiles > li,
+.lr-tiles > li {
+	-webkit-box-flex: 1;
+	-ms-flex: 1 1 25%;
+	flex: 1 1 25%;
+	width: auto;
+	float: none;
+	margin: 0 20px 0 0;
+	padding: 0;
+	list-style: none;
+}
+#B000000024 ul.lr-tiles > li:last-child,
+.lr-tiles > li:last-child { margin-right: 0; }
+
+.lr-tiles a.lr-tile,
+.lr-tiles a.lr-tile:link,
+.lr-tiles a.lr-tile:visited {
+	display: block;
+	padding: 25px 10px 20px;
+	box-sizing: border-box;
+	border: 2px solid #BC9C52;
+	color: #70592C;
+	text-align: center;
+	text-decoration: none;
+	-webkit-transition: background-color var(--lr-t) var(--lr-e), color var(--lr-t) var(--lr-e);
+	transition: background-color var(--lr-t) var(--lr-e), color var(--lr-t) var(--lr-e);
+}
+.lr-tiles a.lr-tile:hover { background: #BC9C52; color: #ffffff; }
+.lr-tiles a.lr-tile:active { background: #70592C; color: #ffffff; -webkit-transition: none; transition: none; }
+.lr-tile-t {
+	display: block;
+	font-family: 'Noto Serif JP', serif;
+	font-size: 16px;
+	line-height: 1.4;
+	letter-spacing: .06em;
+}
+.lr-tile-s {
+	display: block;
+	margin-top: 10px;
+	font-family: 'Noto Sans JP', sans-serif;
+	font-size: 12px;
+	letter-spacing: .1em;
+	color: #7E6838;
+}
+.lr-tiles a.lr-tile:hover .lr-tile-s { color: #ffffff; }
+
+/* ------------------------------------------------------------------
+   ⑪ 店の言葉を、画像の中から版面へ出す
+   ------------------------------------------------------------------
+   「輝く女性のための サロンです／内側から輝く美のお手伝いをいたします」は
+   この店が自分で書いた言葉なのに、1000×230 の写真に白抜きで焼き込まれ、
+   SPでは読めない大きさに潰れていた。宝を画像の中に閉じ込めていた状態。
+   新しいコピーは1文字も書かず、そのまま生テキストで置き直す。
+   ヒーロー写真の直後に来るので、読者は最初のスクロールで店の言葉に出会う。
+   ------------------------------------------------------------------ */
+.lr-words {
+	width: 1000px;
+	margin: 0 auto;
+	padding: 100px 0 50px;
+	text-align: center;
+}
+.lr-words-main {
+	margin: 0;
+	font-size: 28px;
+	line-height: 1.6;
+	letter-spacing: .06em;
+	color: #70592C;
+}
+.lr-words-sub {
+	margin: 20px 0 0;
+	font-family: 'Noto Sans JP', sans-serif;
+	font-size: 14px;
+	line-height: 1.7;
+	letter-spacing: .08em;
+	color: #7E6838;
+}
+.lr-words-link { margin: 30px 0 0; }
+.lr-words a.lr-words-a,
+.lr-words a.lr-words-a:link,
+.lr-words a.lr-words-a:visited {
+	display: inline-block;
+	padding: 15px 50px;
+	border: 1px solid #C4A764;
+	color: #70592C;
+	font-family: 'Noto Serif JP', serif;
+	font-size: 15px;
+	letter-spacing: .08em;
+	text-decoration: none;
+	-webkit-transition: background-color var(--lr-t) var(--lr-e), color var(--lr-t) var(--lr-e);
+	transition: background-color var(--lr-t) var(--lr-e), color var(--lr-t) var(--lr-e);
+}
+.lr-words a.lr-words-a:hover { background: #C4A764; color: #ffffff; }
+.lr-words-note {
+	display: block;
+	margin-top: 5px;
+	font-family: 'Noto Sans JP', sans-serif;
+	font-size: 11px;
+	letter-spacing: .12em;
+	color: #7E6838;
+}
+.lr-words a.lr-words-a:hover .lr-words-note { color: #ffffff; }
+
+/* スマートフォン */
+@media screen and (max-width: 640px) {
+	#B000000024 ul.lr-tiles,
+	.lr-tiles { width: 100%; max-width: 100%; padding: 0 15px; -ms-flex-wrap: wrap; flex-wrap: wrap; }
+	#B000000024 ul.lr-tiles > li,
+	.lr-tiles > li { -ms-flex: 1 1 calc(50% - 10px); flex: 1 1 calc(50% - 10px); margin: 0 20px 20px 0; }
+	#B000000024 ul.lr-tiles > li:nth-child(2n),
+	.lr-tiles > li:nth-child(2n) { margin-right: 0; }
+	.lr-words { width: auto; padding: 50px 15px 30px; }
+	.lr-words-main { font-size: 20px; }
 }
