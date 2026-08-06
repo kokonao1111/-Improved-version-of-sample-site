@@ -332,7 +332,8 @@ a.lr-tel:hover {
    ------------------------------------------------------------------ */
 .lr-book {
 	clear: both;
-	width: 1000px;
+	width: auto;
+	max-width: 1000px;
 	margin: 100px auto 50px;
 	text-align: center;
 }
@@ -1544,7 +1545,8 @@ a.lr-headtel {
    写真の直後に置くので、読者は最初のスクロールで店の言葉に出会う。
    ------------------------------------------------------------------ */
 .lr-words {
-	width: 1000px;
+	width: auto;
+	max-width: 1000px;
 	margin: 0 auto;
 	padding: 70px 0 50px;
 	text-align: center;
@@ -1777,3 +1779,392 @@ a.lr-sns:hover .lr-sns-id { color: #BC9C52; }
 	text-align: left;
 }
 #B000000031 h4.newslistHeadlineStyle img { display: block; }
+
+
+/* ==================================================================
+   レスポンシブ ― 1枚のHTMLで、どの幅にも応える
+   ------------------------------------------------------------------
+   これまで PC版15ページ / SP版15ページ の二重管理で、来訪者のUAを見て
+   SP版へ飛ばしていた。原稿を直すたび2箇所直す必要があり、実際その食い違いが
+   監査で19件見つかっている。PC版を全幅に対応させ、振り分け自体を不要にする。
+
+   ■ 折り返す幅は、このサイトが既に持っている2つの数だけを使う
+     1040px … 版面1000 ＋ 左右の余白20×2。これ以下で版面が流動する。
+      640px … このサイト自身が15枚のHTMLで
+               <link rel="alternate" media="(max-width:640px)"> と
+               宣言している「ここからは携帯」の境目。新しい数は作らない。
+
+   ■ 1000px未満で何が起きていたか（実測）
+     ページ内 <style> の大半が @media (min-width:1000px) の檻の中にあり、
+     1000px を切ると次の2つが同時に外れていた。
+       ・body{overflow-x:hidden}   → 全幅に抜いた帯が横へ溢れる
+       ・.kome_line の左右の罫      → 見出しの線がまるごと消える
+     どちらもこの檻から出す。
+   ================================================================== */
+
+/* ── 器 ───────────────────────────────────────────────────────────
+   1000px 固定をやめる。max-width を 1040 にして左右に 20 の余白を持たせると、
+   1040px 以上では中身がちょうど 1000px になり、今の見た目が1pxも動かない。 */
+#SF-outer-container {
+	width: auto;
+	max-width: 1040px;
+	padding-left: 20px;
+	padding-right: 20px;
+	box-sizing: border-box;
+}
+/* 扉写真などが width:100vw で全幅に抜けている。vw はスクロールバーを含むので
+   その分だけ右へ溢れる。檻の中にあった守りを全ての幅へ出す。 */
+body { overflow-x: hidden; }
+
+/* ── 段 ───────────────────────────────────────────────────────────
+   段の寸法はページ群ごとに別の blockdesign.css が持っていて、同じ
+   「#SF-row2 .SF-col1」でもトップは480px、コース・プランの選び方は320px
+   （3段組）と食い違う。比率を決め打ちすると必ず片方が壊れる。
+
+   代わりに段そのものを flex にする。各列は宣言された px を基準値として
+   持ったまま、器が狭まったぶんだけ比率を保って縮む。1040px以上では
+   基準値の合計がちょうど版面1000pxなので縮まず、480+20+500 も 320×3+20×2 も
+   今と1pxも変わらない。どの群にも同じ1つの規則で効く。 */
+#SF-row1, #SF-row2, #SF-row3, #SF-row4, #SF-row5, #SF-row6, #SF-row7 {
+	display: -ms-flexbox;
+	display: flex;
+	-ms-flex-wrap: nowrap;
+	flex-wrap: nowrap;
+}
+#SF-row1 > .SF-col1, #SF-row1 > .SF-col2, #SF-row1 > .SF-col3,
+#SF-row2 > .SF-col1, #SF-row2 > .SF-col2, #SF-row2 > .SF-col3,
+#SF-row3 > .SF-col1, #SF-row3 > .SF-col2, #SF-row3 > .SF-col3,
+#SF-row4 > .SF-col1, #SF-row4 > .SF-col2, #SF-row4 > .SF-col3,
+#SF-row5 > .SF-col1, #SF-row5 > .SF-col2, #SF-row5 > .SF-col3,
+#SF-row6 > .SF-col1, #SF-row6 > .SF-col2, #SF-row6 > .SF-col3,
+#SF-row7 > .SF-col1, #SF-row7 > .SF-col2, #SF-row7 > .SF-col3 {
+	min-width: 0;
+	box-sizing: border-box;
+}
+
+/* 版面いっぱいに敷かれた一覧も、上限を持つだけの流動に */
+#B000000024 ul,
+#B000000033 ul.thumbnailList,
+#B000000082 ul.thumbnailList,
+#B000000083 .SF-module-container { width: auto; max-width: 1000px; }
+#B000000024 ul.lr-tiles,
+.lr-tiles { width: auto; max-width: 1000px; }
+
+/* ── 見出しの左右の罫 ──────────────────────────────────────────────
+   絶対配置（left:0 / right:0 に width:40%）をやめ、余りを分け合わせる。
+   実測すると器 700px に対し罫が 280×2＝560、中の文字が 144px なので
+   中央の空きは 140px しかなく、既に左右2pxずつ罫が文字に触れていた。
+   分け合う組み方なら、器がどれだけ狭くなっても罫が文字に乗ることはない。
+   罫と文字の間は 20px ＝ この店が持っている余白の数。 */
+.kome_line {
+	display: -webkit-box;
+	display: -ms-flexbox;
+	display: flex;
+	-webkit-box-align: center;
+	-ms-flex-align: center;
+	align-items: center;
+	-webkit-box-pack: center;
+	-ms-flex-pack: center;
+	justify-content: center;
+	position: relative;
+	text-align: center;
+}
+.kome_line:before,
+.kome_line:after {
+	content: '';
+	position: static;
+	display: block;
+	-webkit-box-flex: 1;
+	-ms-flex: 1 1 auto;
+	flex: 1 1 auto;
+	width: auto;
+	height: 1px;
+	background-color: #BC9C52;
+}
+:is(.kome_line):before,
+:is(.kome_line):after { min-width: 0; }
+.kome_line > .gothic { -ms-flex: 0 1 auto; flex: 0 1 auto; }
+
+/* ── ナビゲーション ────────────────────────────────────────────────
+   8項目が 75+120+96+168+168+108+108+108 ＝ 951px、左右の余白24×2 を足して
+   ちょうど 1000px。版面そのものの寸法なので、幅が縮めば必ず溢れる。
+   段数を半分ずつ折り返す：8列 → 4列×2段 → 2列×4段。
+   仕切りはこの店の文法どおり 1px のヘアライン1本だけ。面も枠も足さない。
+   （1px＝仕切る／2px＝押せる。仕切り線は押せないので 1px で正しい） */
+@media screen and (max-width: 1040px) {
+	#SF-navigation { height: auto; }
+	#SF-navigation :is(#B000000002,#B000000034,#B000000055,#B000000119,#B000000136,#B000000144,#B000000154,#B000000164,#B000000182,#B000000261,#B000000270,#B000000278,#B000000286,#B000000294,#B000000302) {
+		height: auto;
+		padding-left: 0;
+		padding-right: 0;
+	}
+	#SF-navigation :is(#B000000002,#B000000034,#B000000055,#B000000119,#B000000136,#B000000144,#B000000154,#B000000164,#B000000182,#B000000261,#B000000270,#B000000278,#B000000286,#B000000294,#B000000302) ul.SF-dropdown {
+		display: -webkit-box;
+		display: -ms-flexbox;
+		display: flex;
+		-ms-flex-wrap: wrap;
+		flex-wrap: wrap;
+		border-top: 1px solid #C4A764;
+		border-bottom: 1px solid #C4A764;
+	}
+	#SF-navigation :is(#B000000002,#B000000034,#B000000055,#B000000119,#B000000136,#B000000144,#B000000154,#B000000164,#B000000182,#B000000261,#B000000270,#B000000278,#B000000286,#B000000294,#B000000302) ul li {
+		float: none;
+		-ms-flex: 0 0 25%;
+		flex: 0 0 25%;
+		max-width: 25%;
+		width: auto;
+		box-sizing: border-box;
+		line-height: 1.7;
+		border-left: 1px solid #E4D6B2;
+		display: -ms-flexbox;
+		display: flex;
+	}
+	#SF-navigation :is(#B000000002,#B000000034,#B000000055,#B000000119,#B000000136,#B000000144,#B000000154,#B000000164,#B000000182,#B000000261,#B000000270,#B000000278,#B000000286,#B000000294,#B000000302) ul li:nth-child(4n+1) { border-left: 0; }
+	#SF-navigation :is(#B000000002,#B000000034,#B000000055,#B000000119,#B000000136,#B000000144,#B000000154,#B000000164,#B000000182,#B000000261,#B000000270,#B000000278,#B000000286,#B000000294,#B000000302) ul li:nth-child(n+5)  { border-top: 1px solid #E4D6B2; }
+	/* 幅は生成CSSが個別idで (3,0,1) の重さで持っている。同じ重さで返す。
+	   50px はこの店の箱の高さ（50/40/30）の一番大きい数で、
+	   指で押す的の最小 44px も上回る。 */
+	#SF-navigation :is(#B000000002,#B000000034,#B000000055,#B000000119,#B000000136,#B000000144,#B000000154,#B000000164,#B000000182,#B000000261,#B000000270,#B000000278,#B000000286,#B000000294,#B000000302) a#catBgColorhome,
+	#SF-navigation :is(#B000000002,#B000000034,#B000000055,#B000000119,#B000000136,#B000000144,#B000000154,#B000000164,#B000000182,#B000000261,#B000000270,#B000000278,#B000000286,#B000000294,#B000000302) a#catBgColormmenu1,
+	#SF-navigation :is(#B000000002,#B000000034,#B000000055,#B000000119,#B000000136,#B000000144,#B000000154,#B000000164,#B000000182,#B000000261,#B000000270,#B000000278,#B000000286,#B000000294,#B000000302) a#catBgColormmenu2,
+	#SF-navigation :is(#B000000002,#B000000034,#B000000055,#B000000119,#B000000136,#B000000144,#B000000154,#B000000164,#B000000182,#B000000261,#B000000270,#B000000278,#B000000286,#B000000294,#B000000302) a#catBgColormmenu3,
+	#SF-navigation :is(#B000000002,#B000000034,#B000000055,#B000000119,#B000000136,#B000000144,#B000000154,#B000000164,#B000000182,#B000000261,#B000000270,#B000000278,#B000000286,#B000000294,#B000000302) a#catBgColormmenu4,
+	#SF-navigation :is(#B000000002,#B000000034,#B000000055,#B000000119,#B000000136,#B000000144,#B000000154,#B000000164,#B000000182,#B000000261,#B000000270,#B000000278,#B000000286,#B000000294,#B000000302) a#catBgColormmenu5,
+	#SF-navigation :is(#B000000002,#B000000034,#B000000055,#B000000119,#B000000136,#B000000144,#B000000154,#B000000164,#B000000182,#B000000261,#B000000270,#B000000278,#B000000286,#B000000294,#B000000302) a#catBgColormmenu6,
+	#SF-navigation :is(#B000000002,#B000000034,#B000000055,#B000000119,#B000000136,#B000000144,#B000000154,#B000000164,#B000000182,#B000000261,#B000000270,#B000000278,#B000000286,#B000000294,#B000000302) a#catBgColormmenu7 {
+		width: auto;
+		-ms-flex: 1 1 auto;
+		flex: 1 1 auto;
+		min-height: 50px;
+		padding: 8px 6px;
+		box-sizing: border-box;
+		display: -ms-flexbox;
+		display: flex;
+		-ms-flex-align: center;
+		align-items: center;
+		-ms-flex-pack: center;
+		justify-content: center;
+		line-height: 1.7;
+	}
+}
+@media screen and (max-width: 640px) {
+	#SF-navigation :is(#B000000002,#B000000034,#B000000055,#B000000119,#B000000136,#B000000144,#B000000154,#B000000164,#B000000182,#B000000261,#B000000270,#B000000278,#B000000286,#B000000294,#B000000302) ul li {
+		-ms-flex: 0 0 50%;
+		flex: 0 0 50%;
+		max-width: 50%;
+		border-left: 1px solid #E4D6B2;
+	}
+	#SF-navigation :is(#B000000002,#B000000034,#B000000055,#B000000119,#B000000136,#B000000144,#B000000154,#B000000164,#B000000182,#B000000261,#B000000270,#B000000278,#B000000286,#B000000294,#B000000302) ul li:nth-child(2n+1) { border-left: 0; }
+	#SF-navigation :is(#B000000002,#B000000034,#B000000055,#B000000119,#B000000136,#B000000144,#B000000154,#B000000164,#B000000182,#B000000261,#B000000270,#B000000278,#B000000286,#B000000294,#B000000302) ul li:nth-child(n+3)  { border-top: 1px solid #E4D6B2; }
+}
+
+/* ── 段を積む ─────────────────────────────────────────────────── */
+@media screen and (max-width: 640px) {
+	#SF-row1, #SF-row2, #SF-row3, #SF-row4, #SF-row5, #SF-row6, #SF-row7 { -ms-flex-wrap: wrap; flex-wrap: wrap; }
+	#SF-row1 > .SF-col1, #SF-row1 > .SF-col2, #SF-row1 > .SF-col3,
+	#SF-row2 > .SF-col1, #SF-row2 > .SF-col2, #SF-row2 > .SF-col3,
+	#SF-row3 > .SF-col1, #SF-row3 > .SF-col2, #SF-row3 > .SF-col3,
+	#SF-row4 > .SF-col1, #SF-row4 > .SF-col2, #SF-row4 > .SF-col3,
+	#SF-row5 > .SF-col1, #SF-row5 > .SF-col2, #SF-row5 > .SF-col3,
+	#SF-row6 > .SF-col1, #SF-row6 > .SF-col2, #SF-row6 > .SF-col3,
+	#SF-row7 > .SF-col1, #SF-row7 > .SF-col2, #SF-row7 > .SF-col3 {
+		-ms-flex: 1 1 100%;
+		flex: 1 1 100%;
+		max-width: 100%;
+		margin-right: 0;
+	}
+	/* 横並びのときだけ必要だった右の逃げを、縦積みでは下の余白に置き換える */
+	#B000000031 { padding-right: 0; padding-bottom: 30px; }
+	#B000000032 iframe { height: 260px; }
+}
+
+/* 予約への3つの入口。290px×3＋余白 で 910px あるので、狭いと必ず溢れる。
+   携帯では縦に積む。的の高さは padding 15px×2 と行で 50px を超える。 */
+@media screen and (max-width: 1040px) {
+	.lr-book-row { -ms-flex-wrap: wrap; flex-wrap: wrap; }
+	.lr-book-row a.lr-book-b,
+	.lr-book-row a.lr-book-b:link,
+	.lr-book-row a.lr-book-b:visited { margin: 0 10px 20px; }
+}
+@media screen and (max-width: 640px) {
+	.lr-book { margin-top: 50px; }
+	.lr-book-row a.lr-book-b,
+	.lr-book-row a.lr-book-b:link,
+	.lr-book-row a.lr-book-b:visited { width: 100%; margin: 0 0 15px; }
+	.lr-book-h { font-size: 22px; }
+}
+
+/* ── 読む段の幅 ───────────────────────────────────────────────────
+   生成CSSは本文ブロックに固定pxの左右余白を持たせて読み幅を作っている。
+     margin 0 150px … 17ブロック（版面1000pxに対して中身700px）
+     padding 0 200px … 1、margin 0 70px … 2、margin 0 50px … 1
+   親はいずれも実測で 1000px。固定pxなので、器が縮むと余白だけが残り、
+   trial の見出しは実測で器 50px まで潰れていた（350 − 150×2）。
+
+   余白を「器の半分から300pxを引いた残り」で頭打ちにする。
+     max(0px, min(150px, 50% - 150px))
+   ・親1000px → 500−150＝350、min(150,350)＝150 … 今と1pxも変わらない
+   ・親 600px → 300−150＝150、margin150 … 中身300px
+   ・親 350px → 175−150＝ 25、margin 25 … 中身300px
+   ・親 300px → 0                        … 中身300px
+   中身は 300px を下回らない。300 はこの店のグリッドの単位そのもの
+   （版面 1000 ＝ 300×3 ＋ 50×2）なので、新しい数を持ち込んでいない。
+   折り返しの幅を1つも使わずに、全ての幅で連続して効く。 */
+#B000000072, #B000000079, #B000000080, #B000000081, #B000000125,
+#B000000142, #B000000149, #B000000159, #B000000169, #B000000188,
+#B000000258, #B000000265, #B000000274, #B000000282, #B000000290,
+#B000000298, #B000000306 {
+	margin-left: max(0px, min(150px, 50% - 150px));
+	margin-right: max(0px, min(150px, 50% - 150px));
+}
+#B000000009 {
+	padding-left: max(0px, min(200px, 50% - 150px));
+	padding-right: max(0px, min(200px, 50% - 150px));
+}
+#B000000312, #B000000313 {
+	margin-left: max(0px, min(70px, 50% - 150px));
+	margin-right: max(0px, min(70px, 50% - 150px));
+}
+#B000000311 {
+	margin-left: max(0px, min(50px, 50% - 150px));
+	margin-right: max(0px, min(50px, 50% - 150px));
+}
+
+/* ── 写真 ─────────────────────────────────────────────────────────
+   width 属性が実寸で入っている画像が多く（400〜500px）、器が縮んでも
+   縮まないので、隣の本文の幅が 0 まで潰れていた。
+   （高さは既出の img[width][height]{height:auto} が比率を守る） */
+#SF-contents img,
+#SF-header img,
+#SF-footer img,
+#SF-teaser img { max-width: 100%; }
+/* 写真を包む枠も、中の写真と一緒に縮む */
+#SF-contents .thumbnail { max-width: 100%; }
+/* 表は版面を越えない。越える場合はその表の中だけを横に送る */
+#SF-contents table { max-width: 100%; }
+
+/* ── 「当店の施術について」の3枚組 ────────────────────────────────
+   300×3 ＋ 50×2 ＝ 1000。段と同じく、比率を保ったまま縮ませる。 */
+.lr-nav3-list {
+	width: auto;
+	max-width: 1000px;
+	display: -ms-flexbox;
+	display: flex;
+}
+.lr-nav3-list li {
+	-ms-flex: 1 1 300px;
+	flex: 1 1 300px;
+	width: auto;
+	min-width: 0;
+}
+
+/* ── 予約フォーム ─────────────────────────────────────────────────
+   fieldset はブラウザ既定で min-width:min-content を持つため、
+   中の「見出し270px＋入力欄」より小さくなれない。実測で器260pxに対し
+   500pxのまま居座っていた。この既定を解いたうえで、携帯では
+   見出しを入力欄の上に置く（横に270pxも取れないため）。 */
+#SF-contact fieldset { min-width: 0; }
+#SF-contact input,
+#SF-contact select,
+#SF-contact textarea { max-width: 100%; box-sizing: border-box; }
+@media screen and (max-width: 640px) {
+	#B000000311 .label {
+		float: none;
+		width: auto;
+		padding-left: 0;
+		padding-bottom: 5px;
+	}
+	#B000000311 .control { margin-left: 0; padding-left: 0; }
+}
+
+/* ── 写真の横に本文を置く組み ────────────────────────────────────
+   生成CSSは li の中の img を float:left にして、その右に本文を流している
+   （#Bxxxxxxxxx ul.thumbnailList li .thumbnail img { float:left }）。
+   実測すると 390px幅では写真が器いっぱいになり、右に残るのが11pxで、
+   見出しがその11pxの中に押し込まれて器の外へ出ていた。
+   携帯では写真と本文を上下に積む。 */
+#SF-contents .newslistdata { max-width: 100%; }
+@media screen and (max-width: 640px) {
+	#SF-contents ul.thumbnailList li .thumbnail {
+		display: block;
+		width: auto;
+		text-align: center;
+	}
+	#SF-contents ul.thumbnailList li .thumbnail img {
+		float: none;
+		display: block;
+		margin: 0 auto 15px;
+	}
+	/* site.css が float:left !important で左右交互に組んでいる写真。
+	   !important は外せないので、幅を器いっぱいにして横に何も置けなくする。 */
+	#SF-contents .thumbnail.csArticleLeft,
+	#SF-contents .thumbnail.csArticleRight { width: 100%; text-align: center; }
+	#SF-contents .newslistdata { display: block; }
+}
+
+/* 上の max-width:100% は詳細度 (1,1,0) で、生成CSSの
+   #Bxxxxxxxxx ul.thumbnailList li .newslistdata (1,2,2) に届いていなかった。
+   同じ重さで書き直す。中の p にも実寸の幅（320px 等）が入っている。 */
+#SF-contents ul.thumbnailList li .newslistdata,
+#SF-contents ul.thumbnailList li p { max-width: 100%; }
+@media screen and (max-width: 640px) {
+	#SF-contents ul.thumbnailList li .newslistdata { display: block; }
+}
+/* SNSの札。写真130px＋余白30px＋本文 が 361px の段に入らず、
+   flex の既定（min-width:auto）で本文が縮めずに出ていた。 */
+.lr-sns-body { min-width: 0; }
+
+/* 上の「写真を器いっぱいにする」だけでは足りなかった。
+   見出し（h3/h4）は新しいブロック整形文脈を作るので、左に器いっぱいの
+   float があると取り分が 0 になり、中の文字がそのまま外へ出る（実測+41px）。
+   本文側に clear を置いて、float の下から始めさせる。
+   これなら float:left !important を外さずに済む。 */
+@media screen and (max-width: 640px) {
+	#SF-contents ul.thumbnailList li .newslistdata { clear: both; }
+	/* 3枚並べの札。300px＋左余白50px は 360px の画面に入らない。
+	   携帯では1列に積む。 */
+	#SF-contents ul.thumbnailList > li {
+		float: none;
+		width: auto;
+		margin-left: 0;
+		margin-right: 0;
+	}
+	#SF-contents ul.thumbnailList > li:nth-child(2),
+	#SF-contents ul.thumbnailList > li:nth-child(5) { margin-left: 0; margin-right: 0; }
+}
+
+/* ── 携帯の下端に置く3つの入口 ────────────────────────────────────
+   SP版の footer にあった帯を、そのままPC版へ持ってくる。
+   （SP版は役目を終えてPC版へ寄せたので、この帯の置き場はここになる）
+   幅が広いときは出さない。本文の中に予約への入口が既に3つあるため。 */
+.lr-cta-fixed { display: none; }
+@media screen and (max-width: 640px) {
+	.lr-cta-fixed {
+		display: -webkit-box;
+		display: -ms-flexbox;
+		display: flex;
+		position: fixed;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		z-index: 100;
+	}
+	/* 帯の高さぶん頁の裾を空ける。空けないと footer の著作権表示が隠れる */
+	body { padding-bottom: 62px; }
+	/* 「ページ上部へ」は帯の上へ逃がす。100×86px は携帯では大きすぎるので、
+	   指で押す的の最小 44px に合わせて詰める */
+	/* #page-top のCSSは <head> ではなく本文の途中に置かれていて、
+	   同じ重さ (1,0,0) では後から読まれるあちらが勝つ。body を足して上回らせる。 */
+	body #page-top { bottom: 72px; right: 10px; }
+	body #page-top a { width: 44px; padding: 14px 0; font-size: 10px; line-height: 1.2; }
+}
+
+/* ── 頁の天地に敷かれた背景板 ────────────────────────────────────
+   cgiFolder/corestyle.css が
+     #ADDBGTOP    { min-width: 960px }
+     #ADDBGBOTTOM { min-width:1000px }
+   と版面幅を最低幅として持たせている。器の外にあるので今まで
+   気づかなかったが、320px の画面では 680px はみ出していた。
+   幅100%は既に宣言されているので、最低幅の縛りだけ解けばよい。 */
+#ADDBGTOP,
+#ADDBGBOTTOM { min-width: 0; }
