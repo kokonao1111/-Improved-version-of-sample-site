@@ -2514,3 +2514,77 @@ a.button-rink2:focus {
 		vertical-align: middle;
 	}
 }
+
+/* ── 申込への入口を、品物のところに置く ──────────────────────────
+   改修前、トライアル6品（￥4,400〜￥12,650）の直下には申込リンクが
+   1本も無く、最初の1本はページを半分以上送った先にあった。
+   キャンペーン2件には個別のリンクが皆無で、フォーム側の選択肢も
+   「キャンペーン」1個だけだったため、どちらを見て来たのか
+   サロン側にも分からなかった。
+
+   品物のすぐ下に置き、押すと該当の項目に印が入った状態でフォームが開く
+   （js/lr-form.js）。枠は 2px の金＝この店の「押せる」の符号。 */
+.lr-apply {
+	clear: both;
+	margin: 20px 0 50px;
+	text-align: center;
+}
+.lr-apply a.lr-apply-b,
+.lr-apply a.lr-apply-b:link,
+.lr-apply a.lr-apply-b:visited {
+	display: inline-block;
+	min-width: 300px;
+	padding: 15px 30px;
+	box-sizing: border-box;
+	border: 2px solid #BC9C52;
+	background: transparent;
+	color: #70592C;
+	font-family: 'Noto Serif JP', serif;
+	font-size: 16px;
+	line-height: 20px;
+	letter-spacing: .08em;
+	text-decoration: none;
+	-webkit-transition: background-color var(--lr-t) var(--lr-e), color var(--lr-t) var(--lr-e);
+	transition: background-color var(--lr-t) var(--lr-e), color var(--lr-t) var(--lr-e);
+}
+.lr-apply a.lr-apply-b:hover,
+.lr-apply a.lr-apply-b:focus {
+	background: #BC9C52;
+	color: #ffffff;
+	text-decoration: none;
+}
+@media screen and (max-width: 640px) {
+	.lr-apply { margin: 15px 0 40px; }
+	.lr-apply a.lr-apply-b,
+	.lr-apply a.lr-apply-b:link,
+	.lr-apply a.lr-apply-b:visited {
+		display: block;
+		min-width: 0;
+		width: 100%;
+		font-size: 15px;
+	}
+}
+
+/* 引き継いだ申込内容を、フォームの頭で見えるようにする */
+.lr-from {
+	margin: 0 0 30px;
+	padding: 15px 20px;
+	border-top: 1px solid #C4A764;
+	border-bottom: 1px solid #C4A764;
+	font-family: 'Noto Serif JP', serif;
+	color: #70592C;
+}
+.lr-from-t {
+	display: inline-block;
+	margin-right: 20px;
+	font-family: 'Noto Sans JP', sans-serif;
+	font-size: 12px;
+	letter-spacing: .1em;
+	color: #7E6838;
+}
+.lr-from-v { font-size: 18px; letter-spacing: .04em; }
+@media screen and (max-width: 640px) {
+	.lr-from { padding: 15px 0; }
+	.lr-from-t { display: block; margin: 0 0 5px; }
+	.lr-from-v { font-size: 16px; }
+}
