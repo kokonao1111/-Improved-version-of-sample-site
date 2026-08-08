@@ -1191,33 +1191,36 @@ a.lr-headtel {
 	animation: lr-fill var(--lr-t-draw) var(--lr-e) var(--lr-d, 0ms) both;
 }
 
+/* ── 画面に入った時に「線が引かれる」 ──────────────────────────────
+   読み込み時に一斉に走らせていたので、初回の画面より下にあるものは
+   見る前に出現が終わっていた。下へ送っても何も起きない状態だったのを直す。
 
-/* ==================================================================
-   視覚設計 ― 金は線であって面ではない
-   ------------------------------------------------------------------
-   1440pxで15ページを描画して数えた結果、古く見えている面は例外なく
-   「塗った面」だった。形でも寸法でも書体でもない。しかも塗りは、
-   この店が既に持っている符号（1px＝仕切る／2px＝押せる、11箇所で例外なし）の
-   どちらでもない第3の状態なので、意味を運べない。
-   塗りを剥ぎ、その面が担っていた仕事を1本の罫に引き継ぐ。
-   足す要素はゼロ。新しい色も級数も余白の数も導入しない。
-   ================================================================== */
+   ただし対象は罫（.kome_line の左右の線）だけに絞る。本文や写真の
+   「面が満ちる」は読み込み時のまま触らない。理由は失敗したときの被害：
+   面の出現が途中で止まると本文がまるごと透明のまま残るが、
+   罫なら止まっても消えるのは装飾の線1本で、読むものは何も失われない。
+   検証手段が headless に無い以上（スクロール駆動の進行が計測できない）、
+   被害が限定される側だけを採る。
 
-/* ------------------------------------------------------------------
-   ① ダマスクの壁紙を剥ぐ
-   タイル幅131pxは235とも1000とも約数を持たず、継ぎ目がバナーの縁と必ずずれる。
-   しかも本物のダマスクはこの店の施術室の壁として写真の中に陰影付きで写っており、
-   平タイルの複製をその真下に敷くと本物が見本帳に見える。
-   剥いだだけではバナー4枚が白い空中に散るので、上下を1pxの罫で締めて
-   「欄」にする。剥ぐことと引き継ぐことは同じ一手。
+   時間ではなくスクロール位置で進むので、
+   「見えているのに引かれていない」という状態にはならない。
+   @supports の外では、これまでどおり読み込み時に一度引かれて終わる。
    ------------------------------------------------------------------ */
-#B000000024 {
-	background-image: none;
-	background-color: #ffffff;
-	/* 罫は中の ul が持つ。器にも引くと二重線になる */
-	border: 0;
-	padding: 0;
+@supports (animation-timeline: view()) {
+	@media (prefers-reduced-motion: no-preference) {
+		.lr-anim [data-lr="rule"]:before,
+		.lr-anim [data-lr="rule"]:after {
+			animation-name: lr-draw;
+			animation-duration: auto;
+			animation-timing-function: var(--lr-e-draw);
+			animation-delay: 0s;
+			animation-fill-mode: both;
+			animation-timeline: view();
+			animation-range: entry 0% entry 60%;
+		}
+	}
 }
+
 
 /* ------------------------------------------------------------------
    ② 金のべた塗りを剥ぐ ― 帯・チップ・ピル・三角
@@ -1313,11 +1316,17 @@ a.lr-headtel {
 #B000000031 .t_r2 {
 	color: #70592C;
 }
+/* 罫は全幅の #ADDBGBOTTOM 側だけに置く。
+   #SF-footer は版面1000px・#ADDBGBOTTOM は窓幅いっぱいで、
+   しかも垂直に1pxずれているため、両方に罫を入れると
+   「1000pxの線」と「全幅の線」が1px違いで2本並び、
+   端で段差になって見えていた（実測 y=4743 と y=4744）。 */
 #ADDBGBOTTOM,
 #SF-footer {
 	background-color: #ffffff;
-	border-top: 1px solid #C4A764;
 }
+#ADDBGBOTTOM { border-top: 1px solid #C4A764; }
+#SF-footer { border-top: 0; }
 #SF-footer p,
 #ADDBGBOTTOM p {
 	color: #7E6838;
@@ -1814,7 +1823,15 @@ a.lr-sns:hover .lr-sns-id { color: #BC9C52; }
 }
 /* 扉写真などが width:100vw で全幅に抜けている。vw はスクロールバーを含むので
    その分だけ右へ溢れる。檻の中にあった守りを全ての幅へ出す。 */
-body { overflow-x: hidden; }
+body {
+	/* overflow-x:hidden は body 自身をスクロール容器にしてしまい、
+	   animation-timeline: view() の基準がページの窓ではなく body になって
+	   進行が正しく読めなくなる（実測：画面外の要素でも進行25%・finished）。
+	   clip はスクロール容器を作らずに切るだけなので、こちらを使う。
+	   clip 非対応の古い環境には hidden が残る。 */
+	overflow-x: hidden;
+	overflow-x: clip;
+}
 
 /* ── 段 ───────────────────────────────────────────────────────────
    段の寸法はページ群ごとに別の blockdesign.css が持っていて、同じ
@@ -2168,3 +2185,332 @@ body { overflow-x: hidden; }
    幅100%は既に宣言されているので、最低幅の縛りだけ解けばよい。 */
 #ADDBGTOP,
 #ADDBGBOTTOM { min-width: 0; }
+
+/* ==================================================================
+   ヘッダー ― 幅が変わっても要素が重ならない組みに直す
+   ------------------------------------------------------------------
+   ここは3つの要素が全て絶対配置で置かれていた。
+     ロゴ        left:0  top:45px  幅311px（site.css が img を absolute に）
+     予約ボタン  right:0 top:3px   幅200px（HTMLのインライン指定）
+     電話・営業時間 right:0 top:48px 幅212px（当方の追加分）
+   版面1000pxでは 311+212=523 で収まるが、器が523pxを切ると必ず重なる。
+   実測すると500px幅でロゴの上に電話番号と営業時間が乗り、
+   640px以下では見出し（h1）が予約ボタンに食い込んでいた。全ページ・全機種で発生。
+
+   はみ出しの検査（右端を越えたか）だけを見ていて、重なりを見ていなかった。
+   絶対配置をやめ、並べて折り返す組みにする。1040px以上は1pxも変えない。
+   ================================================================== */
+/* インライン指定から移した位置。1040px以下では position が static になるので効かない */
+#Module-default-container p.header-discription-type2 a[href*="reservation"] img {
+	top: 3px;
+	right: 0;
+}
+
+@media screen and (max-width: 1040px) {
+	#Module-default-container {
+		height: auto;
+		padding-top: 12px;
+		padding-bottom: 16px;
+	}
+	/* 検索向けの一文。上に1行として置く */
+	#Module-default-container #Header-title {
+		display: block;
+		float: none;
+		margin: 0 0 12px;
+		font-size: 11px;
+		font-weight: normal;
+		line-height: 1.6;
+	}
+	#Module-default-container p.header-discription-type2 {
+		display: -ms-flexbox;
+		display: flex;
+		-ms-flex-wrap: wrap;
+		flex-wrap: wrap;
+		-ms-flex-align: center;
+		align-items: center;
+		-ms-flex-pack: justify;
+		justify-content: space-between;
+		gap: 15px 20px;
+		margin: 0;
+	}
+	#Module-default-container p.header-discription-type2 img { position: static; }
+	#HDLOGO { -ms-flex: 0 0 auto; flex: 0 0 auto; -ms-flex-order: 1; order: 1; }
+	#HDLOGO img { width: 240px; height: auto; }
+	.lr-headinfo {
+		position: static;
+		width: auto;
+		-ms-flex: 0 0 auto;
+		flex: 0 0 auto;
+		-ms-flex-order: 2;
+		order: 2;
+		text-align: right;
+	}
+	#Module-default-container p.header-discription-type2 a[href*="reservation"] {
+		-ms-flex: 0 0 auto;
+		flex: 0 0 auto;
+		-ms-flex-order: 3;
+		order: 3;
+	}
+}
+@media screen and (max-width: 640px) {
+	#Module-default-container { padding-bottom: 18px; text-align: center; }
+	#Module-default-container #Header-title { font-size: 10px; margin-bottom: 10px; }
+	#Module-default-container p.header-discription-type2 {
+		-ms-flex-pack: center;
+		justify-content: center;
+		gap: 12px;
+	}
+	#HDLOGO { -ms-flex: 1 1 100%; flex: 1 1 100%; }
+	#HDLOGO img { width: 210px; margin: 0 auto; display: block; }
+	.lr-headinfo { -ms-flex: 1 1 100%; flex: 1 1 100%; text-align: center; }
+	/* 予約への入口は画面下端の固定バーが常に受け持つ。ここに二重に置かない */
+	#Module-default-container p.header-discription-type2 a[href*="reservation"] { display: none; }
+}
+
+/* ==================================================================
+   狭い幅での「見え」を作り直す
+   ------------------------------------------------------------------
+   はみ出しも重なりも無くなった上で、実物を見て残っていた3つ。
+   ================================================================== */
+
+/* ── ① 扉の写真 ───────────────────────────────────────────────────
+   素材はトップが 1600×700（比2.29）、下層が 1600×400（比4.00）。
+   幅350pxの画面ではそれぞれ 350×153 と 350×98 に潰れ、
+   店の顔が細い帯になって「着いた」感じが消えていた。
+   狭い幅では縮めずに切る。高さは トップ250px（＝150+100）／下層150px。
+   どちらもこの店が持っている余白の数で、desktop の 630:360 と
+   同じ1.7前後の主従関係をそのまま保つ。
+
+   切っても要が残ることを原寸で確かめた：
+     1枚目 店構え … 入口と「Louise Rever」の金看板（原寸 x930-1250）が残る
+     2枚目 玄関   … シャンデリアと看板が中央にある
+     3枚目 施術室 … ベッドが中央にある
+     下層6枚      … 花と什器の地模様。焦点も文字も持たない
+   min-height なので、自然高がこれを超える幅では一切切らない。 */
+@media screen and (max-width: 640px) {
+	#B000000204 .slides img {
+		min-height: 250px;
+		-o-object-fit: cover;
+		object-fit: cover;
+		-o-object-position: center;
+		object-position: center;
+	}
+	#B000000035 img, #B000000056 img, #B000000120 img, #B000000137 img,
+	#B000000145 img, #B000000155 img, #B000000165 img {
+		min-height: 150px;
+		-o-object-fit: cover;
+		object-fit: cover;
+		-o-object-position: center;
+		object-position: center;
+	}
+}
+
+/* ── ② 札の縁を揃える ─────────────────────────────────────────────
+   実測すると 幅350px の札に 写真300px・文字300px が収まっていて、
+   地のベージュが右に50px、写真の左右に25pxずつ覗き、縁が不揃いだった。
+   写真は札の幅に合わせ、文字には左右15pxの余白を与える。
+   対象は実寸300/400/450の内容写真だけ（51+11+4＝66枚）。
+   200pxの丸写真12枚と 1x1 のスペーサー6枚には当てない。
+   引き伸ばすと丸写真は別物になり、スペーサーは350pxの空白になる。 */
+@media screen and (max-width: 640px) {
+	#SF-contents ul.thumbnailList li .thumbnail img[width="300"],
+	#SF-contents ul.thumbnailList li .thumbnail img[width="400"],
+	#SF-contents ul.thumbnailList li .thumbnail img[width="450"] {
+		width: 100%;
+		margin-left: 0;
+		margin-right: 0;
+	}
+	#SF-contents ul.thumbnailList li .newslistdata {
+		width: auto;
+		/* 生成CSSが height:50px を固定していて、中身111pxが下へ溢れ、
+		   次の札の写真に料金の行が乗っていた（実測 #B000000033）。 */
+		height: auto;
+		padding-left: 15px;
+		padding-right: 15px;
+		box-sizing: border-box;
+	}
+	#SF-contents ul.thumbnailList > li { padding-bottom: 15px; }
+}
+
+/* ── ③ 級数の梯子を一段下げる ────────────────────────────────────
+   この店の級数は 28/26/24/22/20/18/16/15/13/12 の梯子で組まれている。
+   幅350pxでは 28px の見出しが3行に折れ、見出しが本文より場所を取っていた
+   （実測：トップの「初めての方へおすすめトライアル（お試し）プラン」が3行）。
+   狭い幅では梯子を一段だけ下げる：28→24、26→22、24→20。
+   降りた先も全てこの店が既に使っている数なので、新しい級数を作らない。
+   生成CSSはブロックIDごとに宣言しているので、同じ重さで並べて返す。
+   ------------------------------------------------------------------ */
+@media screen and (max-width: 640px) {
+	/* 28px → 24px */
+	#B000000081 ul.thumbnailList li .newslistHeadlineStyle,
+	#B000000082 ul.thumbnailList li .newslistHeadlineStyle,
+	#B000000190 ul.thumbnailList li .newslistHeadlineStyle,
+	#B000000079 ul.thumbnailList li .newslistHeadlineStyle,
+	#B000000080 ul.thumbnailList li .newslistHeadlineStyle,
+	#B000000258 ul.thumbnailList li .newslistHeadlineStyle,
+	#B000000072 ul.thumbnailList li .newslistHeadlineStyle,
+	#B000000125 ul.thumbnailList li .newslistHeadlineStyle,
+	#B000000142 ul.thumbnailList li .newslistHeadlineStyle,
+	#B000000149 ul.thumbnailList li .newslistHeadlineStyle,
+	#B000000159 ul.thumbnailList li .newslistHeadlineStyle,
+	#B000000169 ul.thumbnailList li .newslistHeadlineStyle,
+	#B000000188 ul.thumbnailList li .newslistHeadlineStyle,
+	#B000000265 ul.thumbnailList li .newslistHeadlineStyle,
+	#B000000274 ul.thumbnailList li .newslistHeadlineStyle,
+	#B000000282 ul.thumbnailList li .newslistHeadlineStyle,
+	#B000000290 ul.thumbnailList li .newslistHeadlineStyle,
+	#B000000298 ul.thumbnailList li .newslistHeadlineStyle,
+	#B000000306 ul.thumbnailList li .newslistHeadlineStyle {
+		font-size: 24px;
+	}
+	/* 24px → 20px */
+	#B000000403 .headlineStyle,
+	#B000000073 ul.thumbnailList li .newslistHeadlineStyle,
+	#B000000074 ul.thumbnailList li .newslistHeadlineStyle,
+	#B000000085 ul.thumbnailList li .newslistHeadlineStyle,
+	#B000000087 ul.thumbnailList li .newslistHeadlineStyle,
+	#B000000089 ul.thumbnailList li .newslistHeadlineStyle,
+	#B000000091 ul.thumbnailList li .newslistHeadlineStyle,
+	#B000000404 .headlineStyle,
+	#B000000405 .headlineStyle,
+	#B000000200,
+	#B000000377,
+	#B000000406 .headlineStyle,
+	#B000000152 ul.thumbnailList li .newslistHeadlineStyle,
+	#B000000407 .headlineStyle,
+	#B000000408 .headlineStyle,
+	#B000000267 ul.thumbnailList li .newslistHeadlineStyle,
+	#B000000276 ul.thumbnailList li .newslistHeadlineStyle,
+	#B000000284 ul.thumbnailList li .newslistHeadlineStyle,
+	#B000000292 ul.thumbnailList li .newslistHeadlineStyle,
+	#B000000300 ul.thumbnailList li .newslistHeadlineStyle,
+	#B000000308 ul.thumbnailList li .newslistHeadlineStyle {
+		font-size: 20px;
+	}
+}
+
+/* ── ②' 札を引き伸ばさない ────────────────────────────────────────
+   ②で写真を札の幅に合わせたが、器が600pxある幅（500〜640px）では
+   300pxの写真が600×400まで2倍に伸び、ぼやけたうえ札の高さを超えて
+   次の札の上に文字が乗っていた（実測：640pxで4箇所、500pxで3箇所）。
+   札の上限を 350px＝グリッドの単位300＋溝50 に定め、器が広ければ中央へ置く。
+   これで拡大は最大でも 300→350（17%）に収まり、縁も揃ったままになる。 */
+@media screen and (max-width: 640px) {
+	#SF-contents ul.thumbnailList > li:has(.thumbnail img) {
+		max-width: 350px;
+		margin-left: auto;
+		margin-right: auto;
+		height: auto;
+	}
+}
+
+/* 価格の箱は height:80px / 60px の固定。狭い幅では料金が1行増えて
+   箱から溢れ、次の札の写真の上に文字が乗っていた（実測1箇所）。
+   高さを内容に任せ、短いときの見た目は min-height で保つ。 */
+@media screen and (max-width: 640px) {
+	.c_box { height: auto; min-height: 80px; }
+	.c_box2 { height: auto; min-height: 60px; }
+}
+
+/* ── 入口の帯に写真を入れる ───────────────────────────────────────
+   文字だけの4分割は、どのサイトにもある「クイックリンク」の見た目で、
+   ヒーローの直後に文字だけの区間が長く続いていた（写真→文字→文字→写真）。
+   帯の構造（1本の帯をヘアラインで四分割）はそのままに、各区画へ写真を敷く。
+   札を4つ並べるのではなく、1枚の写真の帯が金の細い線で切られている、と読ませる。
+
+   写真はこの店が持っているものから、被写体が重ならないように選んだ。
+     コラーゲンライト … campaign_img02（実物の照射室。赤いのは機器そのものの色）
+     最新情報         … campaign_img（店のサインとラベンダー）
+     ブライダルエステ … beginner_gaz2（施術室）
+     無料カウンセリング … beginner_flow4（鏡を見せている場面）
+   人物写真を並べると3枚とも同じ絵に見えるので1枚だけにした。
+   ------------------------------------------------------------------ */
+.lr-tiles a.lr-tile,
+.lr-tiles a.lr-tile:link,
+.lr-tiles a.lr-tile:visited { padding: 0 0 30px; }
+.lr-tile-p {
+	display: block;
+	width: 100%;
+	height: auto;
+	aspect-ratio: 3 / 2;
+	-o-object-fit: cover;
+	object-fit: cover;
+	margin: 0 0 20px;
+}
+.lr-tile-t,
+.lr-tile-s { padding-left: 10px; padding-right: 10px; }
+@media screen and (max-width: 640px) {
+	.lr-tiles a.lr-tile { padding: 0 0 24px; }
+	.lr-tile-p { margin-bottom: 15px; }
+}
+
+/* 帯の器 #B000000024 は #B000000411 の入れ子になっていて、
+   #B000000411 img { display:inline-block; padding:10px 0 }（詳細度 1,0,1）が
+   写真にも当たっていた。inline-block だと下に文字の下端ぶんの隙間ができ、
+   上下の10pxが加わって高さも 166→186px に伸びる。同じ重さで返す。 */
+#B000000411 img.lr-tile-p,
+#B000000024 img.lr-tile-p {
+	display: block;
+	padding: 0;
+}
+
+/* 帯の器は height:150px の固定で、文字だけの頃はちょうど収まっていた。
+   写真を足すと中身が269pxになり、はみ出した文字が丸ごと切り落とされていた
+   （実測：器 y1076〜1226、文字 y1263。器の外なので描かれない）。
+   高さを中身に任せる。 */
+#B000000024 { height: auto; }
+
+/* ── 「Contact」ボタン ────────────────────────────────────────────
+   ⑮でこのブロックの地を #555 から白へ戻したとき、ロゴは金版へ差し替えたが
+   このボタンを見落としていた。文字が #ffffff、枠も 2px solid #ffffff で、
+   白地に白＝コントラスト比 1.00（実測）。ホバーで地が #333 になって初めて
+   姿を現すので、押せる場所があること自体が伝わっていなかった。
+   予約の3つの入口（.lr-book-b）と同じ「2pxの金枠・角丸なし」に揃える。
+   #333 も、この店の5色のどれでもないので金へ置き換える。 */
+a.button-rink2,
+a.button-rink2:link,
+a.button-rink2:visited {
+	background: transparent;
+	border: 2px solid #BC9C52;
+	color: #70592C;
+}
+a.button-rink2:hover,
+a.button-rink2:focus {
+	background: #BC9C52;
+	color: #ffffff;
+}
+
+/* ⑫の続き ― 同じ部品なのに生成CSSが2通りに書いていた
+   ------------------------------------------------------------------
+   trial の「ご利用の流れ」6箇所は、灰緑 #E6E6DB の敷き方が2種類あった。
+     #B000000113〜115 .headlineStyle { background:#E6E6DB }  ← 見出しに敷く
+     #B000000116〜118               { background:#E6E6DB }  ← 器に敷く
+   ⑫では見出し側しか剥がしていなかったため、6つのうち3つが白、3つがベージュ
+   という2種類の見た目が同じページに並んでいた（実測で確認）。
+   器側も剥がして、6つとも「上下のヘアラインだけ」に揃える。 */
+#B000000116,
+#B000000117,
+#B000000118 { background-color: transparent; }
+
+/* ── 予約フォームの的 ─────────────────────────────────────────────
+   実測（幅390px）：label.lr-choice 40個すべてが高さ32px、
+   ラジオ／チェック本体は40個すべて13×13px。指で押す的として小さい。
+   とくに予約時間の「10時」〜「20時」は40×32pxが22個密集していて、
+   隣を押してしまう。予約の直前で取りこぼす形になっている。
+
+   高さを 50px に。この店の箱の高さ（50/40/30）の一番大きい数で、
+   指の的の最小 44px も上回る。内訳は 行20＋上下15ずつ＝50 で、
+   20 も 15 もこの店が持っている数。本体は 13→20 へ。 */
+@media screen and (max-width: 640px) {
+	.lr-choice {
+		padding-top: 15px;
+		padding-bottom: 15px;
+		line-height: 20px;
+	}
+	#SF-contact input[type="radio"],
+	#SF-contact input[type="checkbox"] {
+		width: 20px;
+		height: 20px;
+		vertical-align: middle;
+	}
+}

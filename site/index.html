@@ -222,7 +222,7 @@
 <p class="header-discription-type2"><a id="HDLOGO" href="./index.html"><img width="311" height="64" src="./assets/logo.png" style="left: 0px; top:45px;" class="antiAlpha" /></a>
 
 
-<a href="singlefolder/reservation.html" target="_self"><img width="200" height="38" src="./assets/top_reserve_btn.png" alt="ご予約はこちら" style="position: absolute; top: 3px; right: 0;"></a><span class="lr-headinfo"><a class="lr-headtel" href="tel:0734823765">tel.073-482-3765</a><span class="lr-headhours">OPEN：10:00～　※予約制<br />Holiday：月曜日・第１第３日曜日</span></span></p>
+<a href="singlefolder/reservation.html" target="_self"><img width="200" height="38" src="./assets/top_reserve_btn.png" alt="ご予約はこちら"></a><span class="lr-headinfo"><a class="lr-headtel" href="tel:0734823765">tel.073-482-3765</a><span class="lr-headhours">OPEN：10:00～　※予約制<br />Holiday：月曜日・第１第３日曜日</span></span></p>
 </div>
 
 </div>
@@ -263,18 +263,18 @@
 (function($){
 $(document).ready(function(){
 $('#B000000204-slider').flexslider({
-animation: 'slide',
+animation: 'fade',
 direction: 'horizontal',
 reverse: false,
 animationLoop: true,
 smoothHeight:false,
-slideshow: false,
+slideshow: !(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches),
 slideshowSpeed: 7000,
 animationSpeed: 600,
 randomize: false,
 controlNav: false,
 directionNav: true,
-pauseOnAction: false,
+pauseOnAction: true,
 pauseOnHover: true});
 });})(jQuery);
 //-->
@@ -290,7 +290,11 @@ pauseOnHover: true});
 <div id="B000000410" style="min-width:15px;min-height:15px;">
 </div>
 
-<div id="B000000411" class="SF-module-container"><div class="lr-words"><p class="lr-words-main"><span class="mincho">輝く女性のための、サロンです。</span></p><p class="lr-words-sub">内側から輝く美のお手伝いをいたします</p><p class="lr-words-link"><a class="lr-words-a" href="https://louiserever.jp/" target="_blank" rel="noopener">louiserever.jp<span class="lr-words-note">WEBサイトはこちら</span></a></p></div><div id="B000000024" class="SF-module-container"><ul class="lr-tiles"><li><a class="lr-tile" href="./campaign/index.html"><span class="lr-tile-t">コラーゲンライト</span><span class="lr-tile-s">お試しキャンペーン中</span></a></li><li><a class="lr-tile" href="https://louiserever.jp/blog/" target="_blank" rel="noopener"><span class="lr-tile-t">最新情報</span><span class="lr-tile-s">ブログ</span></a></li><li><a class="lr-tile" href="./course_plan/index.html#bridal"><span class="lr-tile-t">ブライダルエステ</span><span class="lr-tile-s">はじめての方へ</span></a></li><li><a class="lr-tile" href="https://line.me/R/ti/p/%40pnb6242x" target="_blank" rel="noopener"><span class="lr-tile-t">無料カウンセリング</span><span class="lr-tile-s">LINEでご相談</span></a></li></ul></div>
+<div id="B000000411" class="SF-module-container"><div class="lr-words"><p class="lr-words-main"><span class="mincho">輝く女性のための、サロンです。</span></p><p class="lr-words-sub">内側から輝く美のお手伝いをいたします</p><p class="lr-words-link"><a class="lr-words-a" href="https://louiserever.jp/" target="_blank" rel="noopener">louiserever.jp<span class="lr-words-note">WEBサイトはこちら</span></a></p></div><div id="B000000024" class="SF-module-container"><ul class="lr-tiles"><li><a class="lr-tile" href="./campaign/index.html">
+<img class="lr-tile-p" loading="lazy" width="250" height="167" src="./assets/campaign_img02.jpg" alt="" /><span class="lr-tile-t">コラーゲンライト</span><span class="lr-tile-s">お試しキャンペーン中</span></a></li><li><a class="lr-tile" href="https://louiserever.jp/blog/" target="_blank" rel="noopener">
+<img class="lr-tile-p" loading="lazy" width="250" height="167" src="./assets/campaign_img.jpg" alt="" /><span class="lr-tile-t">最新情報</span><span class="lr-tile-s">ブログ</span></a></li><li><a class="lr-tile" href="./course_plan/index.html#bridal">
+<img class="lr-tile-p" loading="lazy" width="250" height="167" src="./assets/beginner_gaz2.jpg" alt="" /><span class="lr-tile-t">ブライダルエステ</span><span class="lr-tile-s">はじめての方へ</span></a></li><li><a class="lr-tile" href="https://line.me/R/ti/p/%40pnb6242x" target="_blank" rel="noopener">
+<img class="lr-tile-p" loading="lazy" width="250" height="167" src="./assets/beginner_flow4.jpg" alt="" /><span class="lr-tile-t">無料カウンセリング</span><span class="lr-tile-s">LINEでご相談</span></a></li></ul></div>
 </div>
 
 
@@ -537,7 +541,7 @@ pauseOnHover: true});
 </table>
 
 <div align="center" style="padding-top: 20px;">
-<a href="singlefolder/reservation.html" class="button-rink2" style="color:#ffffff;">Contact</a>
+<a href="singlefolder/reservation.html" class="button-rink2">Contact</a>
 </div></p>
 </div>
 </li>
