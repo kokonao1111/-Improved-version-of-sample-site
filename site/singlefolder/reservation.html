@@ -207,11 +207,11 @@
   <span class="label" id="value_select_radio_button_03_legend">予約種別<span class="hissu">※必須</span></span>
   <span class="control">
   
-  <input type="radio" id="value_select_radio_button_03_0" class="radio" name="value_select_radio_button_03" value="新規予約"  /><label class="lr-choice" for="value_select_radio_button_03_0">新規予約</label>
+  <label class="lr-choice" for="value_select_radio_button_03_0"><input type="radio" id="value_select_radio_button_03_0" class="radio" name="value_select_radio_button_03" value="新規予約"  /><span class="lr-choice-t">新規予約</span></label>
 
-  <input type="radio" id="value_select_radio_button_03_1" class="radio" name="value_select_radio_button_03" value="リピート予約"  /><label class="lr-choice" for="value_select_radio_button_03_1">リピート予約</label>
+  <label class="lr-choice" for="value_select_radio_button_03_1"><input type="radio" id="value_select_radio_button_03_1" class="radio" name="value_select_radio_button_03" value="リピート予約"  /><span class="lr-choice-t">リピート予約</span></label>
 
-  <input type="radio" id="value_select_radio_button_03_2" class="radio" name="value_select_radio_button_03" value="無料カウンセリング予約"  /><label class="lr-choice" for="value_select_radio_button_03_2">無料カウンセリング予約</label>
+  <label class="lr-choice" for="value_select_radio_button_03_2"><input type="radio" id="value_select_radio_button_03_2" class="radio" name="value_select_radio_button_03" value="無料カウンセリング予約"  /><span class="lr-choice-t">無料カウンセリング予約</span></label>
 
 <img loading="lazy" src="../assets/Spry_valid.gif" class="radioValidMsg" width="14" height="14" /><span class="radioRequiredMsg"><img loading="lazy" width="14" height="14" src="../assets/Spry_required.gif" />値が入力されていません。</span></span>
   <span class="control2"></span>
@@ -225,7 +225,7 @@ var B0000003118 = new Spry.Widget.ValidationRadio("B0000003118", {isRequired:tru
 <input type="hidden" name="label_user_name" value="お名前（漢字）" />
 <fieldset id="B0000003111">
   <label class="label" for="value_user_name">お名前（漢字）<span class="hissu">※必須</span></label>
-  <span class="control"><input type="text" id="value_user_name" name="value_user_name" size="20" maxlength="20" value="" /><img loading="lazy" src="../assets/Spry_valid.gif" class="textfieldValidMsg" width="14" height="14" /><span class="textfieldRequiredMsg"><img loading="lazy" src="../assets/Spry_required.gif" width="14" height="14" />値が入力されていません。</span><span class="textfieldInvalidFormatMsg"><img loading="lazy" src="../assets/Spry_required.gif" width="14" height="14" />無効な値が入力されています。</span></span>
+  <span class="control"><input type="text" id="value_user_name" name="value_user_name" size="20" maxlength="20" value="" autocomplete="name" /><img loading="lazy" src="../assets/Spry_valid.gif" class="textfieldValidMsg" width="14" height="14" /><span class="textfieldRequiredMsg"><img loading="lazy" src="../assets/Spry_required.gif" width="14" height="14" />値が入力されていません。</span><span class="textfieldInvalidFormatMsg"><img loading="lazy" src="../assets/Spry_required.gif" width="14" height="14" />無効な値が入力されています。</span></span>
   <span class="control2">例)山田 花子</span>
 </fieldset>
 <script type="text/javascript">
@@ -249,7 +249,7 @@ var B0000003112 = new Spry.Widget.ValidationTextField("B0000003112", "none", {is
 <input type="hidden" name="label_tel_no_05" value="電話番号" />
 <fieldset id="B0000003115">
   <label class="label" for="value_tel_no_05">電話番号<span class="hissu">※必須</span></label>
-  <span class="control"><input type="text" id="value_tel_no_05" name="value_tel_no_05" size="20" maxlength="20" value="" /><img loading="lazy" src="../assets/Spry_valid.gif" class="textfieldValidMsg" width="14" height="14" /><span class="textfieldRequiredMsg"><img loading="lazy" src="../assets/Spry_required.gif" width="14" height="14" />値が入力されていません。</span><span class="textfieldInvalidFormatMsg"><img loading="lazy" src="../assets/Spry_required.gif" width="14" height="14" />無効な値が入力されています。</span></span>
+  <span class="control"><input type="text" id="value_tel_no_05" name="value_tel_no_05" size="20" maxlength="20" value="" inputmode="tel" autocomplete="tel" /><img loading="lazy" src="../assets/Spry_valid.gif" class="textfieldValidMsg" width="14" height="14" /><span class="textfieldRequiredMsg"><img loading="lazy" src="../assets/Spry_required.gif" width="14" height="14" />値が入力されていません。</span><span class="textfieldInvalidFormatMsg"><img loading="lazy" src="../assets/Spry_required.gif" width="14" height="14" />無効な値が入力されています。</span></span>
   <span class="control2">例)000-000-0000</span>
 </fieldset>
 <script type="text/javascript">
@@ -261,7 +261,7 @@ var B0000003115 = new Spry.Widget.ValidationTextField("B0000003115", "none", {is
 <input type="hidden" name="label_user_email" value="お客様メールアドレス" />
 <fieldset id="B0000003113">
   <label class="label" for="value_user_email">お客様メールアドレス<span class="hissu">※必須</span></label>
-  <span class="control"><input type="text" id="value_user_email" name="value_user_email" size="30" maxlength="40" value="" /><img loading="lazy" src="../assets/Spry_valid.gif" class="textfieldValidMsg" width="14" height="14" /><span class="textfieldRequiredMsg"><img loading="lazy" src="../assets/Spry_required.gif" width="14" height="14" />値が入力されていません。</span><span class="textfieldInvalidFormatMsg"><img loading="lazy" src="../assets/Spry_required.gif" width="14" height="14" />無効な値が入力されています。</span></span>
+  <span class="control"><input type="text" id="value_user_email" name="value_user_email" size="30" maxlength="40" value="" inputmode="email" autocomplete="email" /><img loading="lazy" src="../assets/Spry_valid.gif" class="textfieldValidMsg" width="14" height="14" /><span class="textfieldRequiredMsg"><img loading="lazy" src="../assets/Spry_required.gif" width="14" height="14" />値が入力されていません。</span><span class="textfieldInvalidFormatMsg"><img loading="lazy" src="../assets/Spry_required.gif" width="14" height="14" />無効な値が入力されています。</span></span>
   <span class="control2"></span>
 </fieldset>
 <script type="text/javascript">
@@ -275,15 +275,15 @@ var B0000003113 = new Spry.Widget.ValidationTextField("B0000003113", "email", {i
   <span class="label" id="value_select_check_box_12_legend">メニュー</span>
   <span class="control">
   
-  <input type="checkbox" id="value_select_check_box_12_0" class="checkbox" name="value_select_check_box_12" value="キャンペーン"  /><label class="lr-choice" for="value_select_check_box_12_0">キャンペーン</label>
+  <label class="lr-choice" for="value_select_check_box_12_0"><input type="checkbox" id="value_select_check_box_12_0" class="checkbox" name="value_select_check_box_12" value="キャンペーン"  /><span class="lr-choice-t">キャンペーン</span></label>
 
-  <input type="checkbox" id="value_select_check_box_12_1" class="checkbox" name="value_select_check_box_12" value="フェイシャルエステ"  /><label class="lr-choice" for="value_select_check_box_12_1">フェイシャルエステ</label>
+  <label class="lr-choice" for="value_select_check_box_12_1"><input type="checkbox" id="value_select_check_box_12_1" class="checkbox" name="value_select_check_box_12" value="フェイシャルエステ"  /><span class="lr-choice-t">フェイシャルエステ</span></label>
 
-  <input type="checkbox" id="value_select_check_box_12_2" class="checkbox" name="value_select_check_box_12" value="ブライダルコース"  /><label class="lr-choice" for="value_select_check_box_12_2">ブライダルコース</label>
+  <label class="lr-choice" for="value_select_check_box_12_2"><input type="checkbox" id="value_select_check_box_12_2" class="checkbox" name="value_select_check_box_12" value="ブライダルコース"  /><span class="lr-choice-t">ブライダルコース</span></label>
 
-  <input type="checkbox" id="value_select_check_box_12_3" class="checkbox" name="value_select_check_box_12" value="ワックス脱毛"  /><label class="lr-choice" for="value_select_check_box_12_3">ワックス脱毛</label>
+  <label class="lr-choice" for="value_select_check_box_12_3"><input type="checkbox" id="value_select_check_box_12_3" class="checkbox" name="value_select_check_box_12" value="ワックス脱毛"  /><span class="lr-choice-t">ワックス脱毛</span></label>
 
-  <input type="checkbox" id="value_select_check_box_12_4" class="checkbox" name="value_select_check_box_12" value="オプション"  /><label class="lr-choice" for="value_select_check_box_12_4">オプション</label>
+  <label class="lr-choice" for="value_select_check_box_12_4"><input type="checkbox" id="value_select_check_box_12_4" class="checkbox" name="value_select_check_box_12" value="オプション"  /><span class="lr-choice-t">オプション</span></label>
 
 <img loading="lazy" src="../assets/Spry_valid.gif" class="checkboxValidMsg" width="14" height="14" /><span class="checkboxRequiredMsg"><img loading="lazy" width="14" height="14" src="../assets/Spry_required.gif" />値が入力されていません。</span></span>
   <span class="control2"></span>
@@ -299,11 +299,11 @@ var B00000031111 = new Spry.Widget.ValidationCheckbox("B00000031111", {isRequire
   <span class="label" id="value_select_check_box_15_legend">新規様 お試しメニュー [FACIAL CARE]</span>
   <span class="control">
   
-  <input type="checkbox" id="value_select_check_box_15_0" class="checkbox" name="value_select_check_box_15" value="フェイシャルトリートメント"  /><label class="lr-choice" for="value_select_check_box_15_0">フェイシャルトリートメント</label>
+  <label class="lr-choice" for="value_select_check_box_15_0"><input type="checkbox" id="value_select_check_box_15_0" class="checkbox" name="value_select_check_box_15" value="フェイシャルトリートメント"  /><span class="lr-choice-t">フェイシャルトリートメント</span></label>
 
-  <input type="checkbox" id="value_select_check_box_15_1" class="checkbox" name="value_select_check_box_15" value="シミ・美白　ケア"  /><label class="lr-choice" for="value_select_check_box_15_1">シミ・美白　ケア</label>
+  <label class="lr-choice" for="value_select_check_box_15_1"><input type="checkbox" id="value_select_check_box_15_1" class="checkbox" name="value_select_check_box_15" value="シミ・美白　ケア"  /><span class="lr-choice-t">シミ・美白　ケア</span></label>
 
-  <input type="checkbox" id="value_select_check_box_15_2" class="checkbox" name="value_select_check_box_15" value="水素導入ケアコース"  /><label class="lr-choice" for="value_select_check_box_15_2">水素導入ケアコース</label>
+  <label class="lr-choice" for="value_select_check_box_15_2"><input type="checkbox" id="value_select_check_box_15_2" class="checkbox" name="value_select_check_box_15" value="水素導入ケアコース"  /><span class="lr-choice-t">水素導入ケアコース</span></label>
 
 <img loading="lazy" src="../assets/Spry_valid.gif" class="checkboxValidMsg" width="14" height="14" /><span class="checkboxRequiredMsg"><img loading="lazy" width="14" height="14" src="../assets/Spry_required.gif" />値が入力されていません。</span></span>
   <span class="control2"></span>
@@ -319,11 +319,11 @@ var B00000031116 = new Spry.Widget.ValidationCheckbox("B00000031116", {isRequire
   <span class="label" id="value_select_check_box_18_legend">新規様 お試しメニュー [BODY CARE]</span>
   <span class="control">
   
-  <input type="checkbox" id="value_select_check_box_18_0" class="checkbox" name="value_select_check_box_18" value="ボディトリートメント"  /><label class="lr-choice" for="value_select_check_box_18_0">ボディトリートメント</label>
+  <label class="lr-choice" for="value_select_check_box_18_0"><input type="checkbox" id="value_select_check_box_18_0" class="checkbox" name="value_select_check_box_18" value="ボディトリートメント"  /><span class="lr-choice-t">ボディトリートメント</span></label>
 
-  <input type="checkbox" id="value_select_check_box_18_1" class="checkbox" name="value_select_check_box_18" value="ポールシェリー　グラマラスボディ"  /><label class="lr-choice" for="value_select_check_box_18_1">ポールシェリー　グラマラスボディ</label>
+  <label class="lr-choice" for="value_select_check_box_18_1"><input type="checkbox" id="value_select_check_box_18_1" class="checkbox" name="value_select_check_box_18" value="ポールシェリー　グラマラスボディ"  /><span class="lr-choice-t">ポールシェリー　グラマラスボディ</span></label>
 
-  <input type="checkbox" id="value_select_check_box_18_2" class="checkbox" name="value_select_check_box_18" value="ポールシェリー　モホロジー"  /><label class="lr-choice" for="value_select_check_box_18_2">ポールシェリー　モホロジー</label>
+  <label class="lr-choice" for="value_select_check_box_18_2"><input type="checkbox" id="value_select_check_box_18_2" class="checkbox" name="value_select_check_box_18" value="ポールシェリー　モホロジー"  /><span class="lr-choice-t">ポールシェリー　モホロジー</span></label>
 
 <img loading="lazy" src="../assets/Spry_valid.gif" class="checkboxValidMsg" width="14" height="14" /><span class="checkboxRequiredMsg"><img loading="lazy" width="14" height="14" src="../assets/Spry_required.gif" />値が入力されていません。</span></span>
   <span class="control2"></span>
@@ -337,8 +337,8 @@ var B00000031119 = new Spry.Widget.ValidationCheckbox("B00000031119", {isRequire
 <input type="hidden" name="label_text_18" value="予約希望日（第1希望）" />
 <fieldset id="B00000031122">
   <label class="label" for="value_text_18">予約希望日（第1希望）</label>
-  <span class="control"><input type="text" id="value_text_18" name="value_text_18" size="20" maxlength="20" value="" /><img loading="lazy" src="../assets/Spry_valid.gif" class="textfieldValidMsg" width="14" height="14" /><span class="textfieldRequiredMsg"><img loading="lazy" src="../assets/Spry_required.gif" width="14" height="14" />値が入力されていません。</span><span class="textfieldInvalidFormatMsg"><img loading="lazy" src="../assets/Spry_required.gif" width="14" height="14" />無効な値が入力されています。</span></span>
-  <span class="control2">例） 2019/05/20</span>
+  <span class="control"><input type="text" id="value_text_18" name="value_text_18" size="20" maxlength="20" value="" inputmode="numeric" autocomplete="off" /><img loading="lazy" src="../assets/Spry_valid.gif" class="textfieldValidMsg" width="14" height="14" /><span class="textfieldRequiredMsg"><img loading="lazy" src="../assets/Spry_required.gif" width="14" height="14" />値が入力されていません。</span><span class="textfieldInvalidFormatMsg"><img loading="lazy" src="../assets/Spry_required.gif" width="14" height="14" />無効な値が入力されています。</span></span>
+  <span class="control2 lr-hint-date">例）年/月/日</span>
 </fieldset>
 <script type="text/javascript">
 <!--
@@ -351,27 +351,27 @@ var B00000031122 = new Spry.Widget.ValidationTextField("B00000031122", "none", {
   <span class="label" id="value_select_radio_button_30_legend">予約時間（第1希望）</span>
   <span class="control">
   
-  <input type="radio" id="value_select_radio_button_30_0" class="radio" name="value_select_radio_button_30" value="10時"  /><label class="lr-choice" for="value_select_radio_button_30_0">10時</label>
+  <label class="lr-choice" for="value_select_radio_button_30_0"><input type="radio" id="value_select_radio_button_30_0" class="radio" name="value_select_radio_button_30" value="10時"  /><span class="lr-choice-t">10時</span></label>
 
-  <input type="radio" id="value_select_radio_button_30_1" class="radio" name="value_select_radio_button_30" value="11時"  /><label class="lr-choice" for="value_select_radio_button_30_1">11時</label>
+  <label class="lr-choice" for="value_select_radio_button_30_1"><input type="radio" id="value_select_radio_button_30_1" class="radio" name="value_select_radio_button_30" value="11時"  /><span class="lr-choice-t">11時</span></label>
 
-  <input type="radio" id="value_select_radio_button_30_2" class="radio" name="value_select_radio_button_30" value="12時"  /><label class="lr-choice" for="value_select_radio_button_30_2">12時</label>
+  <label class="lr-choice" for="value_select_radio_button_30_2"><input type="radio" id="value_select_radio_button_30_2" class="radio" name="value_select_radio_button_30" value="12時"  /><span class="lr-choice-t">12時</span></label>
 
-  <input type="radio" id="value_select_radio_button_30_3" class="radio" name="value_select_radio_button_30" value="13時"  /><label class="lr-choice" for="value_select_radio_button_30_3">13時</label>
+  <label class="lr-choice" for="value_select_radio_button_30_3"><input type="radio" id="value_select_radio_button_30_3" class="radio" name="value_select_radio_button_30" value="13時"  /><span class="lr-choice-t">13時</span></label>
 
-  <input type="radio" id="value_select_radio_button_30_4" class="radio" name="value_select_radio_button_30" value="14時"  /><label class="lr-choice" for="value_select_radio_button_30_4">14時</label>
+  <label class="lr-choice" for="value_select_radio_button_30_4"><input type="radio" id="value_select_radio_button_30_4" class="radio" name="value_select_radio_button_30" value="14時"  /><span class="lr-choice-t">14時</span></label>
 
-  <input type="radio" id="value_select_radio_button_30_5" class="radio" name="value_select_radio_button_30" value="15時"  /><label class="lr-choice" for="value_select_radio_button_30_5">15時</label>
+  <label class="lr-choice" for="value_select_radio_button_30_5"><input type="radio" id="value_select_radio_button_30_5" class="radio" name="value_select_radio_button_30" value="15時"  /><span class="lr-choice-t">15時</span></label>
 
-  <input type="radio" id="value_select_radio_button_30_6" class="radio" name="value_select_radio_button_30" value="16時"  /><label class="lr-choice" for="value_select_radio_button_30_6">16時</label>
+  <label class="lr-choice" for="value_select_radio_button_30_6"><input type="radio" id="value_select_radio_button_30_6" class="radio" name="value_select_radio_button_30" value="16時"  /><span class="lr-choice-t">16時</span></label>
 
-  <input type="radio" id="value_select_radio_button_30_7" class="radio" name="value_select_radio_button_30" value="17時"  /><label class="lr-choice" for="value_select_radio_button_30_7">17時</label>
+  <label class="lr-choice" for="value_select_radio_button_30_7"><input type="radio" id="value_select_radio_button_30_7" class="radio" name="value_select_radio_button_30" value="17時"  /><span class="lr-choice-t">17時</span></label>
 
-  <input type="radio" id="value_select_radio_button_30_8" class="radio" name="value_select_radio_button_30" value="18時"  /><label class="lr-choice" for="value_select_radio_button_30_8">18時</label>
+  <label class="lr-choice" for="value_select_radio_button_30_8"><input type="radio" id="value_select_radio_button_30_8" class="radio" name="value_select_radio_button_30" value="18時"  /><span class="lr-choice-t">18時</span></label>
 
-  <input type="radio" id="value_select_radio_button_30_9" class="radio" name="value_select_radio_button_30" value="19時"  /><label class="lr-choice" for="value_select_radio_button_30_9">19時</label>
+  <label class="lr-choice" for="value_select_radio_button_30_9"><input type="radio" id="value_select_radio_button_30_9" class="radio" name="value_select_radio_button_30" value="19時"  /><span class="lr-choice-t">19時</span></label>
 
-  <input type="radio" id="value_select_radio_button_30_10" class="radio" name="value_select_radio_button_30" value="20時"  /><label class="lr-choice" for="value_select_radio_button_30_10">20時</label>
+  <label class="lr-choice" for="value_select_radio_button_30_10"><input type="radio" id="value_select_radio_button_30_10" class="radio" name="value_select_radio_button_30" value="20時"  /><span class="lr-choice-t">20時</span></label>
 
 <img loading="lazy" src="../assets/Spry_valid.gif" class="radioValidMsg" width="14" height="14" /><span class="radioRequiredMsg"><img loading="lazy" width="14" height="14" src="../assets/Spry_required.gif" />値が入力されていません。</span></span>
   <span class="control2"></span>
@@ -385,8 +385,8 @@ var B00000031123 = new Spry.Widget.ValidationRadio("B00000031123", {isRequired:f
 <input type="hidden" name="label_text_30" value="予約希望日（第2希望）" />
 <fieldset id="B00000031124">
   <label class="label" for="value_text_30">予約希望日（第2希望）</label>
-  <span class="control"><input type="text" id="value_text_30" name="value_text_30" size="20" maxlength="20" value="" /><img loading="lazy" src="../assets/Spry_valid.gif" class="textfieldValidMsg" width="14" height="14" /><span class="textfieldRequiredMsg"><img loading="lazy" src="../assets/Spry_required.gif" width="14" height="14" />値が入力されていません。</span><span class="textfieldInvalidFormatMsg"><img loading="lazy" src="../assets/Spry_required.gif" width="14" height="14" />無効な値が入力されています。</span></span>
-  <span class="control2">例） 2019/05/20</span>
+  <span class="control"><input type="text" id="value_text_30" name="value_text_30" size="20" maxlength="20" value="" inputmode="numeric" autocomplete="off" /><img loading="lazy" src="../assets/Spry_valid.gif" class="textfieldValidMsg" width="14" height="14" /><span class="textfieldRequiredMsg"><img loading="lazy" src="../assets/Spry_required.gif" width="14" height="14" />値が入力されていません。</span><span class="textfieldInvalidFormatMsg"><img loading="lazy" src="../assets/Spry_required.gif" width="14" height="14" />無効な値が入力されています。</span></span>
+  <span class="control2 lr-hint-date">例）年/月/日</span>
 </fieldset>
 <script type="text/javascript">
 <!--
@@ -399,27 +399,27 @@ var B00000031124 = new Spry.Widget.ValidationTextField("B00000031124", "none", {
   <span class="label" id="value_select_radio_button_42_legend">予約時間（第2希望）</span>
   <span class="control">
   
-  <input type="radio" id="value_select_radio_button_42_0" class="radio" name="value_select_radio_button_42" value="10時"  /><label class="lr-choice" for="value_select_radio_button_42_0">10時</label>
+  <label class="lr-choice" for="value_select_radio_button_42_0"><input type="radio" id="value_select_radio_button_42_0" class="radio" name="value_select_radio_button_42" value="10時"  /><span class="lr-choice-t">10時</span></label>
 
-  <input type="radio" id="value_select_radio_button_42_1" class="radio" name="value_select_radio_button_42" value="11時"  /><label class="lr-choice" for="value_select_radio_button_42_1">11時</label>
+  <label class="lr-choice" for="value_select_radio_button_42_1"><input type="radio" id="value_select_radio_button_42_1" class="radio" name="value_select_radio_button_42" value="11時"  /><span class="lr-choice-t">11時</span></label>
 
-  <input type="radio" id="value_select_radio_button_42_2" class="radio" name="value_select_radio_button_42" value="12時"  /><label class="lr-choice" for="value_select_radio_button_42_2">12時</label>
+  <label class="lr-choice" for="value_select_radio_button_42_2"><input type="radio" id="value_select_radio_button_42_2" class="radio" name="value_select_radio_button_42" value="12時"  /><span class="lr-choice-t">12時</span></label>
 
-  <input type="radio" id="value_select_radio_button_42_3" class="radio" name="value_select_radio_button_42" value="13時"  /><label class="lr-choice" for="value_select_radio_button_42_3">13時</label>
+  <label class="lr-choice" for="value_select_radio_button_42_3"><input type="radio" id="value_select_radio_button_42_3" class="radio" name="value_select_radio_button_42" value="13時"  /><span class="lr-choice-t">13時</span></label>
 
-  <input type="radio" id="value_select_radio_button_42_4" class="radio" name="value_select_radio_button_42" value="14時"  /><label class="lr-choice" for="value_select_radio_button_42_4">14時</label>
+  <label class="lr-choice" for="value_select_radio_button_42_4"><input type="radio" id="value_select_radio_button_42_4" class="radio" name="value_select_radio_button_42" value="14時"  /><span class="lr-choice-t">14時</span></label>
 
-  <input type="radio" id="value_select_radio_button_42_5" class="radio" name="value_select_radio_button_42" value="15時"  /><label class="lr-choice" for="value_select_radio_button_42_5">15時</label>
+  <label class="lr-choice" for="value_select_radio_button_42_5"><input type="radio" id="value_select_radio_button_42_5" class="radio" name="value_select_radio_button_42" value="15時"  /><span class="lr-choice-t">15時</span></label>
 
-  <input type="radio" id="value_select_radio_button_42_6" class="radio" name="value_select_radio_button_42" value="16時"  /><label class="lr-choice" for="value_select_radio_button_42_6">16時</label>
+  <label class="lr-choice" for="value_select_radio_button_42_6"><input type="radio" id="value_select_radio_button_42_6" class="radio" name="value_select_radio_button_42" value="16時"  /><span class="lr-choice-t">16時</span></label>
 
-  <input type="radio" id="value_select_radio_button_42_7" class="radio" name="value_select_radio_button_42" value="17時"  /><label class="lr-choice" for="value_select_radio_button_42_7">17時</label>
+  <label class="lr-choice" for="value_select_radio_button_42_7"><input type="radio" id="value_select_radio_button_42_7" class="radio" name="value_select_radio_button_42" value="17時"  /><span class="lr-choice-t">17時</span></label>
 
-  <input type="radio" id="value_select_radio_button_42_8" class="radio" name="value_select_radio_button_42" value="18時"  /><label class="lr-choice" for="value_select_radio_button_42_8">18時</label>
+  <label class="lr-choice" for="value_select_radio_button_42_8"><input type="radio" id="value_select_radio_button_42_8" class="radio" name="value_select_radio_button_42" value="18時"  /><span class="lr-choice-t">18時</span></label>
 
-  <input type="radio" id="value_select_radio_button_42_9" class="radio" name="value_select_radio_button_42" value="19時"  /><label class="lr-choice" for="value_select_radio_button_42_9">19時</label>
+  <label class="lr-choice" for="value_select_radio_button_42_9"><input type="radio" id="value_select_radio_button_42_9" class="radio" name="value_select_radio_button_42" value="19時"  /><span class="lr-choice-t">19時</span></label>
 
-  <input type="radio" id="value_select_radio_button_42_10" class="radio" name="value_select_radio_button_42" value="20時"  /><label class="lr-choice" for="value_select_radio_button_42_10">20時</label>
+  <label class="lr-choice" for="value_select_radio_button_42_10"><input type="radio" id="value_select_radio_button_42_10" class="radio" name="value_select_radio_button_42" value="20時"  /><span class="lr-choice-t">20時</span></label>
 
 <img loading="lazy" src="../assets/Spry_valid.gif" class="radioValidMsg" width="14" height="14" /><span class="radioRequiredMsg"><img loading="lazy" width="14" height="14" src="../assets/Spry_required.gif" />値が入力されていません。</span></span>
   <span class="control2"></span>
@@ -453,13 +453,13 @@ var B00000031125 = new Spry.Widget.ValidationRadio("B00000031125", {isRequired:f
   <span class="label" id="value_select_check_box_47_legend">当店を何でお知りになりましたか？</span>
   <span class="control">
   
-  <input type="checkbox" id="value_select_check_box_47_0" class="checkbox" name="value_select_check_box_47" value="ご紹介"  /><label class="lr-choice" for="value_select_check_box_47_0">ご紹介</label>
+  <label class="lr-choice" for="value_select_check_box_47_0"><input type="checkbox" id="value_select_check_box_47_0" class="checkbox" name="value_select_check_box_47" value="ご紹介"  /><span class="lr-choice-t">ご紹介</span></label>
 
-  <input type="checkbox" id="value_select_check_box_47_1" class="checkbox" name="value_select_check_box_47" value="広告媒体"  /><label class="lr-choice" for="value_select_check_box_47_1">広告媒体</label>
+  <label class="lr-choice" for="value_select_check_box_47_1"><input type="checkbox" id="value_select_check_box_47_1" class="checkbox" name="value_select_check_box_47" value="広告媒体"  /><span class="lr-choice-t">広告媒体</span></label>
 
-  <input type="checkbox" id="value_select_check_box_47_2" class="checkbox" name="value_select_check_box_47" value="ホームページ"  /><label class="lr-choice" for="value_select_check_box_47_2">ホームページ</label>
+  <label class="lr-choice" for="value_select_check_box_47_2"><input type="checkbox" id="value_select_check_box_47_2" class="checkbox" name="value_select_check_box_47" value="ホームページ"  /><span class="lr-choice-t">ホームページ</span></label>
 
-  <input type="checkbox" id="value_select_check_box_47_3" class="checkbox" name="value_select_check_box_47" value="その他"  /><label class="lr-choice" for="value_select_check_box_47_3">その他</label>
+  <label class="lr-choice" for="value_select_check_box_47_3"><input type="checkbox" id="value_select_check_box_47_3" class="checkbox" name="value_select_check_box_47" value="その他"  /><span class="lr-choice-t">その他</span></label>
 
 <img loading="lazy" src="../assets/Spry_valid.gif" class="checkboxValidMsg" width="14" height="14" /><span class="checkboxRequiredMsg"><img loading="lazy" width="14" height="14" src="../assets/Spry_required.gif" />値が入力されていません。</span></span>
   <span class="control2"></span>

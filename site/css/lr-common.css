@@ -561,12 +561,27 @@ img[width][height] {
    合わせた値（12px の字面＋上下10px）。44px は外から持ち込む数字なので採らない。
    横の15pxは器の内側の余白と同じ家族。
    ------------------------------------------------------------------ */
+/* 選択肢は「印」と「文言」をひと塊にする。
+   改修前は <input> と <label> が兄弟同士で、間の空白が改行の機会になっていた。
+   実測すると予約時間の11個のうち「19時」だけが、印が1行目の末尾・文言が2行目の
+   先頭に割れていた。label の中に input を入れて inline-flex にすれば、
+   ひと塊として行に乗るので原理的に割れない。 */
 .lr-choice {
-	display: inline-block;
-	margin-left: 5px;
-	padding: 10px 15px 10px 0;
+	display: -ms-inline-flexbox;
+	display: inline-flex;
+	-ms-flex-align: center;
+	align-items: center;
+	margin: 0 20px 0 0;
+	padding: 10px 0;
+	/* 行20＋上下10ずつ＝40。この店の箱の高さ */
+	line-height: 20px;
 	vertical-align: middle;
 	cursor: pointer;
+}
+.lr-choice input {
+	-ms-flex: 0 0 auto;
+	flex: 0 0 auto;
+	margin: 0 8px 0 0;
 }
 .lr-choice:hover {
 	color: #70592C;
@@ -2587,4 +2602,80 @@ a.button-rink2:focus {
 	.lr-from { padding: 15px 0; }
 	.lr-from-t { display: block; margin: 0 0 5px; }
 	.lr-from-v { font-size: 16px; }
+}
+
+/* ==================================================================
+   予約フォーム ― 使いにくさを取る
+   ------------------------------------------------------------------
+   実測して見つかったもの：
+     ・予約時間11個のうち「19時」だけ印と文言が行をまたいで割れていた
+     ・入力欄の幅が 355px / 510px とばらばらで、何を書く欄か伝わらない
+     ・日付の案内が「例） 2019/05/20」＝7年前の日付のまま
+     ・予約時間が11個×2組＝22個、一続きの文字列として流れていた
+   ================================================================== */
+
+/* ── 入力欄の幅を中身に合わせる ───────────────────────────────────
+   欄の長さは「これくらい書く欄です」という合図になる。
+   氏名・メールは300px（グリッドの単位）、電話・日付は150px。
+   どちらもこの店が持っている数。 */
+#SF-contact input#value_user_name,
+#SF-contact input#value_text_04,
+#SF-contact input#value_user_email {
+	width: 300px;
+	max-width: 100%;
+	box-sizing: border-box;
+}
+#SF-contact input#value_tel_no_05,
+#SF-contact input#value_text_18,
+#SF-contact input#value_text_30 {
+	width: 150px;
+	max-width: 100%;
+	box-sizing: border-box;
+}
+#SF-contact textarea#value_text_area_42 {
+	width: 100%;
+	max-width: 500px;
+	box-sizing: border-box;
+}
+
+/* ── 予約時間を「表」として読ませる ───────────────────────────────
+   11個が一続きの文字列として流れていたので、時刻を探すのに目が迷う。
+   6列に揃えて 6＋5 の2段にすると、時計の並びとして一目で読める。 */
+#B00000031123 .control,
+#B00000031125 .control {
+	display: -ms-flexbox;
+	display: flex;
+	-ms-flex-wrap: wrap;
+	flex-wrap: wrap;
+}
+#B00000031123 .control .lr-choice,
+#B00000031125 .control .lr-choice {
+	-ms-flex: 0 0 16.6666%;
+	flex: 0 0 16.6666%;
+	max-width: 16.6666%;
+	margin-right: 0;
+	box-sizing: border-box;
+}
+
+/* ── メニューの3組を、ひと続きと分かるように ──────────────────────
+   「メニュー」「新規様 お試しメニュー [FACIAL CARE]」「[BODY CARE]」の
+   3組が同じ見た目で並んでいて、どれを選ぶ組なのかが読めない。
+   お試しメニューの2組を上下のヘアラインで囲み、1つのまとまりとして示す。 */
+#B00000031116 { border-top: 1px solid #E4D6B2; }
+#B00000031119 { border-bottom: 1px solid #E4D6B2; }
+
+@media screen and (max-width: 640px) {
+	/* 携帯では時刻を3列に。350px幅で1列あたり116px、印20＋文言45で収まる */
+	#B00000031123 .control .lr-choice,
+	#B00000031125 .control .lr-choice {
+		-ms-flex: 0 0 33.3333%;
+		flex: 0 0 33.3333%;
+		max-width: 33.3333%;
+	}
+	#SF-contact input#value_user_name,
+	#SF-contact input#value_text_04,
+	#SF-contact input#value_user_email,
+	#SF-contact input#value_tel_no_05,
+	#SF-contact input#value_text_18,
+	#SF-contact input#value_text_30 { width: 100%; }
 }

@@ -31,9 +31,30 @@
 		catch (e) { return null; }
 	}
 
+
+	/* 日付欄の例を「今日から1週間後」で入れる。
+	   もとは「例） 2019/05/20」と固定で書かれていて、7年前の日付が
+	   案内として出ていた。ここで入れれば古くならない。 */
+	function hintDates() {
+		var d = new Date();
+		d.setDate(d.getDate() + 7);
+		var s = d.getFullYear() + '/' +
+			('0' + (d.getMonth() + 1)).slice(-2) + '/' +
+			('0' + d.getDate()).slice(-2);
+		['value_text_18', 'value_text_30'].forEach(function (id) {
+			var el = document.getElementById(id);
+			if (el) { el.setAttribute('placeholder', s); }
+		});
+		Array.prototype.forEach.call(
+			document.querySelectorAll('.lr-hint-date'),
+			function (el) { el.textContent = '例）' + s; });
+	}
+
 	function run() {
 		var form = document.getElementById('SF-contact');
 		if (!form) { return; }
+
+		hintDates();
 
 		var menu = param('menu');
 		var note = param('note');
