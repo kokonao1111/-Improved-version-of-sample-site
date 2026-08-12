@@ -9,10 +9,10 @@
    このファイルを起点に移植すればよい。
 
    配色は既存のパレットに従う。
-     #D9C79D  ヘッダー地・淡金
-     #C4A764  料金表の罫
-     #BC9C52  セクション区切りのヘアライン
-     #70592C  本文
+     #CCBCAB  ヘッダー地・淡金
+     #AE967A  料金表の罫
+     #A4896A  セクション区切りのヘアライン
+     #614E3B  本文
    ================================================================== */
 
 
@@ -21,7 +21,7 @@
    料金表の直前に、右揃えの小さな注記として置く。
    既存サイトの注記は「※初回 50％」「※1年6回保証」のように ※ を
    本文中に書く流儀なので、それに合わせる。
-   色は本文 #70592C を一段淡くした #7E6838。白背景でのコントラスト比は
+   色は本文 #614E3B を一段淡くした #6E5C48。白背景でのコントラスト比は
    5.35:1 で、WCAG AA（4.5:1）を満たす。
    ------------------------------------------------------------------ */
 /* 右端は器に合わせる。course_plan だけ表が padding:15px+border:1px を持つので
@@ -37,7 +37,7 @@
 	font-size: 12px;
 	line-height: 1.7;
 	letter-spacing: .06em;
-	color: #7E6838;
+	color: #6E5C48;
 }
 
 
@@ -87,7 +87,7 @@
 	margin: 0 auto;
 	border-collapse: collapse;
 	font-family: 'Noto Sans JP', sans-serif;
-	color: #70592C;
+	color: #614E3B;
 }
 
 /* 年は小さく添え、月の数字だけを明朝で大きく置く */
@@ -101,7 +101,7 @@
 	margin-right: .55em;
 	font-size: 11px;
 	letter-spacing: .18em;
-	color: #7E6838;
+	color: #6E5C48;
 	vertical-align: 5px;
 }
 .lr-cal-month {
@@ -109,7 +109,7 @@
 	font-size: 25px;
 	line-height: 1;
 	letter-spacing: .02em;
-	color: #70592C;
+	color: #614E3B;
 }
 .lr-cal-month small {
 	margin-left: .12em;
@@ -121,8 +121,8 @@
 	font-size: 11px;
 	font-weight: 400;
 	letter-spacing: .08em;
-	color: #7E6838;
-	border-bottom: 1px solid #C4A764;
+	color: #6E5C48;
+	border-bottom: 1px solid #AE967A;
 }
 .lr-cal td {
 	padding: 5px 0;
@@ -137,11 +137,11 @@
 	line-height: 25px;
 	border-radius: 50%;
 }
-/* 定休日：#EBE2D0 の地に本文色。白地・ベージュ地とも AA を満たす */
-.lr-cal .is-closed .lr-cal-d { background: #EBE2D0; }
+/* 定休日：#E5DED6 の地に本文色。白地・ベージュ地とも AA を満たす */
+.lr-cal .is-closed .lr-cal-d { background: #E5DED6; }
 /* 本日：金の細いリング。塗りではなく線で示し、定休日の面と競合させない */
 .lr-cal .is-today  .lr-cal-d {
-	box-shadow: inset 0 0 0 1px #BC9C52;
+	box-shadow: inset 0 0 0 1px #A4896A;
 	font-weight: 700;
 }
 
@@ -150,7 +150,7 @@
 	font-family: 'Noto Sans JP', sans-serif;
 	font-size: 12px;
 	letter-spacing: .04em;
-	color: #70592C;
+	color: #614E3B;
 }
 .lr-schedule-key {
 	display: inline-block;
@@ -158,7 +158,7 @@
 	height: 13px;
 	margin-right: 10px;
 	border-radius: 50%;
-	background: #EBE2D0;
+	background: #E5DED6;
 	vertical-align: -2px;
 }
 .lr-schedule-note {
@@ -166,7 +166,7 @@
 	font-family: 'Noto Sans JP', sans-serif;
 	font-size: 12px;
 	line-height: 1.9;
-	color: #7E6838;
+	color: #6E5C48;
 }
 
 /* ------------------------------------------------------------------
@@ -177,10 +177,10 @@
    検索エンジンにも読み上げにも届かない。同じ見た目のまま文字に戻す。
 
    寸法・色は元画像から採寸した実測値。
-     tel  … #927839 ／ 字面の高さ 19px（= 24px 相当の明朝）
+     tel  … #7E684D ／ 字面の高さ 19px（= 24px 相当の明朝）
      下段 … #BB9B52 ／ 字面の高さ 11px（= 12px 相当）
    ただし下段の #BB9B52 は白地で 2.67:1 しかなく、文字にすると
-   読めないため #7E6838（5.35:1）へ落とす。同じ金茶の系統で、
+   読めないため #6E5C48（5.35:1）へ落とす。同じ金茶の系統で、
    見た目の印象は変えずに AA を満たす。
    ------------------------------------------------------------------ */
 #Module-default-container {
@@ -203,12 +203,12 @@ a.lr-headtel:active,
 	font-size: 22px;
 	line-height: 1;
 	letter-spacing: .02em;
-	color: #927839;
+	color: #7E684D;
 	text-decoration: none;
 	white-space: nowrap;
 }
 a.lr-headtel:hover {
-	color: #70592C;
+	color: #614E3B;
 	text-decoration: none;
 }
 .lr-headhours {
@@ -216,7 +216,7 @@ a.lr-headtel:hover {
 	margin-top: 10px;
 	font-size: 12px;
 	line-height: 1.5;
-	color: #7E6838;
+	color: #6E5C48;
 	white-space: nowrap;
 }
 
@@ -224,7 +224,7 @@ a.lr-headtel:hover {
 /* 本文中の電話番号。見た目は据え置きのまま、タップで発信できるようにする。
    置かれている場所によって地色が違う（フッターは濃地に白、店舗案内は白地に
    本文色）ため、色は inherit で周囲に従わせる。 */
-/* sitetheme.css の a:link{color:#70592C}（詳細度 0,1,1）が効いてしまうため、
+/* sitetheme.css の a:link{color:#614E3B}（詳細度 0,1,1）が効いてしまうため、
    a.lr-tel:link（0,2,1）で上回らせる。濃地のフッターで暗色になるのを防ぐ。 */
 a.lr-tel:link,
 a.lr-tel:visited,
@@ -245,20 +245,20 @@ a.lr-tel:hover {
    固定要素を増やすと画面が二重に食われるので、すでにある
    data-role="footer" data-position="fixed" の中へ入れる。
 
-   地色はヘッダーと同じ #D9C79D。上下をベージュで挟むことで
+   地色はヘッダーと同じ #CCBCAB。上下をベージュで挟むことで
    「このサイトの一部」として読める。角丸・影・グラデーションは使わず、
    1px のヘアラインだけで三分割する。既存の .button-rink が
    「2px の金枠・角丸なし」であるのと同じ規範。
 
-   文字は #5A4823。既存ヘッダーの #70592C は #D9C79D 地では
+   文字は #4E3F2F。既存ヘッダーの #614E3B は #CCBCAB 地では
    3.95:1 しかなく AA に届かないため、同じ茶を一段深めて 5.28:1 にした。
    ------------------------------------------------------------------ */
 .lr-cta {
 	display: -webkit-box;
 	display: -ms-flexbox;
 	display: flex;
-	background: #D9C79D;
-	border-top: 1px solid #BC9C52;
+	background: #CCBCAB;
+	border-top: 1px solid #A4896A;
 }
 /* jQuery Mobile は生成時にアンカーへ .ui-link を付け、
    .ui-bar-a a.ui-link{color:#7cc4e7;font-weight:bold}（詳細度 0,2,1）が当たる。
@@ -274,7 +274,7 @@ a.lr-tel:hover {
 	padding: 10px 2px;
 	text-align: center;
 	text-decoration: none;
-	color: #5A4823;
+	color: #4E3F2F;
 	border-left: 1px solid rgba(90, 72, 35, .28);
 	line-height: 1;
 	font-weight: 400;
@@ -288,7 +288,7 @@ a.lr-tel:hover {
 .lr-cta a.lr-cta-i:hover,
 .lr-cta a.lr-cta-i:focus {
 	background: #CDB786;
-	color: #5A4823;
+	color: #4E3F2F;
 	text-decoration: none;
 }
 .lr-cta-t {
@@ -342,7 +342,7 @@ a.lr-tel:hover {
 	margin: 0;
 	font-size: 28px;
 	line-height: 1.4;
-	color: #70592C;
+	color: #614E3B;
 }
 .lr-book-h > span,
 .kome_line > span {
@@ -357,7 +357,7 @@ a.lr-tel:hover {
 #B000000200 .kome_line > span,
 #B000000377 .kome_line > span,
 .lr-nav3 .kome_line > span {
-	background: #F3EDE2;
+	background: #EFEAE6;
 }
 .lr-book-h:before,
 .lr-book-h:after {
@@ -367,7 +367,7 @@ a.lr-tel:hover {
 	display: inline-block;
 	width: 40%;
 	height: 1px;
-	background-color: #BC9C52;
+	background-color: #A4896A;
 }
 .lr-book-h:before { left: 0; }
 .lr-book-h:after  { right: 0; }
@@ -377,7 +377,7 @@ a.lr-tel:hover {
 	font-family: 'Noto Sans JP', sans-serif;
 	font-size: 12px;
 	letter-spacing: .16em;
-	color: #7E6838;
+	color: #6E5C48;
 }
 
 .lr-book-row {
@@ -396,15 +396,15 @@ a.lr-tel:hover {
 	margin: 0 10px;
 	padding: 15px 0;
 	box-sizing: border-box;
-	border: 2px solid #BC9C52;
-	color: #70592C;
+	border: 2px solid #A4896A;
+	color: #614E3B;
 	text-decoration: none;
 	cursor: pointer;
 	-webkit-transition: background-color var(--lr-t) var(--lr-e), color var(--lr-t) var(--lr-e), border-color var(--lr-t) var(--lr-e);
 	transition: background-color var(--lr-t) var(--lr-e), color var(--lr-t) var(--lr-e), border-color var(--lr-t) var(--lr-e);
 }
 .lr-book-row a.lr-book-b:hover {
-	background: #BC9C52;
+	background: #A4896A;
 	color: #ffffff;
 	text-decoration: none;
 }
@@ -428,7 +428,7 @@ a.lr-tel:hover {
 	font-family: 'Noto Sans JP', sans-serif;
 	font-size: 12px;
 	letter-spacing: .04em;
-	color: #7E6838;
+	color: #6E5C48;
 }
 
 
@@ -471,7 +471,7 @@ a.lr-tel:hover {
 }
 /* キーボード操作時に、どのカードを選んでいるか見えるようにする */
 .lr-card a.lr-cardlink:focus {
-	outline: 2px solid #BC9C52;
+	outline: 2px solid #A4896A;
 	outline-offset: -2px;
 }
 
@@ -584,7 +584,7 @@ img[width][height] {
 	margin: 0 8px 0 0;
 }
 .lr-choice:hover {
-	color: #70592C;
+	color: #614E3B;
 }
 
 
@@ -595,7 +595,7 @@ img[width][height] {
    7px間隔で縦に隣接していた。14項目を入力し終えた指が下に触れると
    全消去され、取り消す手段は無い。PC版も横並びで幅だけが違う。
 
-   送信はこの店の「押せる」符号（2px の #BC9C52）をそのまま使う。
+   送信はこの店の「押せる」符号（2px の #A4896A）をそのまま使う。
    サイト内で 2px の金枠は11箇所すべてがボタンで、例外がない。
    リセットは枠を持たせない。破壊的な操作を、押せる印と同じ形にしない。
    文字リンクへ降格し、50px 離して、文言も「リセット」から
@@ -613,11 +613,11 @@ img[width][height] {
 	padding: 15px 0;
 	box-sizing: border-box;
 	background: transparent;
-	border: 2px solid #BC9C52;
+	border: 2px solid #A4896A;
 	border-radius: 0;
 	-webkit-appearance: none;
 	appearance: none;
-	color: #70592C;
+	color: #614E3B;
 	font-family: 'Noto Serif JP', serif;
 	font-size: 16px;
 	line-height: 1;
@@ -627,7 +627,7 @@ img[width][height] {
 	transition: background-color var(--lr-t) var(--lr-e), color var(--lr-t) var(--lr-e);
 }
 .lr-submit:hover {
-	background: #BC9C52;
+	background: #A4896A;
 	color: #ffffff;
 }
 
@@ -643,7 +643,7 @@ img[width][height] {
 	-webkit-appearance: none;
 	appearance: none;
 	padding: 5px;
-	color: #7E6838;
+	color: #6E5C48;
 	font-family: 'Noto Sans JP', sans-serif;
 	font-size: 12px;
 	letter-spacing: .04em;
@@ -651,7 +651,7 @@ img[width][height] {
 	cursor: pointer;
 }
 .lr-reset:hover {
-	color: #70592C;
+	color: #614E3B;
 }
 
 
@@ -666,18 +666,18 @@ img[width][height] {
    modulestyle.css:942 / :2646 が #B000000200「お悩みから選ぶ」と
    #B000000377「気になる部位から選ぶ」に background:#cccccc・color:#000000 を
    与えている。12枚のカードを6+6に割る、ページの骨格そのものだ。
-   #cccccc も #000000 も、この店の5色（#D9C79D #C4A764 #BC9C52 #70592C #F3EDE2）
+   #cccccc も #000000 も、この店の5色（#CCBCAB #AE967A #A4896A #614E3B #EFEAE6）
    のどれでもなく、サイト全体を走査して純黒の見出しはここだけ。
-   他ページの同じ役割の帯（#B000000397 など）は全て #F3EDE2 なので、そちらへ揃える。
+   他ページの同じ役割の帯（#B000000397 など）は全て #EFEAE6 なので、そちらへ揃える。
    ------------------------------------------------------------------ */
 #B000000200,
 #B000000377 {
-	background-color: #F3EDE2;
-	border-color: #F3EDE2;
+	background-color: #EFEAE6;
+	border-color: #EFEAE6;
 }
 #B000000200 .mincho,
 #B000000377 .mincho {
-	color: #70592C;
+	color: #614E3B;
 }
 
 
@@ -688,7 +688,7 @@ img[width][height] {
    「・グラマラス」599px）。13pxの文字を600px追いかけることになり、
    1行ずれれば 13,200円 と 25,300円 を取り違える。
 
-   罫は #C4A764 の1px。この店では「1px＝面を仕切る（押せない）／
+   罫は #AE967A の1px。この店では「1px＝面を仕切る（押せない）／
    2px＝押せる」が11箇所すべてで成立しているので、押せない表に
    2pxの外枠を与えていた現状はその符号を崩している。外枠は HTML 側の
    インラインstyleを 2px→1px に直した（!important を持ち込まないため）。
@@ -696,7 +696,7 @@ img[width][height] {
 .course_l,
 .course_c,
 .course_r {
-	border-bottom: 1px solid #EBE2D0;
+	border-bottom: 1px solid #E5DED6;
 }
 tr:last-child .course_l,
 tr:last-child .course_c,
@@ -797,7 +797,7 @@ h4.newslistHeadlineStyle {
    項目幅 75/120/96/168/168/108/108/108（合計951px、内容幅952pxに
    手で追い込んだ値）には一切触らない。ここは手作業の跡そのもの。
 
-   現在地の表示が無いので、2px の #BC9C52 で下線を引く。
+   現在地の表示が無いので、2px の #A4896A で下線を引く。
    2px＝押せる印なので、ナビ項目には正しい太さ。
    ------------------------------------------------------------------ */
 #SF-navigation ul li a {
@@ -809,7 +809,7 @@ h4.newslistHeadlineStyle {
 /* 現在地。各ページの本文側で body に効かせる手段が無いので、
    ナビの現在ページのリンクが持つ id を使う（生成側が付けている）。 */
 #SF-navigation ul li a.lr-current {
-	border-bottom: 2px solid #BC9C52;
+	border-bottom: 2px solid #A4896A;
 }
 
 
@@ -842,7 +842,7 @@ h4.newslistHeadlineStyle {
 .kome_line:before,
 .kome_line:after {
 	width: 40%;
-	background-color: #BC9C52;
+	background-color: #A4896A;
 }
 
 
@@ -916,7 +916,7 @@ h4.newslistHeadlineStyle {
 
    あわせて .lr-card:hover{opacity:.82} を撤回する。カードの .lr-cardlink は
    同じ `#B000000148 li a` に含まれており、改修前から白ベールを持っていた。
-   私の指定はその上への二重掛けで、見出し帯（#705A2C 地に白15px）の対比を
+   私の指定はその上への二重掛けで、見出し帯（#614E3B 地に白15px）の対比を
    6.59:1 → 4.40:1 に落として WCAG AA を割っていた。
    ------------------------------------------------------------------ */
 #B000000054 li a, #B000000071 li a, #B000000124 li a, #B000000141 li a,
@@ -946,20 +946,20 @@ h4.newslistHeadlineStyle {
 
    押下だけは時間を持たせない。指が触れている間に0.2秒の途中経過を
    挟むのは、返事を速くするどころか鈍くする。
-   色はホバーの金より一段濃い本文色 #70592C まで沈める（白抜き 6.66:1）。
+   色はホバーの金より一段濃い本文色 #614E3B まで沈める（白抜き 6.66:1）。
    ------------------------------------------------------------------ */
 .lr-cta a.lr-cta-i:active,
 .lr-book-row a.lr-book-b:active,
 a.button-rink:active,
 #B000000311 input.lr-submit:active,
 .lr-submit:active {
-	background: #70592C;
+	background: #614E3B;
 	color: #ffffff;
 	-webkit-transition: none;
 	transition: none;
 }
 .lr-card:active {
-	background: #EBE2D0;
+	background: #E5DED6;
 }
 
 
@@ -970,8 +970,8 @@ a.button-rink:active,
    PC15ページ全アンカーに効いており、8,800〜88,000円の予約導線が
    キーボードで辿れない。WCAG 2.4.7 の明確な失敗。
 
-   輪郭色に金 #BC9C52 は使えない。白地 2.62:1 / ベージュ地 2.25:1 で
-   非テキストの3:1（1.4.11）を満たさないため。本文色 #70592C なら
+   輪郭色に金 #A4896A は使えない。白地 2.62:1 / ベージュ地 2.25:1 で
+   非テキストの3:1（1.4.11）を満たさないため。本文色 #614E3B なら
    白地 6.62:1 / ベージュ地 5.70:1。私が lr-cardlink に書いた金2pxも
    同じ理由で誤りだったので訂正する。
    ------------------------------------------------------------------ */
@@ -980,7 +980,7 @@ button:focus,
 input:focus,
 textarea:focus,
 select:focus {
-	outline: 2px solid #70592C;
+	outline: 2px solid #614E3B;
 	outline-offset: 2px;
 }
 /* マウス操作でリングを出さない環境では :focus-visible に譲る */
@@ -994,11 +994,11 @@ button:focus-visible,
 input:focus-visible,
 textarea:focus-visible,
 select:focus-visible {
-	outline: 2px solid #70592C;
+	outline: 2px solid #614E3B;
 	outline-offset: 2px;
 }
 .lr-card a.lr-cardlink:focus {
-	outline: 2px solid #70592C;
+	outline: 2px solid #614E3B;
 	outline-offset: -2px;
 }
 
@@ -1078,7 +1078,7 @@ a.lr-headtel {
 	right: 0;
 	bottom: -5px;
 	height: 1px;
-	background: #BC9C52;
+	background: #A4896A;
 }
 
 
@@ -1092,10 +1092,10 @@ a.lr-headtel {
    発想の裏返しで、このサイト以外から持ってこられない一手。
    ------------------------------------------------------------------ */
 .lr-book-row:hover a.lr-book-b {
-	border-color: #E4D6B2;
+	border-color: #D9CCBD;
 }
 .lr-book-row:hover a.lr-book-b:hover {
-	border-color: #BC9C52;
+	border-color: #A4896A;
 }
 
 
@@ -1126,12 +1126,12 @@ a.lr-headtel {
    他6ページが持っている3枚組をここにも置く。
    ただし生成側のモジュールCSS（#B000000148 等）はページ群ごとに別ファイルで、
    複製先には存在しない。そこで見た目はここで自己完結させる。
-   寸法は index の3列と同じ 300px + 段間50px、地は #F3EDE2、
-   見出しの帯は #70592C（回遊札の色）。すべて店が既に持っている値。
+   寸法は index の3列と同じ 300px + 段間50px、地は #EFEAE6、
+   見出しの帯は #614E3B（回遊札の色）。すべて店が既に持っている値。
    ------------------------------------------------------------------ */
 .lr-nav3 {
 	clear: both;
-	background: #F3EDE2;
+	background: #EFEAE6;
 	padding: 50px 0;
 	margin-top: 100px;
 	text-align: center;
@@ -1140,7 +1140,7 @@ a.lr-headtel {
 	margin: 0 0 30px;
 	font-size: 24px;
 	font-weight: normal;
-	color: #70592C;
+	color: #614E3B;
 }
 .lr-nav3-list {
 	list-style: none;
@@ -1161,7 +1161,7 @@ a.lr-headtel {
 .lr-nav3-list img { display: block; width: 100%; }
 .lr-nav3-t {
 	display: block;
-	background: #70592C;
+	background: #614E3B;
 	color: #ffffff;
 	font-family: 'Noto Sans JP', sans-serif;
 	font-size: 15px;
@@ -1255,16 +1255,16 @@ a.lr-headtel {
 #SF-contents ul.thumbnailList li h3.newslistHeadlineStyle,
 #SF-contents h3.newslistHeadlineStyle {
 	background-color: transparent;
-	color: #70592C;
-	border-bottom: 1px solid #C4A764;
+	color: #614E3B;
+	border-bottom: 1px solid #AE967A;
 	text-align: left;
 	padding-left: 0;
 	padding-right: 0;
 }
 .lr-nav3-t {
 	background: transparent;
-	color: #70592C;
-	border-bottom: 1px solid #C4A764;
+	color: #614E3B;
+	border-bottom: 1px solid #AE967A;
 	padding-left: 0;
 	padding-right: 0;
 	font-family: 'Noto Serif JP', serif;
@@ -1275,7 +1275,7 @@ a.lr-headtel {
 #SF-contents .box,
 #SF-contents .box_c {
 	background: transparent;
-	color: #7E6838;
+	color: #6E5C48;
 	border: 0;
 	border-radius: 0;
 	padding: 0;
@@ -1285,7 +1285,7 @@ a.lr-headtel {
 }
 #SF-contents .box2 {
 	background: transparent;
-	color: #7E6838;
+	color: #6E5C48;
 	border: 0;
 	border-radius: 0;
 	padding: 0 0 0 .2em;
@@ -1301,7 +1301,7 @@ a.lr-headtel {
 
 /* ------------------------------------------------------------------
    ③ 赤と桃を落とす
-   #FF7D7D はベージュ地で輝度比 2.1:1。最も読ませたい数字が版面で
+   #944A38 はベージュ地で輝度比 2.1:1。最も読ませたい数字が版面で
    最も読みにくい文字になっていた。しかも同じ色が割引価格・スタッフの
    小見出し・入力必須の3つを兼ねていて、色が何も区別していない。
    価格は既に付いている級数（1.3em / 1.5em）だけで立つ。
@@ -1310,9 +1310,9 @@ a.lr-headtel {
 #SF-contents .price,
 #SF-startPage .trial,
 #SF-startPage .price {
-	color: #70592C;
+	color: #614E3B;
 }
-.q_l { color: #70592C; }
+.q_l { color: #614E3B; }
 
 /* ------------------------------------------------------------------
    ④ ページの終わりを1回にする
@@ -1329,7 +1329,7 @@ a.lr-headtel {
 #B000000031 .t_r_tel,
 #B000000031 .t_l2,
 #B000000031 .t_r2 {
-	color: #70592C;
+	color: #614E3B;
 }
 /* 罫は全幅の #ADDBGBOTTOM 側だけに置く。
    #SF-footer は版面1000px・#ADDBGBOTTOM は窓幅いっぱいで、
@@ -1340,11 +1340,11 @@ a.lr-headtel {
 #SF-footer {
 	background-color: #ffffff;
 }
-#ADDBGBOTTOM { border-top: 1px solid #C4A764; }
+#ADDBGBOTTOM { border-top: 1px solid #AE967A; }
 #SF-footer { border-top: 0; }
 #SF-footer p,
 #ADDBGBOTTOM p {
-	color: #7E6838;
+	color: #6E5C48;
 	font-size: 12px;
 	letter-spacing: .08em;
 }
@@ -1356,15 +1356,15 @@ a.lr-headtel {
    ------------------------------------------------------------------ */
 #page-top a {
 	background-color: rgba(255, 255, 255, .92);
-	border: 1px solid #BC9C52;
+	border: 1px solid #A4896A;
 	border-radius: 0;
-	color: #70592C;
+	color: #614E3B;
 	font-family: 'Noto Sans JP', sans-serif;
 	font-size: 11px;
 	letter-spacing: .12em;
 }
 #page-top a:hover {
-	background-color: #BC9C52;
+	background-color: #A4896A;
 	color: #ffffff;
 }
 
@@ -1406,7 +1406,7 @@ a.lr-headtel {
 	display: block;
 	width: 100%;
 	height: auto;
-	border: 1px solid #C4A764;
+	border: 1px solid #AE967A;
 	box-sizing: border-box;
 }
 
@@ -1432,7 +1432,7 @@ a.lr-headtel {
    jQuery Mobile 1.3.2 の既定意匠（角丸1em・box-shadow・グラデーション・
    text-shadow・円形アイコン）が、SP全15ページの最初に目に入る。
    同じ画面の下端では、この店の語彙で作った3分割CTAバー
-   （#D9C79D地・明朝・縦罫1本・角丸なし）が既に正解を出している。
+   （#CCBCAB地・明朝・縦罫1本・角丸なし）が既に正解を出している。
    上端をそれに合わせる。新しいハンバーガーもドロワーも設計しない。
    ------------------------------------------------------------------ */
 #SF-startPage .ui-header,
@@ -1452,16 +1452,16 @@ a.lr-headtel {
 }
 #SF-startPage .ui-header .ui-btn-up-a,
 #SF-startPage .ui-header .ui-btn-hover-a {
-	border: 1px solid #BC9C52;
+	border: 1px solid #A4896A;
 	background: transparent;
-	color: #5A4823;
+	color: #4E3F2F;
 }
 #SF-startPage .ui-header .ui-title {
 	font-family: 'Noto Serif JP', serif;
 	font-weight: 400;
 	letter-spacing: .08em;
 	text-shadow: none;
-	color: #5A4823;
+	color: #4E3F2F;
 }
 
 
@@ -1479,7 +1479,7 @@ a.lr-headtel {
      いちばん素直で、入口はその後ろで用が足りる。
    ・入口は箱を4つ置くのをやめ、1本の帯を縦のヘアラインで割る。
      この店の造形は「金の細い線で面を仕切る」であって「枠で囲む」ではない。
-     SP下端のCTAバー（#D9C79D地・明朝・縦罫1本）が既に同じ形で成立している。
+     SP下端のCTAバー（#CCBCAB地・明朝・縦罫1本）が既に同じ形で成立している。
    ・押せることは、ホバーで下の罫が 1px→2px に太るだけで示す。
      この店では 1px＝仕切る／2px＝押せる が11箇所で例外なく成立しているので、
      太さが変わること自体が「押せる」の合図になる。新しい色も面も足さない。
@@ -1494,8 +1494,8 @@ a.lr-headtel {
 	display: -webkit-box;
 	display: -ms-flexbox;
 	display: flex;
-	border-top: 1px solid #C4A764;
-	border-bottom: 1px solid #C4A764;
+	border-top: 1px solid #AE967A;
+	border-bottom: 1px solid #AE967A;
 	font-size: 0;
 }
 #B000000024 ul.lr-tiles > li,
@@ -1508,7 +1508,7 @@ a.lr-headtel {
 	margin: 0;
 	padding: 0;
 	list-style: none;
-	border-left: 1px solid #E4D6B2;
+	border-left: 1px solid #D9CCBD;
 }
 #B000000024 ul.lr-tiles > li:first-child,
 .lr-tiles > li:first-child { border-left: 0; }
@@ -1521,7 +1521,7 @@ a.lr-headtel {
 	padding: 26px 10px 30px;
 	box-sizing: border-box;
 	border: 0;
-	color: #70592C;
+	color: #614E3B;
 	text-align: center;
 	text-decoration: none;
 }
@@ -1535,7 +1535,7 @@ a.lr-headtel {
 	right: 32px;
 	bottom: 18px;
 	height: 2px;
-	background: #BC9C52;
+	background: #A4896A;
 	-webkit-transform: scaleX(0);
 	transform: scaleX(0);
 	-webkit-transition: -webkit-transform var(--lr-t) var(--lr-e);
@@ -1543,7 +1543,7 @@ a.lr-headtel {
 }
 .lr-tiles a.lr-tile:hover:after,
 .lr-tiles a.lr-tile:focus:after { -webkit-transform: scaleX(1); transform: scaleX(1); }
-.lr-tiles a.lr-tile:active:after { background: #70592C; -webkit-transition: none; transition: none; }
+.lr-tiles a.lr-tile:active:after { background: #614E3B; -webkit-transition: none; transition: none; }
 .lr-tile-t {
 	display: block;
 	font-family: 'Noto Serif JP', serif;
@@ -1557,7 +1557,7 @@ a.lr-headtel {
 	font-family: 'Noto Sans JP', sans-serif;
 	font-size: 12px;
 	letter-spacing: .1em;
-	color: #7E6838;
+	color: #6E5C48;
 }
 
 /* ------------------------------------------------------------------
@@ -1580,7 +1580,7 @@ a.lr-headtel {
 	font-size: 26px;
 	line-height: 1.6;
 	letter-spacing: .1em;
-	color: #70592C;
+	color: #614E3B;
 }
 .lr-words-sub {
 	margin: 15px 0 0;
@@ -1588,7 +1588,7 @@ a.lr-headtel {
 	font-size: 13px;
 	line-height: 1.7;
 	letter-spacing: .1em;
-	color: #7E6838;
+	color: #6E5C48;
 }
 /* 枠で囲まない。金の細い罫を1本引くだけの、静かな行き先表示 */
 .lr-words-link { margin: 25px 0 0; }
@@ -1598,8 +1598,8 @@ a.lr-headtel {
 	display: inline-block;
 	padding: 0 0 6px;
 	border: 0;
-	border-bottom: 1px solid #C4A764;
-	color: #70592C;
+	border-bottom: 1px solid #AE967A;
+	color: #614E3B;
 	font-family: 'Noto Serif JP', serif;
 	font-size: 15px;
 	letter-spacing: .1em;
@@ -1607,14 +1607,14 @@ a.lr-headtel {
 	-webkit-transition: border-color var(--lr-t) var(--lr-e);
 	transition: border-color var(--lr-t) var(--lr-e);
 }
-.lr-words a.lr-words-a:hover { background: transparent; color: #70592C; border-bottom-color: #70592C; }
+.lr-words a.lr-words-a:hover { background: transparent; color: #614E3B; border-bottom-color: #614E3B; }
 .lr-words-note {
 	display: inline;
 	margin: 0 0 0 12px;
 	font-family: 'Noto Sans JP', sans-serif;
 	font-size: 11px;
 	letter-spacing: .12em;
-	color: #7E6838;
+	color: #6E5C48;
 }
 
 /* スマートフォン */
@@ -1627,7 +1627,7 @@ a.lr-headtel {
 	#B000000024 ul.lr-tiles > li:nth-child(2n+1),
 	.lr-tiles > li:nth-child(2n+1) { border-left: 0; }
 	#B000000024 ul.lr-tiles > li:nth-child(n+3),
-	.lr-tiles > li:nth-child(n+3) { border-top: 1px solid #E4D6B2; }
+	.lr-tiles > li:nth-child(n+3) { border-top: 1px solid #D9CCBD; }
 	.lr-tiles a.lr-tile { padding: 20px 5px 24px; }
 	.lr-tile-t { font-size: 14px; }
 	.lr-tile-s { font-size: 11px; margin: 6px 0 0; }
@@ -1644,8 +1644,8 @@ a.lr-headtel {
 /* ------------------------------------------------------------------
    ⑫ trial の「ご利用の流れ」の帯
    ------------------------------------------------------------------
-   #E6E6DB という灰緑の面が6箇所に敷かれている。この店の5色
-   （#D9C79D / #C4A764 / #BC9C52 / #70592C / #F3EDE2）のどれでもない色で、
+   #EFEAE6 という灰緑の面が6箇所に敷かれている。この店の5色
+   （#CCBCAB / #AE967A / #A4896A / #614E3B / #EFEAE6）のどれでもない色で、
    trial にしか存在しない。塗りをやめ、上下のヘアラインだけにする。
    アコーディオンの見出しなので、面で囲うより線で挟むほうが
    「開くと下に続く」ことが読める。
@@ -1656,9 +1656,9 @@ a.lr-headtel {
    :has() 非対応の環境では灰緑の帯が残るだけで、壊れない。 */
 #SF-contents h2.headlineStyle:has(.csOpenClose) {
 	background-color: transparent;
-	border-top: 1px solid #C4A764;
-	border-bottom: 1px solid #C4A764;
-	color: #70592C;
+	border-top: 1px solid #AE967A;
+	border-bottom: 1px solid #AE967A;
+	color: #614E3B;
 }
 
 /* ------------------------------------------------------------------
@@ -1689,7 +1689,7 @@ a.lr-headtel {
    ⑭ INSTAGRAM / LINE@ ― 焼き込み画像をやめる
    ------------------------------------------------------------------
    500×150 の等倍JPEGに文字も枠も焼き込まれていた。
-   ・枠が画像の中に描かれていて（#D6C99F）、見出しの罫と重なって線が増えていた
+   ・枠が画像の中に描かれていて（#CABDAB）、見出しの罫と重なって線が増えていた
    ・Retina で文字が滲む
    ・そして Instagram のアカウント名が @louise.rever_waayama と綴りを誤っており、
      画像を見て手入力した人は辿り着けなかった（リンク自体は正しい）
@@ -1707,7 +1707,7 @@ a.lr-sns:visited {
 	-ms-flex-align: center;
 	align-items: center;
 	padding: 20px 0 30px;
-	color: #70592C;
+	color: #614E3B;
 	text-decoration: none;
 }
 .lr-sns-ph {
@@ -1740,9 +1740,9 @@ a.lr-sns:visited {
 	font-size: 12px;
 	line-height: 1.9;
 	letter-spacing: .02em;
-	color: #7E6838;
+	color: #6E5C48;
 }
-a.lr-sns:hover .lr-sns-id { color: #BC9C52; }
+a.lr-sns:hover .lr-sns-id { color: #A4896A; }
 
 @media screen and (max-width: 640px) {
 	.lr-sns { padding: 15px; }
@@ -1795,7 +1795,7 @@ a.lr-sns:hover .lr-sns-id { color: #BC9C52; }
 }
 
 /* 連絡先ブロックのロゴ。地を #555 から白へ戻したとき、中の logo2.png が
-   白抜き版のままで見えなくなっていた。明度をそのまま金（#BC9C52）の濃淡へ
+   白抜き版のままで見えなくなっていた。明度をそのまま金（#A4896A）の濃淡へ
    写した logo2_gold.png に差し替え、天の余りも詰める。 */
 #B000000031 h4.newslistHeadlineStyle {
 	margin: 0 0 25px;
@@ -1911,7 +1911,7 @@ body {
 	flex: 1 1 auto;
 	width: auto;
 	height: 1px;
-	background-color: #BC9C52;
+	background-color: #A4896A;
 }
 :is(.kome_line):before,
 :is(.kome_line):after { min-width: 0; }
@@ -1936,8 +1936,8 @@ body {
 		display: flex;
 		-ms-flex-wrap: wrap;
 		flex-wrap: wrap;
-		border-top: 1px solid #C4A764;
-		border-bottom: 1px solid #C4A764;
+		border-top: 1px solid #AE967A;
+		border-bottom: 1px solid #AE967A;
 	}
 	#SF-navigation :is(#B000000002,#B000000034,#B000000055,#B000000119,#B000000136,#B000000144,#B000000154,#B000000164,#B000000182,#B000000261,#B000000270,#B000000278,#B000000286,#B000000294,#B000000302) ul li {
 		float: none;
@@ -1947,12 +1947,12 @@ body {
 		width: auto;
 		box-sizing: border-box;
 		line-height: 1.7;
-		border-left: 1px solid #E4D6B2;
+		border-left: 1px solid #D9CCBD;
 		display: -ms-flexbox;
 		display: flex;
 	}
 	#SF-navigation :is(#B000000002,#B000000034,#B000000055,#B000000119,#B000000136,#B000000144,#B000000154,#B000000164,#B000000182,#B000000261,#B000000270,#B000000278,#B000000286,#B000000294,#B000000302) ul li:nth-child(4n+1) { border-left: 0; }
-	#SF-navigation :is(#B000000002,#B000000034,#B000000055,#B000000119,#B000000136,#B000000144,#B000000154,#B000000164,#B000000182,#B000000261,#B000000270,#B000000278,#B000000286,#B000000294,#B000000302) ul li:nth-child(n+5)  { border-top: 1px solid #E4D6B2; }
+	#SF-navigation :is(#B000000002,#B000000034,#B000000055,#B000000119,#B000000136,#B000000144,#B000000154,#B000000164,#B000000182,#B000000261,#B000000270,#B000000278,#B000000286,#B000000294,#B000000302) ul li:nth-child(n+5)  { border-top: 1px solid #D9CCBD; }
 	/* 幅は生成CSSが個別idで (3,0,1) の重さで持っている。同じ重さで返す。
 	   50px はこの店の箱の高さ（50/40/30）の一番大きい数で、
 	   指で押す的の最小 44px も上回る。 */
@@ -1984,10 +1984,10 @@ body {
 		-ms-flex: 0 0 50%;
 		flex: 0 0 50%;
 		max-width: 50%;
-		border-left: 1px solid #E4D6B2;
+		border-left: 1px solid #D9CCBD;
 	}
 	#SF-navigation :is(#B000000002,#B000000034,#B000000055,#B000000119,#B000000136,#B000000144,#B000000154,#B000000164,#B000000182,#B000000261,#B000000270,#B000000278,#B000000286,#B000000294,#B000000302) ul li:nth-child(2n+1) { border-left: 0; }
-	#SF-navigation :is(#B000000002,#B000000034,#B000000055,#B000000119,#B000000136,#B000000144,#B000000154,#B000000164,#B000000182,#B000000261,#B000000270,#B000000278,#B000000286,#B000000294,#B000000302) ul li:nth-child(n+3)  { border-top: 1px solid #E4D6B2; }
+	#SF-navigation :is(#B000000002,#B000000034,#B000000055,#B000000119,#B000000136,#B000000144,#B000000154,#B000000164,#B000000182,#B000000261,#B000000270,#B000000278,#B000000286,#B000000294,#B000000302) ul li:nth-child(n+3)  { border-top: 1px solid #D9CCBD; }
 }
 
 /* ── 段を積む ─────────────────────────────────────────────────── */
@@ -2486,20 +2486,20 @@ a.button-rink2,
 a.button-rink2:link,
 a.button-rink2:visited {
 	background: transparent;
-	border: 2px solid #BC9C52;
-	color: #70592C;
+	border: 2px solid #A4896A;
+	color: #614E3B;
 }
 a.button-rink2:hover,
 a.button-rink2:focus {
-	background: #BC9C52;
+	background: #A4896A;
 	color: #ffffff;
 }
 
 /* ⑫の続き ― 同じ部品なのに生成CSSが2通りに書いていた
    ------------------------------------------------------------------
-   trial の「ご利用の流れ」6箇所は、灰緑 #E6E6DB の敷き方が2種類あった。
-     #B000000113〜115 .headlineStyle { background:#E6E6DB }  ← 見出しに敷く
-     #B000000116〜118               { background:#E6E6DB }  ← 器に敷く
+   trial の「ご利用の流れ」6箇所は、灰緑 #EFEAE6 の敷き方が2種類あった。
+     #B000000113〜115 .headlineStyle { background:#EFEAE6 }  ← 見出しに敷く
+     #B000000116〜118               { background:#EFEAE6 }  ← 器に敷く
    ⑫では見出し側しか剥がしていなかったため、6つのうち3つが白、3つがベージュ
    という2種類の見た目が同じページに並んでいた（実測で確認）。
    器側も剥がして、6つとも「上下のヘアラインだけ」に揃える。 */
@@ -2551,9 +2551,9 @@ a.button-rink2:focus {
 	min-width: 300px;
 	padding: 15px 30px;
 	box-sizing: border-box;
-	border: 2px solid #BC9C52;
+	border: 2px solid #A4896A;
 	background: transparent;
-	color: #70592C;
+	color: #614E3B;
 	font-family: 'Noto Serif JP', serif;
 	font-size: 16px;
 	line-height: 20px;
@@ -2564,7 +2564,7 @@ a.button-rink2:focus {
 }
 .lr-apply a.lr-apply-b:hover,
 .lr-apply a.lr-apply-b:focus {
-	background: #BC9C52;
+	background: #A4896A;
 	color: #ffffff;
 	text-decoration: none;
 }
@@ -2584,10 +2584,10 @@ a.button-rink2:focus {
 .lr-from {
 	margin: 0 0 30px;
 	padding: 15px 20px;
-	border-top: 1px solid #C4A764;
-	border-bottom: 1px solid #C4A764;
+	border-top: 1px solid #AE967A;
+	border-bottom: 1px solid #AE967A;
 	font-family: 'Noto Serif JP', serif;
-	color: #70592C;
+	color: #614E3B;
 }
 .lr-from-t {
 	display: inline-block;
@@ -2595,7 +2595,7 @@ a.button-rink2:focus {
 	font-family: 'Noto Sans JP', sans-serif;
 	font-size: 12px;
 	letter-spacing: .1em;
-	color: #7E6838;
+	color: #6E5C48;
 }
 .lr-from-v { font-size: 18px; letter-spacing: .04em; }
 @media screen and (max-width: 640px) {
@@ -2661,8 +2661,8 @@ a.button-rink2:focus {
    「メニュー」「新規様 お試しメニュー [FACIAL CARE]」「[BODY CARE]」の
    3組が同じ見た目で並んでいて、どれを選ぶ組なのかが読めない。
    お試しメニューの2組を上下のヘアラインで囲み、1つのまとまりとして示す。 */
-#B00000031116 { border-top: 1px solid #E4D6B2; }
-#B00000031119 { border-bottom: 1px solid #E4D6B2; }
+#B00000031116 { border-top: 1px solid #D9CCBD; }
+#B00000031119 { border-bottom: 1px solid #D9CCBD; }
 
 @media screen and (max-width: 640px) {
 	/* 携帯では時刻を3列に。350px幅で1列あたり116px、印20＋文言45で収まる */
@@ -2693,3 +2693,43 @@ a.button-rink2:focus {
 @media screen and (max-width: 640px) {
 	#HDLOGO img { width: 230px; }
 }
+
+/* ── 「検証OK」の緑を出さない ──────────────────────────────────────
+   module_B000000311.css:162-164 が
+     .textfieldValidState input { background-color:#b8f5b1 }
+   で、検証を通った欄を緑に塗り、さらに緑のチェック画像を出す。
+
+   #b8f5b1 はこの店の5色のどれでもない。しかも「まだ何も入力していない
+   任意の欄」も検証は通るので、開いた時点で全部が緑になる。
+   入力できていない箇所を知らせる「検証NG」の表示だけを残し、
+   「OK」の表示はやめる。 */
+#SF-contact .textfieldValidState input,
+#SF-contact input.textfieldValidState,
+#SF-contact .textareaValidState textarea,
+#SF-contact textarea.textareaValidState,
+#SF-contact .selectValidState select,
+#SF-contact select.selectValidState {
+	background-color: transparent;
+}
+#SF-contact .textfieldValidState .textfieldValidMsg,
+#SF-contact .textareaValidState .textareaValidMsg,
+#SF-contact .checkboxValidState .checkboxValidMsg,
+#SF-contact .selectValidState .selectValidMsg,
+#SF-contact .radioValidState .radioValidMsg {
+	display: none;
+}
+
+/* ── 読めない文字を3つ直す ────────────────────────────────────────
+   配色を入れ替えたときにコントラストを全数で測って見つけたもの。
+   いずれも旧配色でも足りていなかった（むしろ旧のほうが低かった）。
+
+   1. beginner の大きな連番「1.」…… #cccccc で 1.61:1。
+      61pxの大きな文字でも下限は3:1なので届いていない。
+   2. faq の小見出し「ABOUT TREATMENT」…… 12pxで 3.30:1。
+      小さな文字の下限 4.5:1 に足りない。役どおり補助文字の色にする。
+   3. 予約フォームの「※必須」…… 10pxの #ff3333 で 3.64:1。
+      入力の可否を伝える印なので読めないと困る。差し色に寄せる。 */
+#SF-contents .number { color: #A4896A; }
+#SF-contents .gothic2 { color: #6E5C48; }
+#SF-contact .hissu,
+#SF-contents .hissu { color: #944A38; }

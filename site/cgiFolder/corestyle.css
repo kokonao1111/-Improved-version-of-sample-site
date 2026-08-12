@@ -180,7 +180,7 @@ h1,h2,h3,h4,p,ul,li,strong,div,span,td,th,input,textarea {
   height: 100px; /* フッターの高さを入れます */
   min-width:1000px; /* ページの横幅を入れます */
   /* 背景画像が有る場合は下を設定します */
-  border-top: 2px solid #D9C79D;
+  border-top: 2px solid #CCBCAB;
   background-color: #222222;
   background-position: center top;
   background-repeat: repeat-x;

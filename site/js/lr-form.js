@@ -41,10 +41,10 @@
 		var s = d.getFullYear() + '/' +
 			('0' + (d.getMonth() + 1)).slice(-2) + '/' +
 			('0' + d.getDate()).slice(-2);
-		['value_text_18', 'value_text_30'].forEach(function (id) {
-			var el = document.getElementById(id);
-			if (el) { el.setAttribute('placeholder', s); }
-		});
+		/* 欄の中には何も入れない。
+		   入れると「例）」の案内と同じ日付が2箇所に出るうえ、
+		   薄い字でも入力済みに見えてしまう（実際にそう見えたという指摘を受けた）。
+		   案内は欄の下の一行だけにする。 */
 		Array.prototype.forEach.call(
 			document.querySelectorAll('.lr-hint-date'),
 			function (el) { el.textContent = '例）' + s; });
@@ -69,10 +69,11 @@
 				var el = document.getElementById(id);
 				if (!el || (el.type !== 'checkbox' && el.type !== 'radio')) { return; }
 				el.checked = true;
-				/* Spry の検証が拾えるように、変更を通知しておく */
-				if (typeof Event === 'function') {
-					el.dispatchEvent(new Event('change', { bubbles: true }));
-				}
+				/* ここで change を発火させてはいけない。
+				   Spry の検証ウィジェットは validateOn:["change"] でフォームに
+				   ぶら下がっているので、1つ発火させると全項目が検証され、
+				   開いた瞬間に全部が「検証OK（緑地＋チェック）」になってしまう。
+				   印を入れるだけで送信内容は正しく入るので、通知は不要。 */
 				var lab = document.querySelector('label[for="' + id + '"]');
 				var txt = lab ? lab.textContent : el.value;
 				if (txt) { picked.push(txt.replace(/^\s+|\s+$/g, '')); }

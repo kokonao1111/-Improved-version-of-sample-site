@@ -18,14 +18,14 @@
    参照は全て「/」始まりにし、見た目もここだけで完結させてある。
    使っている数と色は、サイト本体と同じものだけ。
      余白 20/30/40/50/100/150 ／ 級数 28/22/16/13/12 ／ 行送り 1.7
-     色 #BC9C52 #70592C #7E6838 #C4A764 #F3EDE2
+     色 #A4896A #614E3B #6E5C48 #AE967A #EFEAE6
      1px＝仕切る（押せない） / 2px＝押せる */
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
 body {
 	background: #ffffff;
-	color: #70592C;
+	color: #614E3B;
 	font-family: 'Noto Serif JP', serif;
 	line-height: 1.7;
 	-webkit-text-size-adjust: 100%;
@@ -49,7 +49,7 @@ body {
 	font-family: 'Noto Sans JP', sans-serif;
 	font-size: 12px;
 	letter-spacing: .3em;
-	color: #7E6838;
+	color: #6E5C48;
 }
 h1 {
 	margin: 20px 0 0;
@@ -62,7 +62,7 @@ h1 {
 	margin: 30px 0 0;
 	font-family: 'Noto Sans JP', sans-serif;
 	font-size: 13px;
-	color: #7E6838;
+	color: #6E5C48;
 }
 
 /* 主導線。2px の金枠＝押せる、はサイト本体と同じ符号 */
@@ -71,8 +71,8 @@ h1 {
 	min-width: 300px;
 	margin: 50px 0 0;
 	padding: 15px 30px;
-	border: 2px solid #BC9C52;
-	color: #70592C;
+	border: 2px solid #A4896A;
+	color: #614E3B;
 	font-size: 16px;
 	line-height: 20px;
 	letter-spacing: .08em;
@@ -81,27 +81,27 @@ h1 {
 	            color 200ms cubic-bezier(.1,.45,.15,1);
 }
 .home:hover,
-.home:focus { background: #BC9C52; color: #ffffff; }
+.home:focus { background: #A4896A; color: #ffffff; }
 
 /* 副導線。1本の帯をヘアラインで割る、という本体と同じ組み方 */
 .ways {
 	display: flex;
 	margin: 50px 0 0;
-	border-top: 1px solid #C4A764;
-	border-bottom: 1px solid #C4A764;
+	border-top: 1px solid #AE967A;
+	border-bottom: 1px solid #AE967A;
 	list-style: none;
 }
-.ways > li { flex: 1 1 50%; border-left: 1px solid #E4D6B2; }
+.ways > li { flex: 1 1 50%; border-left: 1px solid #D9CCBD; }
 .ways > li:first-child { border-left: 0; }
 .ways a {
 	display: block;
 	padding: 20px 10px;
-	color: #70592C;
+	color: #614E3B;
 	text-decoration: none;
 	transition: background-color 200ms cubic-bezier(.1,.45,.15,1);
 }
 .ways a:hover,
-.ways a:focus { background: #F3EDE2; }
+.ways a:focus { background: #EFEAE6; }
 .ways .t { display: block; font-size: 16px; letter-spacing: .06em; }
 .ways .s {
 	display: block;
@@ -109,7 +109,7 @@ h1 {
 	font-family: 'Noto Sans JP', sans-serif;
 	font-size: 12px;
 	letter-spacing: .06em;
-	color: #7E6838;
+	color: #6E5C48;
 }
 
 .hours {
@@ -117,7 +117,7 @@ h1 {
 	font-family: 'Noto Sans JP', sans-serif;
 	font-size: 12px;
 	line-height: 2;
-	color: #7E6838;
+	color: #6E5C48;
 }
 
 @media screen and (max-width: 640px) {
