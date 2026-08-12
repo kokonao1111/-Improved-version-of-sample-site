@@ -337,40 +337,51 @@ a.lr-tel:hover {
 	margin: 100px auto 50px;
 	text-align: center;
 }
+/* 罫は絶対配置（left:0 / right:0 の 40%）だったので、中央に残る20%より
+   文字が広いと罫が文字を貫通する。1000pxの器で20%＝200px、
+   「ご予約・お問い合わせ」は28pxで約252px。従来は文字の下に白を敷いて
+   隠していたが、それは色地の上でシールに見える。.kome_line と同じく
+   「余りを分け合う」flex に組み替える ― これなら器がどれだけ狭くても
+   罫が文字に乗らない。 */
 .lr-book-h {
+	display: -webkit-box;
+	display: -ms-flexbox;
+	display: flex;
+	-webkit-box-align: center;
+	-ms-flex-align: center;
+	align-items: center;
+	-webkit-box-pack: center;
+	-ms-flex-pack: center;
+	justify-content: center;
 	position: relative;
 	margin: 0;
 	font-size: 28px;
 	line-height: 1.4;
 	color: #614E3B;
 }
+/* 英字の副題。罫を絶対配置で全幅に渡していた頃は、文字の下に白を敷いて
+   罫を隠す必要があった。いま罫は flex で余りを分け合う組みなので
+   文字の後ろを通らない。白を敷いたままだと色地の上で「シール」に見える
+   （実際、色地の帯用に #EFEAE6 を敷き直す上書きまで生えていた）。
+   敷くのをやめ、罫と文字の間の30pxだけ残す。 */
 .lr-book-h > span,
 .kome_line > span {
 	position: relative;
 	z-index: 1;
 	padding: 0 30px;
-	background: #ffffff;
-}
-/* ベージュ地の節では、伏せる色も地に合わせる */
-#B000000131 .kome_line > span,
-#B000000132 .kome_line > span,
-#B000000200 .kome_line > span,
-#B000000377 .kome_line > span,
-.lr-nav3 .kome_line > span {
-	background: #EFEAE6;
 }
 .lr-book-h:before,
 .lr-book-h:after {
 	content: '';
-	position: absolute;
-	top: 50%;
-	display: inline-block;
-	width: 40%;
+	position: static;
+	display: block;
+	-ms-flex: 1 1 auto;
+	flex: 1 1 auto;
+	width: auto;
 	height: 1px;
 	background-color: #A4896A;
 }
-.lr-book-h:before { left: 0; }
-.lr-book-h:after  { right: 0; }
+
 
 .lr-book-en {
 	margin: 10px 0 25px;
@@ -2292,7 +2303,7 @@ body {
 	}
 	#Module-default-container p.header-discription-type2 img { position: static; }
 	#HDLOGO { -ms-flex: 0 0 auto; flex: 0 0 auto; -ms-flex-order: 1; order: 1; }
-	#HDLOGO img { width: 240px; height: auto; }
+	#HDLOGO img { width: 200px; height: auto; }
 	.lr-headinfo {
 		position: static;
 		width: auto;
@@ -2318,7 +2329,7 @@ body {
 		gap: 12px;
 	}
 	#HDLOGO { -ms-flex: 1 1 100%; flex: 1 1 100%; }
-	#HDLOGO img { width: 210px; margin: 0 auto; display: block; }
+	#HDLOGO img { width: 170px; height: auto; margin: 0 auto; display: block; }
 	.lr-headinfo { -ms-flex: 1 1 100%; flex: 1 1 100%; text-align: center; }
 	/* 予約への入口は画面下端の固定バーが常に受け持つ。ここに二重に置かない */
 	#Module-default-container p.header-discription-type2 a[href*="reservation"] { display: none; }
@@ -2730,7 +2741,7 @@ a.button-rink2:focus {
    ヘッダの高さは 145px のままで、32+100=132 と収まっている。 */
 @media screen and (max-width: 1040px) {
 	/* 流動時のロゴ幅。240px だと帯の文字が小さくなるので 260px に */
-	#HDLOGO img { width: 260px; }
+	#HDLOGO img { width: 200px; height: auto; }
 }
 @media screen and (max-width: 640px) {
 	#HDLOGO img { width: 230px; }
@@ -2962,8 +2973,13 @@ a.button-rink2:focus {
 	grid-template-columns: repeat(3, minmax(0, 1fr));
 	column-gap: 30px;      /* 生成CSSの margin-left/right 15px × 2 */
 	row-gap: 50px;
-	margin-left: 0;
-	margin-right: 0;
+	/* auto にすること。0 にすると、HTML内の <style> が
+	     #B000000033 ul.thumbnailList { width:1000px; margin:0 auto }
+	   のように幅を与えている段で中央揃えが死ぬ。
+	   実測で、1274px の全幅の帯の中で札が x0〜1000 と左端に貼り付き、
+	   右に274pxのベージュが残って「切れている」ように見えていた。 */
+	margin-left: auto;
+	margin-right: auto;
 }
 #SF-contents :is(#B000000033,#B000000054,#B000000071,#B000000077,#B000000124,#B000000148,#B000000158,#B000000397,#B000000010,#B000000260) ul.thumbnailList li {
 	float: none;
@@ -3352,18 +3368,38 @@ table.trial td.t_r {
 		display: block;
 		-ms-flex: 0 0 auto;
 		flex: 0 0 auto;
-		width: 200px;
-		height: 72px;
+		width: 150px;
+		height: 140px;
 		margin: auto auto 30px;
 		background: url("/assets/logo.png") center center / contain no-repeat;
 	}
 	html[data-lr-nav="ready"] #SF-navigation #lr-navlist > li:last-child { margin-bottom: auto; }
 
-	/* 背の低い画面ではロゴを出さない。
-	   8項目（51px×8＋罫）で407px、ロゴを足すと519pxになり、
-	   568pxの画面（iPhone SE）では入らずスクロールが必要になる。
-	   飾りより、一覧が一目で収まることを優先する。 */
-	@media screen and (max-height: 640px) {
+	/* 背の低い画面では飾りを削る。一覧が一目で収まることを優先する。
+
+	   ■ 閾値は「ロゴの高さ」で動く。旧ロゴ（比2.79・200×72）のときは
+	     20 + 72 + 30 + 407 + 130 = 659px で、640px を境目にすれば足りた。
+	     全体版ロゴ（比1.070・150×140）にすると
+	     20 + 140 + 30 + 407 + 130 = 727px 必要になり、
+	     **iPhone SE2/3・iPhone 8（高さ667px）で61pxあふれる**（実測）。
+	     閾値を直さないまま比だけ変えると、この帯の端末で必ずスクロールが出る。
+
+	   ■ 2段にする。
+	     740px未満 … ロゴを100×93に落とし、余白も詰める（667pxで収まる）
+	     600px未満 … ロゴを出さない（568pxでも収まる） */
+	@media screen and (max-height: 740px) {
+		html[data-lr-nav="ready"] #SF-navigation .lr-navb[aria-expanded="true"] + #lr-navlist:before {
+			width: 100px;
+			height: 93px;
+			margin-bottom: 20px;
+		}
+		html[data-lr-nav="ready"] #SF-navigation .lr-navb[aria-expanded="true"] + #lr-navlist {
+			padding-top: 20px;
+			padding-bottom: 120px;
+		}
+		html[data-lr-nav="ready"] #SF-navigation #lr-navlist > li > a { min-height: 50px; }
+	}
+	@media screen and (max-height: 600px) {
 		html[data-lr-nav="ready"] #SF-navigation .lr-navb[aria-expanded="true"] + #lr-navlist:before { display: none; }
 		html[data-lr-nav="ready"] #SF-navigation .lr-navb[aria-expanded="true"] + #lr-navlist { padding-top: 20px; }
 		html[data-lr-nav="ready"] #SF-navigation #lr-navlist > li > a { min-height: 50px; }
@@ -3469,3 +3505,316 @@ table.trial td.t_r {
 /* 左下のボタンの「メニュー」。器は44pxで文字は10px×4字＝40px。
    書体が変わると折り返して×印と重なるので、折り返さない。 */
 .lr-navb-t { white-space: nowrap; }
+
+/* ══════════════════════════════════════════════════════════════
+   トップページ「おすすめプラン」― 色の囲みをやめる
+   ──────────────────────────────────────────────────────────────
+   ここだけが #EFEAE6 の全幅の帯で囲まれていた。
+   ページ全体を測ると、色が付いている帯はこの1箇所しかない。
+   つまりリズムではなく、この節だけを「囲って強調する」型どおりの手で、
+     ・白い札が帯の下端に接して、帯が札で断ち切られて見える
+     ・英字副題「Recommendation」が白いシールに見える
+     ・札の中で押せるのは右下の50pxの矢印だけ
+   という3つの副作用を連れてきていた。
+
+   強調は囲みではなく、この店が既に持っている道具でやる。
+     ・明朝の見出し＋金のヘアラインに挟んだ英字副題（サイトの署名）
+     ・見出しの下の1本の罫と「≫」（他の8つの札と同じ形）
+     ・写真そのものの色
+   囲みを外すと、他の節と同じ組みになり、ページが一つの手で書かれて見える。
+   ══════════════════════════════════════════════════════════════ */
+#B000000082,
+#B000000083,
+#B000000033 { background-color: transparent; }
+#B000000033 ul.thumbnailList li { background-color: transparent; }
+
+/* 札ぜんたいを押せるようにした（HTML側で .lr-card と .lr-cardlink に置換）。
+   もとは右下に置いた50pxの矢印画像だけが押せる状態で、
+   指では狙いにくく、キーボードでも札の意味が伝わらなかった。 */
+#B000000033 ul.thumbnailList li .c_box2 {
+	height: auto;
+	min-height: 60px;
+}
+
+/* ── 扉写真の左右の矢印は携帯では出さない ────────────────────
+   flexslider は touch:true が既定で、fade でも除外していない
+   （cgiFolder/tieredworks_libs.js の "touch:!0"）。
+   指で払えば送れるので、写真の上に丸い矢印を2つ重ねる必要がない。
+   PCでは押せる手段が要るので残す。 */
+@media screen and (max-width: 640px) {
+	.flex-direction-nav { display: none; }
+}
+/* 左端が4つともばらばらだった（実測）。
+     写真   x137〜450
+     名前   x147〜450  ← 生成CSSの margin-left:10px
+     罫     x147〜450  ← 名前に付いているので一緒にずれる
+     料金   x147〜440  ← HTML内 <style> の .c_box2 { padding:10px } ＋ 中央揃え
+   写真の左端に全部そろえる。1本の縦線で読める列になる。 */
+#B000000033 ul.thumbnailList li .newslistHeadlineStyle { margin-left: 0; }
+#B000000033 ul.thumbnailList li .c_box2 {
+	padding-left: 0;
+	padding-right: 0;
+	text-align: left;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   ページ上端の帯と「ヘッダーの下の二重線」
+   ──────────────────────────────────────────────────────────────
+   body の背景に assets/bg.png（20×175）が repeat-x で敷いてある。中身は
+
+     y0〜2     #D9C79D の帯      … ページ上端の線
+     y171/174  #D9C79D の二重線  … ヘッダーの下端の線
+
+   後者は「ヘッダー145px ＋ ナビ30px ＝ 175px」を前提に描かれた絵で、
+   **位置がページ上端からの固定値**になっている。
+
+   私がヘッダーを可変高（height:auto）にしたので、ヘッダーが伸びる幅では
+   この線がヘッダーの中に取り残され、「OPEN：10:00〜」やナビの項目を
+   貫通していた。実測：どの幅でも y171 と y174 に #D9C79D、
+   一方ヘッダーの高さは 145px（1440px幅）〜219px（640px幅）。
+   **絵の中の線なので、CSSをいくら直しても動かない。**
+
+   絵をやめる。
+     ・上端の帯 → CSSの階調で描く（高さ3px固定。位置に依らない）
+     ・ヘッダーの下の線 → ナビ自身に持たせる（高さに追従する）
+   #D9C79D は旧配色の金で、配色を入れ替えたとき画像の中までは
+   届いていなかった。同じ変換（色相−10°／彩度×0.55）をかけると
+   #CCBCAB になる ― 現配色にある色そのもの。
+   ══════════════════════════════════════════════════════════════ */
+body {
+	background-image: -webkit-linear-gradient(#CCBCAB, #CCBCAB);
+	background-image: linear-gradient(#CCBCAB, #CCBCAB);
+	background-repeat: no-repeat;
+	background-position: center top;
+	background-size: 100% 3px;
+}
+
+/* ナビを上下のヘアラインで囲む。1040px以下では既にそうしていたが、
+   それより広い幅では bg.png の二重線がその役をしていた。
+   絵をやめたので、どの幅でもナビ自身が持つ。 */
+#SF-navigation :is(#B000000002,#B000000034,#B000000055,#B000000119,#B000000136,#B000000144,#B000000154,#B000000164,#B000000182,#B000000261,#B000000270,#B000000278,#B000000286,#B000000294,#B000000302) ul.SF-dropdown {
+	border-top: 1px solid #AE967A;
+	border-bottom: 1px solid #AE967A;
+}
+
+/* 1041px以上では罫を版面（#SF-navigation ＝ 1000px）に移す。
+   生成CSSが ul を 952px で中央に置いているため、ul に持たせると
+   罫だけが版面より左右25px内側に入って見える（実測 x244〜1196）。
+   ul の組みには触らないので、並びは1pxも動かない。 */
+@media screen and (min-width: 1041px) {
+	#SF-navigation {
+		border-top: 1px solid #AE967A;
+		border-bottom: 1px solid #AE967A;
+	}
+	#SF-navigation :is(#B000000002,#B000000034,#B000000055,#B000000119,#B000000136,#B000000144,#B000000154,#B000000164,#B000000182,#B000000261,#B000000270,#B000000278,#B000000286,#B000000294,#B000000302) ul.SF-dropdown {
+		border-top: 0;
+		border-bottom: 0;
+	}
+}
+
+/* ══════════════════════════════════════════════════════════════
+   ロゴを「切り取らず全体」で使う
+   ──────────────────────────────────────────────────────────────
+   これまで assets/logo.png は、いただいた紋章の**中央の帯だけ**を
+   切り出したもの（560×201／縦横比2.79）だった。上の「C」の紋章と
+   下の飾りが落ちていた。クライアント様の意向で全体を使う。
+
+     元データ  1000×935（余白を詰めた実寸）
+     新 logo.png  700×654  縦横比 1.070  65KB
+       ※128色に減色。280px幅と160px幅で原寸と見分けが付かないことを
+         目で確かめたうえで採用（そのままだと305KB、単色化は文字が痩せる）。
+
+   縦横比が 2.79 → 1.070 に変わるので、置いてある全ての場所で寸法が変わる。
+   実測（変更前）：1440pxで ロゴ280×262 に対しヘッダーの器が145px しかなく、
+   ロゴが149px はみ出してナビに重なっていた（絶対配置なので器が伸びない）。
+   ══════════════════════════════════════════════════════════════ */
+
+/* ヘッダーはどの幅でも同じ組みにする。
+   1040px以下では既に flex で「ロゴ｜電話と営業時間｜予約」を縦中央に
+   そろえていたが、1041px以上だけ絶対配置のまま残っていた。
+   そこへ全体版のロゴ（縦横比1.070）を入れた途端、
+   器145px をロゴ262px が149px 突き抜けてナビに重なった（実測）。
+   幅で組みを分ける理由がないので flex に一本化する。
+   ─ 1040px以下の指定は既にあるので、ここは 1041px 以上だけを書く。
+     無条件に書くと、後勝ちで下の幅の指定まで潰してしまう。 */
+@media screen and (min-width: 1041px) {
+	#Module-default-container {
+		height: auto;
+		padding-top: 12px;
+		padding-bottom: 20px;
+	}
+	#Module-default-container #Header-title {
+		display: block;
+		float: none;
+		margin: 0 0 10px;
+		font-size: 11px;
+		font-weight: normal;
+		line-height: 1.6;
+	}
+	#Module-default-container p.header-discription-type2 {
+		display: -ms-flexbox;
+		display: flex;
+		-ms-flex-wrap: wrap;
+		flex-wrap: wrap;
+		-ms-flex-align: center;
+		align-items: center;
+		-ms-flex-pack: justify;
+		justify-content: space-between;
+		gap: 15px 30px;
+		margin: 0;
+	}
+	#Module-default-container p.header-discription-type2 img { position: static; }
+	#HDLOGO {
+		-ms-flex: 0 0 auto;
+		flex: 0 0 auto;
+		-ms-flex-order: 1;
+		order: 1;
+	}
+	#HDLOGO img { width: 230px; height: auto; }
+	.lr-headinfo {
+		position: static;
+		width: auto;
+		-ms-flex: 0 0 auto;
+		flex: 0 0 auto;
+		-ms-flex-order: 2;
+		order: 2;
+		text-align: right;
+	}
+	#Module-default-container p.header-discription-type2 a[href*="reservation"] {
+		-ms-flex: 0 0 auto;
+		flex: 0 0 auto;
+		-ms-flex-order: 3;
+		order: 3;
+	}
+}
+
+/* ── フッターのロゴを中央に ──────────────────────────────────
+   親の h4 は text-align:center だが、img が display:block で
+   左右の margin が 0 なので、block 要素は左に付く（実測 x220、親の幅450）。
+   auto にすれば中央に来る。 */
+#B000000031 h4.newslistHeadlineStyle {
+	text-align: center;
+}
+#B000000031 h4.newslistHeadlineStyle img {
+	display: block;
+	width: 220px;
+	height: auto;
+	margin-left: auto;
+	margin-right: auto;
+}
+@media screen and (max-width: 640px) {
+	#B000000031 h4.newslistHeadlineStyle img { width: 180px; }
+}
+
+/* ══════════════════════════════════════════════════════════════
+   「当店の施術について」― 色の囲みをやめる
+   ──────────────────────────────────────────────────────────────
+   トップの「おすすめプラン」と同じ型どおりの手が、全ページにあった。
+
+     ・6ページ（beginner/trial/course_plan/how_to_choose/faq/campaign）
+       … 生成CSSが札の器に background-color:#EFEAE6 を宣言し、
+         ページ内 <style> が 100vw で全幅化している
+     ・7ページ（shopinfo・スタッフ紹介6枚）
+       … 私が作った .lr-nav3 が background:#EFEAE6 ＋ padding:50px 0
+
+   強調は囲みではなく、この店が持っている道具でやる。
+   見出しの明朝＋金のヘアライン、札の下の1本の罫と「≫」、写真の色。
+   囲みを外すと他の節と同じ組みになり、ページが一つの手で書かれて見える。
+   ══════════════════════════════════════════════════════════════ */
+#SF-contents :is(#B000000054,#B000000071,#B000000124,#B000000148,#B000000158,#B000000397) { background-color: transparent; }
+
+/* ── shopinfo・スタッフ紹介の回遊札（.lr-nav3） ─────────────────
+   ・囲みを外す
+   ・幅1000px固定をやめて段組みにする（器が1000pxを切ると溢れていた）
+   ・見出しは「文字は左・矢印は罫の右端」。他の8つの札と同じ形にそろえる */
+.lr-nav3 {
+	background: transparent;
+	padding: 0;
+}
+.lr-nav3-list {
+	display: -ms-grid;
+	display: grid;
+	grid-template-columns: repeat(3, minmax(0, 1fr));
+	column-gap: 30px;
+	row-gap: 50px;
+	width: auto;
+	max-width: 1000px;
+	margin: 0 auto;
+	padding: 0;
+	font-size: inherit;
+}
+.lr-nav3-list li {
+	display: block;
+	width: auto;
+	min-width: 0;
+	margin: 0;
+	text-align: left;
+}
+.lr-nav3-list img { display: block; width: 100%; height: auto; }
+.lr-nav3-t {
+	display: -ms-flexbox;
+	display: flex;
+	-ms-flex-align: start;
+	align-items: flex-start;
+	-ms-flex-pack: justify;
+	justify-content: space-between;
+	column-gap: 15px;
+	min-height: 50px;
+	font-size: 15px;
+	line-height: 25px;
+}
+.lr-nav3-t .lr-go {
+	-ms-flex: 0 0 auto;
+	flex: 0 0 auto;
+	padding-left: 0;
+	line-height: 25px;
+}
+@media screen and (max-width: 640px) {
+	.lr-nav3-list {
+		grid-template-columns: minmax(0, 1fr);
+		row-gap: 40px;
+		max-width: 350px;
+		padding: 0;
+	}
+	.lr-nav3-list li { margin: 0; }
+}
+
+/* ══════════════════════════════════════════════════════════════
+   日本語の改行 ― 中途半端なところで割らない
+   ──────────────────────────────────────────────────────────────
+   実際に出ていた見え方：
+     「初めての方へおすすめトライアル（お試し）プ / ラン」  最終行が2字
+     「トライアル（体験） / コース ≫」                      句の途中で割れる
+
+   ・text-wrap: balance …… 数行の見出しで行の長さを均す。
+       最終行だけが極端に短くなるのを防ぐ。対応していないブラウザでは
+       単に無視されて従来どおり折り返すだけで、何も壊れない。
+   ・line-break: strict …… JISの禁則を厳しく適用する。
+       開き括弧の直後・閉じ括弧の直前で割らない。
+       小書きの仮名や長音記号の前でも割らない。
+
+   どちらも「効けば良くなる／効かなくても元のまま」なので !important も
+   要素の作り替えも要らない。 */
+#SF-contents h1, #SF-contents h2, #SF-contents h3, #SF-contents h4,
+#SF-startPage h1, #SF-startPage h2, #SF-startPage h3, #SF-startPage h4,
+.headlineStyle,
+.newslistHeadlineStyle,
+.lr-nav3-t,
+.lr-nav3-h,
+.lr-book-h,
+.kome_line,
+.lr-apply a.lr-apply-b,
+a.button-rink,
+a.button-rink2 {
+	text-wrap: balance;
+	line-break: strict;
+}
+
+/* 本文は均さない（長い段落で balance は効かないうえ、
+   途中の行が揃うことに意味がない）。禁則だけ効かせる。 */
+#SF-contents p,
+#SF-startPage p,
+.gothic,
+.mincho {
+	line-break: strict;
+}
