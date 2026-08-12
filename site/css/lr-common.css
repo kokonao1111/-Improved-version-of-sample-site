@@ -2303,7 +2303,7 @@ body {
 	}
 	#Module-default-container p.header-discription-type2 img { position: static; }
 	#HDLOGO { -ms-flex: 0 0 auto; flex: 0 0 auto; -ms-flex-order: 1; order: 1; }
-	#HDLOGO img { width: 200px; height: auto; }
+	#HDLOGO img { width: 130px; height: auto; }
 	.lr-headinfo {
 		position: static;
 		width: auto;
@@ -2321,16 +2321,24 @@ body {
 	}
 }
 @media screen and (max-width: 640px) {
-	#Module-default-container { padding-bottom: 18px; text-align: center; }
-	#Module-default-container #Header-title { font-size: 10px; margin-bottom: 10px; }
+	/* ロゴを1行独占させて中央に置いていたが、それだと頭の白い部分だけで
+	   画面の4割を使ってしまい、主役であるはずの扉写真が押し下がる。
+	   PCと同じ「ロゴ左・電話など右」の横並びに統一する。 */
+	#Module-default-container { padding-bottom: 14px; text-align: left; }
+	#Module-default-container #Header-title { font-size: 10px; margin-bottom: 8px; }
 	#Module-default-container p.header-discription-type2 {
-		-ms-flex-pack: center;
-		justify-content: center;
-		gap: 12px;
+		-ms-flex-pack: justify;
+		justify-content: space-between;
+		gap: 10px;
 	}
-	#HDLOGO { -ms-flex: 1 1 100%; flex: 1 1 100%; }
-	#HDLOGO img { width: 170px; height: auto; margin: 0 auto; display: block; }
-	.lr-headinfo { -ms-flex: 1 1 100%; flex: 1 1 100%; text-align: center; }
+	#HDLOGO { -ms-flex: 0 0 auto; flex: 0 0 auto; }
+	#HDLOGO img { width: 105px; height: auto; margin: 0; display: block; }
+	.lr-headinfo {
+		-ms-flex: 1 1 auto;
+		flex: 1 1 auto;
+		min-width: 0;
+		text-align: right;
+	}
 	/* 予約への入口は画面下端の固定バーが常に受け持つ。ここに二重に置かない */
 	#Module-default-container p.header-discription-type2 a[href*="reservation"] { display: none; }
 }
@@ -2739,13 +2747,9 @@ a.button-rink2:focus {
    同じ高さで置くと文字が読めないため、表示を 280×100 に変え、
    ヘッダ内の位置を top:45px → 32px へ上げた（下に余裕を作るため）。
    ヘッダの高さは 145px のままで、32+100=132 と収まっている。 */
-@media screen and (max-width: 1040px) {
-	/* 流動時のロゴ幅。240px だと帯の文字が小さくなるので 260px に */
-	#HDLOGO img { width: 200px; height: auto; }
-}
-@media screen and (max-width: 640px) {
-	#HDLOGO img { width: 230px; }
-}
+/* ロゴ幅はこの下の「頭の白い部分を主役にしない」で一元管理する。
+   ここに重複した指定が2本残っていて（1040px以下 200px / 640px以下 230px）、
+   後勝ちで上の指定を無効にしていた。 */
 
 
 
@@ -3670,7 +3674,7 @@ body {
 		-ms-flex-order: 1;
 		order: 1;
 	}
-	#HDLOGO img { width: 230px; height: auto; }
+	#HDLOGO img { width: 150px; height: auto; }
 	.lr-headinfo {
 		position: static;
 		width: auto;
@@ -3817,4 +3821,52 @@ a.button-rink2 {
 .gothic,
 .mincho {
 	line-break: strict;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   ヘッダーの並びを元の形に戻す
+   ──────────────────────────────────────────────────────────────
+   元の型は2列だった。
+
+     タイトル（左上）
+     ┌ ロゴ ┐            ┌ ご予約はこちら ┐  ← 右上
+     └      ┘            │ tel.…          │  ← その下
+                         └ OPEN / Holiday ┘
+
+   ロゴを全体版にしたとき、3つを1行に並べる flex に組み替えたので、
+   予約ボタンが電話番号の「横」に来て別物になっていた。
+   マークアップの順は ロゴ → 予約ボタン → 電話 で元のままなので、
+   格子で置き場所を指定すれば元の並びに戻る。
+
+   ・641px以上 … 2列。ロゴは2段ぶちぬきで縦中央
+   ・640px以下 … 予約ボタンは下端の固定帯が受け持つので出さない。
+                 ロゴ左・電話右の1行（上の指定のまま）
+   ══════════════════════════════════════════════════════════════ */
+@media screen and (min-width: 641px) {
+	#Module-default-container p.header-discription-type2 {
+		display: -ms-grid;
+		display: grid;
+		grid-template-columns: auto auto;
+		-ms-flex-pack: justify;
+		justify-content: space-between;
+		-ms-flex-align: start;
+		align-items: start;
+		column-gap: 30px;
+		row-gap: 10px;
+	}
+	#HDLOGO {
+		grid-column: 1;
+		grid-row: 1 / span 2;
+		align-self: center;
+	}
+	#Module-default-container p.header-discription-type2 a[href*="reservation"] {
+		grid-column: 2;
+		grid-row: 1;
+		justify-self: end;
+	}
+	.lr-headinfo {
+		grid-column: 2;
+		grid-row: 2;
+		text-align: right;
+	}
 }
