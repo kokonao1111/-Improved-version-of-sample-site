@@ -10,9 +10,10 @@
 このスクリプトは次の3つを見る。
 
   1. 他店を特定できる文字列が残っていないか
-     ─ base64 の中まで復号して見る。
-       実際に、自動返信メールのフッタが base64 で埋め込まれていて、
-       文字列検索では一切引っかからなかった。
+     ─ base64 と %XX(URLエンコード) の中まで復号して見る。
+       どちらも実際にすり抜けた。自動返信メールのフッタが base64 で、
+       予約フォームへ内容を引き継ぐリンクの note= が %XX で埋め込まれていて、
+       文字列検索ではどちらも一切引っかからなかった。
   2. 伏せ字（{{…}}）がいくつ残っているか
   3. 仮の値（0,000円 の料金・仮の写真）が残っていないか
 
@@ -24,6 +25,7 @@ import glob
 import os
 import re
 import sys
+import urllib.parse
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 os.chdir(ROOT)
@@ -63,6 +65,26 @@ def b64_decoded_chunks(text):
             continue
 
 
+def pct_decoded_chunks(text):
+    """%XX で書かれた断片を復号して返す。
+
+       base64 と同じ抜け道。予約フォームへ内容を引き継ぐリンクが
+         reservation.html?…&note=%E5%92%8C%E6%AD%8C%E5%B1%B1では珍しい…
+       の形になっていて、見出しは「三重」に直っているのに
+       この note だけ「和歌山」のまま残っていた。
+       本文検索では一切引っかからなかった。"""
+    for m in re.finditer(r'[A-Za-z0-9._~:/?#\[\]@!$&\'()*+,;=%-]{8,}', text):
+        s = m.group(0)
+        if '%' not in s:
+            continue
+        try:
+            d = urllib.parse.unquote(s, errors='strict')
+        except Exception:
+            continue
+        if d != s:
+            yield d
+
+
 def main():
     hits = []          # 他店データ
     tokens = {}        # 伏せ字
@@ -75,6 +97,7 @@ def main():
         except Exception:
             continue
         blobs = list(b64_decoded_chunks(t)) if p.endswith('.html') else []
+        pcts = list(pct_decoded_chunks(t))
         for k in FORBIDDEN:
             n = t.count(k)
             if n:
@@ -83,6 +106,10 @@ def main():
                 nb = b.count(k)
                 if nb:
                     hits.append((p, k, nb, 'base64の中'))
+            for d in pcts:
+                nd = d.count(k)
+                if nd:
+                    hits.append((p, k, nd, 'URLエンコードの中'))
         for m in re.finditer(r'\{\{([^}]{1,40})\}\}', t):
             tokens.setdefault(m.group(1), []).append(p)
         prices += len(re.findall(r'0,000', t))

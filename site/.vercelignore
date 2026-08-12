@@ -2,5 +2,18 @@
 _data/
 _tools/
 
-# サーバー側PHPが必要なもの。同期すると本番の mail_send.php を消してしまう
-cgiFolder/
+# ── cgiFolder/ は「まるごと除外してはいけない」 ─────────────────
+# 全15ページが、ここから次の8本を読んでいる。
+#   corestyle.css / tieredworks_base|libs|ajax|modules|exts|spry.js / js/csLibrary.js
+# tieredworks_spry.js は予約フォームの検証そのもの。
+# 一度これを丸ごと除外したまま公開しようとして、サイト全体が崩れる状態になった。
+# 除外するのは、動かない・置く意味がないものだけ。
+
+# PHP は Vercel で動かない（RSS配信。HTML版が並んで置いてあり、どのページも読んでいない）
+cgiFolder/core_rss_feed.php
+
+# アクセス解析の管理画面。同意なく送信していた仕組みで、受け口も無い
+cgiFolder/analysis/
+
+# 退役済み。転送するだけのページで、SP専用JSは読まれない
+cgiFolder/js/csSpLibrary.js

@@ -92,8 +92,20 @@
 		if (!picked.length) { return; }
 
 		/* 何を申し込もうとしているかを、フォームの頭で見えるようにする。
-		   予約種別（新規予約）はどの入口からでも同じなので読み上げから省く。 */
-		var shown = picked.filter(function (x) { return x !== '新規予約'; });
+		   予約種別（新規予約）はどの入口からでも同じなので読み上げから省く。
+
+		   同じ品名が menu= の選択肢ラベルと note= の両方から入るので、
+		   そのまま並べると「シミ・美白 ケア／シミ・美白 ケア」と二重に出る。
+		   全角と半角のスペースが混ざるため、空白を無視して重複を落とす。 */
+		var seen = {};
+		var shown = [];
+		picked.forEach(function (x) {
+			if (x === '新規予約') { return; }
+			var k = x.replace(/[\s　]+/g, '');
+			if (!k || seen[k]) { return; }
+			seen[k] = 1;
+			shown.push(x);
+		});
 		if (!shown.length) { return; }
 
 		var box = document.createElement('p');

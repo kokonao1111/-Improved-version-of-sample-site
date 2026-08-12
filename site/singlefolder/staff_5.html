@@ -171,6 +171,7 @@ hr.line {
 <meta property="og:locale" content="ja_JP" />
 <meta name="twitter:card" content="summary_large_image" />
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"HOME","item":"{{サイトURL}}/"},{"@type":"ListItem","position":2,"name":"スタッフ紹介 {{スタッフ名5}}","item":"{{サイトURL}}/singlefolder/staff_5.html"}]}</script>
+<script>document.documentElement.className+=" lr-js";</script>
 </head>
 <body>
 <div id="SF-outer-container">
@@ -187,7 +188,8 @@ hr.line {
 </div>
 <div id="SF-navigation">
 <div id="B000000294" class="twKindNavi" style="min-width:15px;min-height:15px;">
-<ul class="SF-clearfix SF-dropdown">
+<button type="button" class="lr-navb" aria-expanded="false" aria-controls="lr-navlist"><span class="lr-navb-i" aria-hidden="true"></span><span class="lr-navb-t">メニュー</span></button>
+<ul id="lr-navlist" class="SF-clearfix SF-dropdown">
 <li><a href="../index.html" id="catBgColorhome" title="HOME">HOME</a></li>
 
 <li class="SF-dropdown_trigger"><a href="../beginner/index.html" id="catBgColormmenu1" target="_self" title="初めての方へ">初めての方へ</a></li>
@@ -350,7 +352,7 @@ $(function() {
 
 <div id="ADDBGBOTTOM"></div>
 
-<script src="../js/lr-reveal.js"></script>
+<script src="../js/lr-reveal.js"></script><script src="../js/lr-nav.js"></script>
 <div class="lr-cta lr-cta-fixed">
 <a class="lr-cta-i" href="tel:{{電話番号ハイフンなし}}">
 <span class="lr-cta-t">お電話</span>

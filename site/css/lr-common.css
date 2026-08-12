@@ -698,6 +698,12 @@ img[width][height] {
 .course_r {
 	border-bottom: 1px solid #E5DED6;
 }
+/* 列の間に余白がなく、360px幅で品名と時間の字が触っていた
+   （実測 course_l 242px / course_c 30px / course_r 48px ＝ 320px、余白0）。
+   間を空ければ、狭いところでは品名が折り返して収まる。 */
+.course_l { padding-right: 20px; }
+.course_c { padding-right: 15px; white-space: nowrap; }
+.course_r { white-space: nowrap; text-align: right; }
 tr:last-child .course_l,
 tr:last-child .course_c,
 tr:last-child .course_r {
@@ -2034,32 +2040,36 @@ body {
    trial の見出しは実測で器 50px まで潰れていた（350 − 150×2）。
 
    余白を「器の半分から300pxを引いた残り」で頭打ちにする。
-     max(0px, min(150px, 50% - 150px))
-   ・親1000px → 500−150＝350、min(150,350)＝150 … 今と1pxも変わらない
-   ・親 600px → 300−150＝150、margin150 … 中身300px
-   ・親 350px → 175−150＝ 25、margin 25 … 中身300px
-   ・親 300px → 0                        … 中身300px
-   中身は 300px を下回らない。300 はこの店のグリッドの単位そのもの
-   （版面 1000 ＝ 300×3 ＋ 50×2）なので、新しい数を持ち込んでいない。
+     max(0px, calc((100% - 700px) / 2))
+   ・親1000px → (1000−700)/2 ＝ 150 … 元の設計と1pxも変わらない
+   ・親 800px → (800−700)/2 ＝  50 … 中身 700px
+   ・親 700px → 0                  … 中身 700px
+   ・親 400px → 0                  … 中身 400px
+
+   最初は「余白を150pxに保つ」形で書いたが、それだと親700pxのときに
+   中身が400pxしか残らず、幅の広い器の中に細い帯が浮いて見える。
+   実際に「なんか文が真ん中の箱に詰められてる感じがする」と指摘を受けた。
+   保つべきは余白ではなく**読む段の幅**なので、逆にした。
+   700 は元の設計そのもの（版面1000 − 余白150×2）で、新しい数ではない。
    折り返しの幅を1つも使わずに、全ての幅で連続して効く。 */
 #B000000072, #B000000079, #B000000080, #B000000081, #B000000125,
 #B000000142, #B000000149, #B000000159, #B000000169, #B000000188,
 #B000000258, #B000000265, #B000000274, #B000000282, #B000000290,
 #B000000298, #B000000306 {
-	margin-left: max(0px, min(150px, 50% - 150px));
-	margin-right: max(0px, min(150px, 50% - 150px));
+	margin-left: max(0px, calc((100% - 700px) / 2));
+	margin-right: max(0px, calc((100% - 700px) / 2));
 }
 #B000000009 {
-	padding-left: max(0px, min(200px, 50% - 150px));
-	padding-right: max(0px, min(200px, 50% - 150px));
+	padding-left: max(0px, calc((100% - 600px) / 2));
+	padding-right: max(0px, calc((100% - 600px) / 2));
 }
 #B000000312, #B000000313 {
-	margin-left: max(0px, min(70px, 50% - 150px));
-	margin-right: max(0px, min(70px, 50% - 150px));
+	margin-left: max(0px, calc((100% - 860px) / 2));
+	margin-right: max(0px, calc((100% - 860px) / 2));
 }
 #B000000311 {
-	margin-left: max(0px, min(50px, 50% - 150px));
-	margin-right: max(0px, min(50px, 50% - 150px));
+	margin-left: max(0px, calc((100% - 900px) / 2));
+	margin-right: max(0px, calc((100% - 900px) / 2));
 }
 
 /* ── 写真 ─────────────────────────────────────────────────────────
@@ -2106,7 +2116,39 @@ body {
 		padding-left: 0;
 		padding-bottom: 5px;
 	}
-	#B000000311 .control { margin-left: 0; padding-left: 0; }
+	/* .control2（「例）〜」の案内行）も同じ margin-left:270px を持っている。
+	   ここを戻し忘れると、390px幅では右に10pxしか残らず、
+	   案内の文字が1文字ずつ縦に折り返して85pxの空白の塊になる。 */
+	#B000000311 .control,
+	#B000000311 .control2 { margin-left: 0; padding-left: 0; }
+
+	/* 入力欄が器いっぱいになるので、✓ が次の行に落ちていた。
+	   段を flex にして、欄と印を1行に並べる。
+	   「入力されていません」は 100% を取って次の行へ回す。
+	   :has() で「記入欄を持つ段」だけに絞る ―
+	   一律に当てると選択肢の段（メニュー・予約時間）の組みまで変わる。 */
+	#SF-contact .control:has(> input[type="text"]),
+	#SF-contact .control:has(> input[type="email"]),
+	#SF-contact .control:has(> input[type="tel"]),
+	#SF-contact .control:has(> textarea) {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+	}
+	/* 基準を auto にすると width が基準になり、それが max-width:100%（=器いっぱい）で
+	   止められるので印の26pxが入らず次の行に落ちる。基準を0にして残りを取らせる。 */
+	#SF-contact .control > input[type="text"],
+	#SF-contact .control > input[type="email"],
+	#SF-contact .control > input[type="tel"],
+	#SF-contact .control > textarea { flex: 1 1 0; min-width: 0; }
+	#SF-contact .control > .textfieldRequiredMsg,
+	#SF-contact .control > .textfieldInvalidFormatMsg,
+	#SF-contact .control > .textareaRequiredMsg,
+	#SF-contact .control > .selectRequiredMsg,
+	#SF-contact .control > .selectInvalidMsg {
+		flex: 1 1 100%;
+		margin-top: 5px;
+	}
 }
 
 /* ── 写真の横に本文を置く組み ────────────────────────────────────
@@ -2694,30 +2736,7 @@ a.button-rink2:focus {
 	#HDLOGO img { width: 230px; }
 }
 
-/* ── 「検証OK」の緑を出さない ──────────────────────────────────────
-   module_B000000311.css:162-164 が
-     .textfieldValidState input { background-color:#b8f5b1 }
-   で、検証を通った欄を緑に塗り、さらに緑のチェック画像を出す。
 
-   #b8f5b1 はこの店の5色のどれでもない。しかも「まだ何も入力していない
-   任意の欄」も検証は通るので、開いた時点で全部が緑になる。
-   入力できていない箇所を知らせる「検証NG」の表示だけを残し、
-   「OK」の表示はやめる。 */
-#SF-contact .textfieldValidState input,
-#SF-contact input.textfieldValidState,
-#SF-contact .textareaValidState textarea,
-#SF-contact textarea.textareaValidState,
-#SF-contact .selectValidState select,
-#SF-contact select.selectValidState {
-	background-color: transparent;
-}
-#SF-contact .textfieldValidState .textfieldValidMsg,
-#SF-contact .textareaValidState .textareaValidMsg,
-#SF-contact .checkboxValidState .checkboxValidMsg,
-#SF-contact .selectValidState .selectValidMsg,
-#SF-contact .radioValidState .radioValidMsg {
-	display: none;
-}
 
 /* ── 読めない文字を3つ直す ────────────────────────────────────────
    配色を入れ替えたときにコントラストを全数で測って見つけたもの。
@@ -2733,3 +2752,555 @@ a.button-rink2:focus {
 #SF-contents .gothic2 { color: #6E5C48; }
 #SF-contact .hissu,
 #SF-contents .hissu { color: #944A38; }
+
+/* ── 予約フォームの「検証の印」を作り直す ──────────────────────────
+   送信を押したときに、埋まっている欄には印が付き、
+   抜けている欄には理由が出る。この2つの見え方を揃えたもの。
+
+   直した中身は3つ。
+
+   1. 印の大きさが 19×14 と 19×40 で混在していた。
+      原因は自分にある。予約時間の選択肢を6列に組むために
+      #B00000031123 .control を flex にしたので、
+      その中に居た <img> が flex item として段の高さ40pxまで伸びていた。
+      伸びない・揃う指定を印そのものに持たせる。
+
+   2. 印の絵が teal（青緑）で、この店の5色のどれでもなかった。
+      同じ形を金と差し色で描き直し、2倍解像度で置いた（form-ok / form-ng）。
+      白地に対して 金3.30:1・差し色6.37:1 ＝ 非文字の下限3:1を満たす。
+
+   3. 検証OKの地色が #b8f5b1（黄緑）だった。これも店の色ではない。
+      サイトが元から持っているベージュ #EFEAE6 に替える。
+
+   あわせて「入力されていません」の文言が 10px の #ff3333（3.64:1）で
+   小さな文字の下限 4.5:1 に届いていなかったので、
+   級数を12pxに上げ、差し色 #944A38（6.37:1）にする。
+   入力の可否を伝える文言なので、ここが読めないと詰む。 */
+
+/* 印の箱をひとつに揃える。display は生成CSSが出し入れしているので触らない */
+#SF-contact .textfieldValidMsg,
+#SF-contact .textareaValidMsg,
+#SF-contact .checkboxValidMsg,
+#SF-contact .radioValidMsg,
+#SF-contact .selectValidMsg {
+	width: 16px;
+	height: 16px;
+	margin: 0 0 0 10px;
+	padding: 0;
+	border: 0;
+	vertical-align: middle;
+	flex: 0 0 auto;
+	align-self: center;
+}
+#SF-contact .textfieldRequiredMsg img,
+#SF-contact .textfieldInvalidFormatMsg img,
+#SF-contact .textfieldMinCharsMsg img,
+#SF-contact .textfieldMaxCharsMsg img,
+#SF-contact .textareaRequiredMsg img,
+#SF-contact .textareaMinCharsMsg img,
+#SF-contact .textareaMaxCharsMsg img,
+#SF-contact .checkboxRequiredMsg img,
+#SF-contact .radioRequiredMsg img,
+#SF-contact .radioInvalidMsg img,
+#SF-contact .selectRequiredMsg img,
+#SF-contact .selectInvalidMsg img {
+	width: 16px;
+	height: 16px;
+	margin: 0 5px 0 0;
+	padding: 0;
+	border: 0;
+	vertical-align: middle;
+}
+
+/* 印と入力欄の中心を合わせる */
+#SF-contact .control input[type="text"],
+#SF-contact .control input[type="email"],
+#SF-contact .control input[type="tel"] { vertical-align: middle; }
+
+/* 文言のほう。flex の段（予約時間）でも伸びない・揃う */
+#SF-contact .textfieldRequiredMsg,
+#SF-contact .textfieldInvalidFormatMsg,
+#SF-contact .textareaRequiredMsg,
+#SF-contact .checkboxRequiredMsg,
+#SF-contact .radioRequiredMsg,
+#SF-contact .radioInvalidMsg,
+#SF-contact .selectRequiredMsg,
+#SF-contact .selectInvalidMsg {
+	flex: 0 0 auto;
+	align-self: center;
+	font-size: 12px;
+	line-height: 20px;
+	color: #944A38;
+}
+#SF-contact .radioRequiredState .radioRequiredMsg,
+#SF-contact .radioInvalidState .radioInvalidMsg,
+#SF-contact .checkboxRequiredState .checkboxRequiredMsg,
+#SF-contact .textfieldRequiredState .textfieldRequiredMsg,
+#SF-contact .textfieldInvalidFormatState .textfieldInvalidFormatMsg,
+#SF-contact .textfieldMinCharsState .textfieldMinCharsMsg,
+#SF-contact .textfieldMaxCharsState .textfieldMaxCharsMsg,
+#SF-contact .textareaRequiredState .textareaRequiredMsg,
+#SF-contact .textareaMinCharsState .textareaMinCharsMsg,
+#SF-contact .textareaMaxCharsState .textareaMaxCharsMsg,
+#SF-contact .selectRequiredState .selectRequiredMsg,
+#SF-contact .selectInvalidState .selectInvalidMsg {
+	font-size: 12px;
+	color: #944A38;
+}
+
+/* ✓ と「埋まった」地色は、必須の記入欄だけに出す。
+
+   任意の欄は空のままでも検証を通る（Spryはそう作られている）。
+   そのため送信を押すと、何も書いていない「予約希望日（第2希望）」や
+   「メニュー」にまで ✓ と地色が付いた。
+   書いていないものに「できています」と出すのは嘘なので、必須の欄に限る。
+
+   選択肢の段（予約種別・予約時間）は必須だが ✓ を出さない。
+   選んだ丸そのものが見えているので印は要らないし、
+   6列で折り返す段の末尾に付くと居場所がない。
+   足りないときの「選択されていません」は従来どおり出る。 */
+#SF-contact .radioValidMsg,
+#SF-contact .checkboxValidMsg,
+#SF-contact .textareaValidMsg,
+#SF-contact .selectValidMsg,
+#SF-contact #B00000031124 .textfieldValidMsg { display: none; }
+
+/* 埋まっている欄の地色。黄緑をやめ、サイトのベージュにする。
+   必須の記入欄5つだけ（B0000003118 と B00000031123 は選択肢なので対象外） */
+#SF-contact #B0000003111.textfieldValidState input,
+#SF-contact #B0000003112.textfieldValidState input,
+#SF-contact #B0000003115.textfieldValidState input,
+#SF-contact #B0000003113.textfieldValidState input,
+#SF-contact #B00000031122.textfieldValidState input { background-color: #EFEAE6; }
+
+/* 任意の欄には地色を付けない（生成CSSの黄緑を打ち消す） */
+#SF-contact #B00000031124.textfieldValidState input,
+#SF-contact #B0000003116.textareaValidState textarea { background-color: transparent; }
+
+/* 抜けている欄の地色。#ff9f9f をやめ、差し色から明度だけ上げて起こした色。
+   本文 #614E3B が 6.00:1、印の差し色が 4.85:1 で乗る */
+#SF-contact .textfieldRequiredState input,
+#SF-contact input.textfieldRequiredState,
+#SF-contact .textfieldInvalidFormatState input,
+#SF-contact input.textfieldInvalidFormatState,
+#SF-contact .textfieldMinCharsState input,
+#SF-contact input.textfieldMinCharsState,
+#SF-contact .textfieldMaxCharsState input,
+#SF-contact input.textfieldMaxCharsState,
+#SF-contact .textareaRequiredState textarea,
+#SF-contact textarea.textareaRequiredState,
+#SF-contact .textareaMinCharsState textarea,
+#SF-contact textarea.textareaMinCharsState,
+#SF-contact .textareaMaxCharsState textarea,
+#SF-contact textarea.textareaMaxCharsState,
+#SF-contact .selectRequiredState select,
+#SF-contact select.selectRequiredState,
+#SF-contact .selectInvalidState select,
+#SF-contact select.selectInvalidState { background-color: #EADEDB; }
+
+/* ══════════════════════════════════════════════════════════════
+   中間の幅（700〜1000px）の崩れ
+   ──────────────────────────────────────────────────────────────
+   検査を 320/390/640/1040/1440 の5点しか回しておらず、
+   しかもうち2点は折り返す幅そのものだった。隙間を測っていなかったので、
+   次を利用者に指摘されて初めて知った。
+
+     ・3枚しかない札が2列で並び、4枠目が必ず空く
+     ・見出しが2行になり、下罫が文字を貫通する
+     ・写真と文が左に寄る
+     ・コース表が潰れて「トライ／アル料／金」と割れる
+
+   検査は22点に増やし、段の空きと罫の貫通を機械で見るようにした
+   （_tools/verify.py）。
+   ══════════════════════════════════════════════════════════════ */
+
+/* ── ① 下罫が文字を貫通する ────────────────────────────────
+   生成CSSが .newslistHeadlineStyle に height:50px を宣言している。
+   私が足した border-bottom（1245行あたり）はその50pxの位置に引かれるので、
+   見出しが2行になった瞬間、文字が箱の外へ出て罫が文字の上を通る。
+   まず全ての札で高さを解く。 */
+#SF-contents ul.thumbnailList li .newslistHeadlineStyle { height: auto; }
+
+/* 回遊札（3枚組・6枚組）は横に並ぶので、罫の高さが揃っていないと
+   ばらばらに見える。行送り25px・下限50pxにすれば、
+   1行でも2行でも箱は50pxになり、隣の札と罫が同じ高さで揃う。
+   50 はこのサイトが持つ箱の高さ、25 はその半分（15px × 1.7 ≒ 25）。 */
+#SF-contents :is(#B000000033,#B000000054,#B000000071,#B000000077,#B000000124,#B000000148,#B000000158,#B000000397,#B000000010,#B000000260) ul.thumbnailList li .newslistHeadlineStyle {
+	min-height: 50px;
+	font-size: 15px;
+	line-height: 25px;
+}
+
+/* ── ② 3枚組・6枚組を段組みにする ──────────────────────────
+   生成CSSは li { float:left; width:300px; margin:0 15px } で組んでいる。
+   3枚で 3×330 = 990px。器がそれを下回ると3枚目が落ちて2列になり、
+   3枚しかないので4枠目が必ず空く。
+   float をやめて段組みにすれば、枚数のまま幅だけ縮む。
+   罫の高さも段組みなら勝手に揃う。 */
+/* 段組み・flex にした器では、生成CSSの clearfix の擬似要素が
+   「見えない枠」として段を占領する。
+
+     #SF-contents .SF-module-container ul.thumbnailList:before { content:" "; display:table }
+     …                                                  :after { clear:both }
+
+   3列の段組みに ::before ＋ li×3 ＋ ::after の5個が入るので、
+   1行目が「::before, li, li」、2行目が「li, ::after」になり、
+   3枚しかないのに2列＋1枚に見える。実測で
+   li が 313x260@y1622 / 313x260@y1622 / 313x260@y1932 と出て分かった。
+   float を解除するための仕掛けなので、float をやめた器では不要。 */
+#SF-contents :is(#B000000033,#B000000054,#B000000071,#B000000077,#B000000124,#B000000148,#B000000158,#B000000397,#B000000010,#B000000260) ul.thumbnailList:before,
+#SF-contents :is(#B000000033,#B000000054,#B000000071,#B000000077,#B000000124,#B000000148,#B000000158,#B000000397,#B000000010,#B000000260) ul.thumbnailList:after,
+#SF-contents ul.thumbnailList li:has(table.trial):before,
+#SF-contents ul.thumbnailList li:has(table.trial):after,
+#SF-contents :is(#B000000045,#B000000163) ul.thumbnailList li:before,
+#SF-contents :is(#B000000045,#B000000163) ul.thumbnailList li:after,
+#B000000172 ul:before,
+#B000000172 ul:after { content: none; display: none; }
+
+#SF-contents :is(#B000000033,#B000000054,#B000000071,#B000000077,#B000000124,#B000000148,#B000000158,#B000000397,#B000000010,#B000000260) ul.thumbnailList {
+	display: grid;
+	grid-template-columns: repeat(3, minmax(0, 1fr));
+	column-gap: 30px;      /* 生成CSSの margin-left/right 15px × 2 */
+	row-gap: 50px;
+	margin-left: 0;
+	margin-right: 0;
+}
+#SF-contents :is(#B000000033,#B000000054,#B000000071,#B000000077,#B000000124,#B000000148,#B000000158,#B000000397,#B000000010,#B000000260) ul.thumbnailList li {
+	float: none;
+	clear: none;
+	width: auto;
+	height: auto;
+	min-width: 0;
+	margin-left: 0;
+	margin-right: 0;
+	margin-bottom: 0;
+}
+/* ── ③ 写真と文の揃え ──────────────────────────────────────
+   生成CSSは同じ形の札なのにブロックごとに text-align が違う
+   （#B000000010 は center、#B000000033 は left）。
+   幅が縮むと器と写真の差が開いて左に寄って見える。中央に揃える。 */
+#SF-contents :is(#B000000033,#B000000054,#B000000071,#B000000077,#B000000124,#B000000148,#B000000158,#B000000397,#B000000010,#B000000260) ul.thumbnailList li .thumbnail,
+#SF-contents :is(#B000000033,#B000000054,#B000000071,#B000000077,#B000000124,#B000000148,#B000000158,#B000000397,#B000000010,#B000000260) ul.thumbnailList li .newslistdata,
+#SF-contents :is(#B000000033,#B000000054,#B000000071,#B000000077,#B000000124,#B000000148,#B000000158,#B000000397,#B000000010,#B000000260) ul.thumbnailList li p {
+	width: auto;
+	height: auto;
+	margin-left: 0;
+	margin-right: 0;
+	text-align: center;
+}
+#SF-contents :is(#B000000033,#B000000054,#B000000071,#B000000077,#B000000124,#B000000148,#B000000158,#B000000397,#B000000010,#B000000260) ul.thumbnailList li .thumbnail img {
+	display: block;
+	width: 100%;
+	height: auto;
+	margin-left: 0;
+	margin-right: 0;
+}
+/* 見出しの罫は札の幅いっぱいに。文字は左から読ませる */
+#SF-contents :is(#B000000033,#B000000054,#B000000071,#B000000077,#B000000124,#B000000148,#B000000158,#B000000397,#B000000010,#B000000260) ul.thumbnailList li .newslistHeadlineStyle {
+	width: auto;
+	text-align: left;
+}
+
+/* 携帯では1列。3×170px を下回ると写真も見出しも読めなくなる
+   （器570px ＝ 画面610px あたりが限界なので、既にある640pxの境目を使う） */
+@media screen and (max-width: 640px) {
+	#SF-contents :is(#B000000033,#B000000054,#B000000071,#B000000077,#B000000124,#B000000148,#B000000158,#B000000397,#B000000010,#B000000260) ul.thumbnailList {
+		grid-template-columns: minmax(0, 1fr);
+		row-gap: 40px;
+		justify-content: center;
+	}
+	#SF-contents :is(#B000000033,#B000000054,#B000000071,#B000000077,#B000000124,#B000000148,#B000000158,#B000000397,#B000000010,#B000000260) ul.thumbnailList li {
+		max-width: 350px;      /* 写真300 ＋ 左右25 */
+		margin-left: auto;
+		margin-right: auto;
+	}
+}
+/* ── ④ コース札（写真＋表） ────────────────────────────────
+   生成CSSは .thumbnail img { float:left } で写真を浮かせ、その右に
+   .newslistdata の表を流している。器が狭くなると表だけが潰れて
+   「トライ／アル料／金」と1文字ずつ割れる。
+
+   折り返す幅を決め打ちせず、段そのものを flex-wrap にする。
+   写真300 ＋ 間30 ＋ 表420 が入らなくなった時点で、表が自動で下へ回る。
+   table.trial を持つ札だけが対象なので、回遊札は巻き込まない。 */
+#SF-contents ul.thumbnailList li:has(table.trial) {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: flex-start;
+	column-gap: 30px;
+}
+#SF-contents ul.thumbnailList li:has(table.trial) > .newslistHeadlineStyle { flex: 1 1 100%; }
+#SF-contents ul.thumbnailList li:has(table.trial) > .thumbnail {
+	flex: 0 0 300px;
+	max-width: 100%;
+	margin: 0;
+}
+#SF-contents ul.thumbnailList li:has(table.trial) > .thumbnail img {
+	float: none;
+	display: block;
+	width: 100%;
+	height: auto;
+	margin: 0;
+}
+#SF-contents ul.thumbnailList li:has(table.trial) > .newslistdata {
+	flex: 1 1 420px;
+	min-width: 0;
+	width: auto;
+	margin: 0;
+}
+table.trial {
+	width: 100%;
+	table-layout: fixed;
+}
+table.trial td.t_l {
+	width: 150px;
+	vertical-align: top;
+	padding-right: 20px;
+}
+table.trial td.t_r {
+	vertical-align: top;
+	word-break: normal;
+	overflow-wrap: anywhere;
+}
+/* 携帯では見出しの列を残すと本文が170pxしか残らない。上下に積む */
+@media screen and (max-width: 640px) {
+	table.trial,
+	table.trial tbody,
+	table.trial tr,
+	table.trial td.t_l,
+	table.trial td.t_r {
+		display: block;
+		width: auto;
+	}
+	table.trial td.t_l { padding: 0 0 5px; }
+	table.trial td.t_r { padding: 0 0 20px; }
+	table.trial tr:last-child td.t_r { padding-bottom: 0; }
+}
+
+/* ── ⑤ Shop Gallery ────────────────────────────────────────
+   生成CSSは li { float:left } ＋ img { margin:0 15px 30px } の6枚。
+   器が狭くなると2枚＋2枚＋2枚…ではなく左に寄って詰まる。
+   auto-fit の段組みにすると、6枚は 3+3 / 2+2+2 / 1×6 と
+   どの列数でも割り切れて空きが出ない。 */
+#B000000172 ul {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+	gap: 30px;
+	margin: 0;
+	padding: 0;
+}
+#B000000172 ul li {
+	float: none;
+	margin: 0;
+	min-width: 0;
+}
+#B000000172 ul li.SF-simpleImg img {
+	display: block;
+	width: 100%;
+	height: auto;
+	margin: 0;
+}
+
+/* ── ⑥ 写真の横に本文を置く2枚組（beginner・campaign） ──────
+   img が float で、その横に本文が流れる形。器が狭くなると本文が
+   写真の右の細い隙間に押し込まれる。同じく flex-wrap にして、
+   入らなくなったら本文が下へ回るようにする。 */
+#SF-contents :is(#B000000045,#B000000163) ul.thumbnailList li {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: flex-start;
+	column-gap: 30px;
+}
+#SF-contents :is(#B000000045,#B000000163) ul.thumbnailList li .newslistHeadlineStyle { flex: 1 1 100%; }
+#SF-contents :is(#B000000045,#B000000163) ul.thumbnailList li .thumbnail {
+	flex: 0 0 300px;
+	max-width: 100%;
+	margin: 0;
+}
+#SF-contents :is(#B000000045,#B000000163) ul.thumbnailList li .thumbnail img {
+	float: none;
+	display: block;
+	width: 100%;
+	height: auto;
+	margin: 0;
+}
+#SF-contents :is(#B000000045,#B000000163) ul.thumbnailList li .newslistdata {
+	flex: 1 1 360px;
+	min-width: 0;
+	width: auto;
+	margin: 0;
+}
+/* ── ⑦ faq の分類ボタン4つ ──────────────────────────────────
+   HTML が <table width="100%"><td width="25%"> の4列で組んでいる。
+   表の自動レイアウトは「中身の最小幅」を下回れないので、
+   「ブライダルエステについて」の入った枠が250pxを要求し、
+   25%の縛りで4枠すべてが250pxになって表が1000pxに膨らむ。
+   器が960pxなので20pxはみ出す（1000px幅のときだけ起きていた）。
+
+   表としての意味は無い（ボタンを4つ並べているだけ）ので段組みにする。
+   4個は 4列 / 2列 / 1列 のどれでも割り切れて空きが出ない。 */
+#B000000153 table,
+#B000000153 tbody { display: block; width: auto; }
+#B000000153 tr {
+	display: grid;
+	grid-template-columns: repeat(4, minmax(0, 1fr));
+	column-gap: 20px;
+}
+#B000000153 td {
+	display: block;
+	width: auto;
+	min-width: 0;
+}
+#B000000153 a.button-rink {
+	display: block;
+	width: auto;
+	box-sizing: border-box;
+}
+@media screen and (max-width: 900px) {
+	#B000000153 tr { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+/* 枠の下の余白。もとは HTML のインラインstyleで padding-bottom:50px だった。
+   インラインは !important でしか上回れないので、HTML から外してここに移した
+   （レイアウト目的の !important を持ち込まないため）。 */
+#B000000153 .lr-faqnav-c { padding-bottom: 50px; }
+@media screen and (max-width: 900px) {
+	#B000000153 .lr-faqnav-c { padding-bottom: 30px; }
+}
+@media screen and (max-width: 480px) {
+	#B000000153 tr { grid-template-columns: minmax(0, 1fr); }
+	#B000000153 .lr-faqnav-c { padding-bottom: 20px; }
+}
+/* ── ⑧ 回遊札の見出しの「≫」 ────────────────────────────────
+   HTML が <i style="padding-left:20px"> で文字の直後に置いていたので、
+   700px幅で「トライアル（体験）コース」＋「≫」が入りきらず
+   矢印だけが2行目に落ちていた。
+   インラインstyleは !important でしか上回れないのでHTMLから外し
+   （lr-go クラスに置換）、文字は左・矢印は罫の右端に置く。
+   これで折り返しても矢印の居場所が変わらない。 */
+#SF-contents ul.thumbnailList li .newslistHeadlineStyle:has(.lr-go) {
+	display: flex;
+	align-items: flex-start;
+	justify-content: space-between;
+	column-gap: 15px;
+}
+#SF-contents ul.thumbnailList li .newslistHeadlineStyle .lr-go {
+	flex: 0 0 auto;
+	padding-left: 0;
+	line-height: 25px;
+}
+/* ══════════════════════════════════════════════════════════════
+   携帯のメニュー（ハンバーガー）
+   ──────────────────────────────────────────────────────────────
+   携帯では8項目を2列×4段で常に開いていた。画面の3割を占めるうえ、
+   下へ進むともう届かない。50pxの帯を1本だけ上端に残す形にした。
+
+   ■ 畳むのは data-lr-nav="ready" が付いてから。
+   これは js/lr-nav.js が「押す仕掛けを用意できた」時に自分で付ける印。
+   JSが落ちれば印が付かず、従来の一覧表示のまま残る。
+   押せないボタンだけが残る、という行き止まりを作らないため。
+   （html.lr-js は <head> の最後で付けており、そちらは
+     「一瞬だけ開いた一覧が見える」のを防ぐためのもの）
+
+   ■ 状態は aria-expanded だけが持つ。CSSはそれを見て描く。
+   状態を2箇所に持たせると必ず食い違う。
+   ══════════════════════════════════════════════════════════════ */
+.lr-navb { display: none; }
+
+@media screen and (max-width: 640px) {
+	html[data-lr-nav="ready"] .lr-navb {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		column-gap: 15px;
+		width: 100%;
+		min-height: 50px;
+		margin: 0;
+		padding: 0;
+		background: transparent;
+		border: 0;
+		border-top: 1px solid #AE967A;
+		border-bottom: 1px solid #AE967A;
+		color: #614E3B;
+		font-family: 'Noto Serif JP', serif;
+		font-size: 15px;
+		letter-spacing: .16em;
+		line-height: 1;
+		cursor: pointer;
+		-webkit-appearance: none;
+		appearance: none;
+	}
+	html[data-lr-nav="ready"] .lr-navb:hover,
+	html[data-lr-nav="ready"] .lr-navb[aria-expanded="true"] { background: #EFEAE6; }
+
+	/* 3本の線。真ん中は器の背景で描き、上下は疑似要素にする。
+	   開いたときに上下だけを中央へ寄せて交差させれば × になる。 */
+	.lr-navb-i {
+		position: relative;
+		display: block;
+		flex: 0 0 auto;
+		width: 20px;
+		height: 13px;
+		background: linear-gradient(#614E3B, #614E3B) center center / 20px 1px no-repeat;
+	}
+	.lr-navb-i:before,
+	.lr-navb-i:after {
+		content: '';
+		position: absolute;
+		left: 0;
+		width: 20px;
+		height: 1px;
+		background: #614E3B;
+		-webkit-transition: top var(--lr-t) var(--lr-e), -webkit-transform var(--lr-t) var(--lr-e);
+		transition: top var(--lr-t) var(--lr-e), transform var(--lr-t) var(--lr-e);
+	}
+	.lr-navb-i:before { top: 0; }
+	.lr-navb-i:after { top: 12px; }
+	.lr-navb[aria-expanded="true"] .lr-navb-i { background-image: none; }
+	.lr-navb[aria-expanded="true"] .lr-navb-i:before { top: 6px; -webkit-transform: rotate(45deg); transform: rotate(45deg); }
+	.lr-navb[aria-expanded="true"] .lr-navb-i:after  { top: 6px; -webkit-transform: rotate(-45deg); transform: rotate(-45deg); }
+
+	/* 帯を上端に貼り付ける。器（#SF-outer-container）が左右20pxの余白を
+	   持っているので、その分だけ外へ出して画面いっぱいにする。
+	   z-index は下端の固定帯（100）より下に置く。 */
+	html[data-lr-nav="ready"] #SF-navigation {
+		position: -webkit-sticky;
+		position: sticky;
+		top: 0;
+		z-index: 90;
+		margin-left: -20px;
+		margin-right: -20px;
+		background: #ffffff;
+	}
+
+	/* 畳む。上の2列×4段の指定より詳細度を上げる必要がある
+	   （あちらは #SF-navigation :is(#B…) ul.SF-dropdown ＝ ID2つ） */
+	html[data-lr-nav="ready"] #SF-navigation #lr-navlist { display: none; }
+	html[data-lr-nav="ready"] #SF-navigation .lr-navb[aria-expanded="true"] + #lr-navlist {
+		display: block;
+		max-height: calc(100vh - 50px);
+		overflow-y: auto;
+		-webkit-overflow-scrolling: touch;
+	}
+	/* 開いたときは1項目1行。仕切りは内側のヘアライン */
+	html[data-lr-nav="ready"] #SF-navigation #lr-navlist > li {
+		/* 2列のときの max-width:50% が残ると、1項目1行にしても
+		   半分の幅（実測195px）で左に寄る */
+		-ms-flex: 0 0 auto;
+		flex: 0 0 auto;
+		width: auto;
+		max-width: none;
+		border-left: 0;
+		border-top: 1px solid #D9CCBD;
+	}
+	html[data-lr-nav="ready"] #SF-navigation #lr-navlist > li:first-child { border-top: 0; }
+	html[data-lr-nav="ready"] #SF-navigation #lr-navlist > li > a {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: auto;
+		min-height: 50px;
+		padding: 0 20px;
+	}
+}
+
+/* 動きを減らす設定のときは × への変形も止める（既存の一括指定に含まれる） */
