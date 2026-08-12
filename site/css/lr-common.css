@@ -57,6 +57,12 @@
    既に面をまとめている。枠を外すと締めつけが消え、
    「1本の罫で仕切る」というこの店の作法にも戻る。 */
 #B000000030 {
+	/* 生成CSSが height:410px; overflow:hidden を宣言している（元はブログの
+	   iframe を収める箱だった名残）。いまは営業日カレンダーが入っており、
+	   390px幅では中身が645pxになって**235px が黙って切り落とされ**、
+	   カレンダーの下が見えなくなっていた（実測）。高さで持たない。 */
+	height: auto;
+	overflow: visible;
 	border: 0;
 	padding: 0;
 }
@@ -1795,20 +1801,64 @@ a.lr-sns:hover .lr-sns-id { color: #A4896A; }
 	padding-left: 0;
 	padding-right: 0;
 }
-/* 左の連絡先は、右の地図と天を揃えて置く */
+/* 左の連絡先は、右の地図と天を揃えて置く。
+
+   ★ 生成CSS（module_B000000031.css）が
+       height: 410px;  overflow: hidden;
+     を宣言している。410px は旧ロゴ（270×97）の分量に合わせた数で、
+     ロゴを全体版（220×180）にすると中身が 436〜448px になり、
+     **はみ出した26〜38pxが黙って切り落とされて「Contact」ボタンの
+     下半分が消えていた**（実測）。切られても何も出ないので気づけない。
+
+     原稿が入れば（電話番号・LINE ID など）中身はさらに伸びる。
+     固定の高さで持つのをやめる。 */
 #B000000031 {
+	height: auto;
+	overflow: visible;
 	padding-top: 10px;
 	padding-right: 50px;
 	box-sizing: border-box;
 }
 #B000000031 table { width: 100%; }
 #B000000031 .t_l { width: 90px; white-space: nowrap; }
-/* 地図は列の幅いっぱいに。高さは連絡先の分量に合わせて詰める */
+/* 地図は列の幅いっぱいに。高さは**左の連絡先に合わせて伸びる**ようにする。
+   360px と決め打ちしていたが、それは旧ロゴのときの左の分量。
+   左が伸びれば地図だけ短くなって天地が揃わない。
+   段（#SF-row3）は flex なので列は同じ高さに伸びる。
+   その高さを iframe まで通す。対応していない環境では min-height が効く。 */
 #B000000032 iframe {
 	display: block;
 	width: 100%;
 	height: 360px;
 	border: 0;
+}
+/* 段は .SF-col2 が入れ子になっていて（外側は段の高さに伸びるが内側は自動高）、
+   height:100% が途中で解決できない。縦のflexで高さを下まで通す。
+   :has() で「地図を含む列」だけに限る ― #SF-row3 は他のページにもあり、
+   中身が違うため。 */
+@media screen and (min-width: 641px) {
+	.SF-col2:has(#B000000032) {
+		display: -ms-flexbox;
+		display: flex;
+		-ms-flex-direction: column;
+		flex-direction: column;
+	}
+	.SF-col2:has(#B000000032) > * {
+		-ms-flex: 1 1 auto;
+		flex: 1 1 auto;
+	}
+	#B000000032 {
+		display: -ms-flexbox;
+		display: flex;
+		-ms-flex-direction: column;
+		flex-direction: column;
+	}
+	#B000000032 iframe {
+		-ms-flex: 1 1 auto;
+		flex: 1 1 auto;
+		height: auto;
+		min-height: 360px;
+	}
 }
 
 /* 連絡先ブロックのロゴ。地を #555 から白へ戻したとき、中の logo2.png が
@@ -2024,7 +2074,8 @@ body {
 	}
 	/* 横並びのときだけ必要だった右の逃げを、縦積みでは下の余白に置き換える */
 	#B000000031 { padding-right: 0; padding-bottom: 30px; }
-	#B000000032 iframe { height: 260px; }
+	/* 縦積みでは左に合わせる意味がないので、地図は自前の高さに戻す */
+	#B000000032 iframe { height: 260px; min-height: 0; }
 }
 
 /* 予約への3つの入口。290px×3＋余白 で 910px あるので、狭いと必ず溢れる。
@@ -3869,4 +3920,23 @@ a.button-rink2 {
 		grid-row: 2;
 		text-align: right;
 	}
+}
+
+/* ══════════════════════════════════════════════════════════════
+   .wrap が index のフッターを切り落としていた
+   ──────────────────────────────────────────────────────────────
+   index.html の <style> に `.wrap { overflow: hidden }` がある。
+   全幅（100vw）の帯が横にはみ出すのを抑えるための指定だが、
+   **縦も切る**ので、器の下端より下に来た #SF-footer（「© CALDINA」）が
+   丸ごと消えていた。実測：.wrap 器4762 に対し中身4862、
+   footer は y4762〜4862 ＝ 全部が切られた側にある。
+   下層ページには .wrap が無いので、**トップだけ著作権表示が出ない**
+   という気づきにくい形になっていた。
+
+   横だけ切る。clip は視覚だけを切り、スクロール容器を作らないので
+   visible と組み合わせられる（hidden では両軸が切られる）。 */
+.wrap {
+	overflow: hidden;            /* clip 非対応の環境への保険（横だけは効く） */
+	overflow-x: clip;
+	overflow-y: visible;
 }

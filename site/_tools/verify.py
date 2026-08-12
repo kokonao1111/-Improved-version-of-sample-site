@@ -15,6 +15,7 @@
   3. コントラスト ── 大きい文字は3:1、小さい文字は4.5:1（WCAG 1.4.3）
   4. 段組みの空き ── 3枚しかない札が2列で並ぶと4枠目が必ず空く
   5. 罫が文字を貫通 ── 下罫を持つ箱から中身が溢れていないか
+  5b. 切り落とし ── 固定の高さ＋overflow:hidden で中身が黙って消えていないか
   6. 画像の不在 / JS のエラー
   7. 版面 ── 1040px以上で中身がちょうど1000pxか
 
@@ -164,6 +165,32 @@ function CHECK(d,W,out){
   if(e.scrollHeight>Math.ceil(h)+2)
    out.rulecross.push(sig(e)+' 箱'+Math.round(h)+' 中身'+e.scrollHeight);});
 
+ /* 5b. 固定の高さで中身が切り落とされていないか
+
+    生成CSSは器に height:410px のような固定値を持たせたうえで
+    overflow:hidden を掛けている。原稿や画像が伸びると、はみ出した分が
+    **黙って消える**。何も表示されないので気づけない。実際に3回起きた。
+      #B000000031 … 「Contact」ボタンの下半分が消えた（26〜38px）
+      #B000000030 … 営業日カレンダーの下が消えた（235px）
+      .wrap       … トップだけ「© CALDINA」のフッターが丸ごと消えた（100px）
+
+    「中身が器より高い」だけでは扉写真の内部構造などで誤検出になる
+    （実測で9pxの差が出るが、器の外に出ている子孫は無い）。
+    **器の下端より下に、実際に矩形を持つ子孫がいるか**で判定する。 */
+ [].forEach.call(d.querySelectorAll('body *'),function(e){
+  var c=getComputedStyle(e);
+  if(c.overflow!=='hidden'&&c.overflowY!=='hidden')return;
+  if(e.closest('.flexslider,.slides,.flex-viewport'))return;
+  var r=e.getBoundingClientRect(); if(!r.height||!r.width)return;
+  if(e.scrollHeight<=Math.ceil(r.height)+4)return;
+  var lost=[].filter.call(e.querySelectorAll('*'),function(q){
+   var qr=q.getBoundingClientRect();
+   return qr.height>2&&qr.width>2&&qr.top>r.bottom-2;});
+  if(!lost.length)return;
+  out.clipped.push(sig(e)+' 器'+Math.round(r.height)+' 中身'+e.scrollHeight
+    +' → '+lost.length+'個が器の外 ('+sig(lost[0])+')');
+ });
+
  /* 6. 画像 */
  [].forEach.call(d.images,function(im){
   if(im.complete&&im.naturalWidth===0)out.images.push(im.getAttribute('src'));});
@@ -187,7 +214,7 @@ function run(){
  var res={};
  frames.forEach(function(f){
   var W=+f.dataset.w;
-  var out={overflow:[],overlap:[],contrast:[],holes:[],rulecross:[],images:[],
+  var out={overflow:[],overlap:[],contrast:[],holes:[],rulecross:[],clipped:[],images:[],
            errors:ERR[W]||[],inner:null};
   try{ CHECK(f.contentDocument,W,out); }catch(e){ out.errors.push('検査中の例外: '+e); }
   res[W]=out;});
@@ -225,8 +252,8 @@ def probe(page, widths, wait=2600):
 
 
 KINDS = [('overflow', 'はみ出し'), ('overlap', '重なり'), ('contrast', 'コントラスト'),
-         ('holes', '段の空き'), ('rulecross', '罫が貫通'), ('images', '画像不在'),
-         ('errors', 'JSエラー')]
+         ('holes', '段の空き'), ('rulecross', '罫が貫通'), ('clipped', '切り落とし'),
+         ('images', '画像不在'), ('errors', 'JSエラー')]
 
 
 def main():
