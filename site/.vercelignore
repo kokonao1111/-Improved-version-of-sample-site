@@ -1,0 +1,6 @@
+# 作業用。公開先には置かない
+_data/
+_tools/
+
+# サーバー側PHPが必要なもの。同期すると本番の mail_send.php を消してしまう
+cgiFolder/

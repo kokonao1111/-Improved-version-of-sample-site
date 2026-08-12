@@ -4,4 +4,4 @@ Allow: /
 # 管理・内部処理はクロール対象外
 Disallow: /cgiFolder/
 
-Sitemap: https://www.louiserever.com/sitemap.xml
+Sitemap: {{サイトURL}}/sitemap.xml

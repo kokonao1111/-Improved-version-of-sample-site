@@ -1,77 +1,77 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://www.louiserever.com/beginner/</loc>
+    <loc>{{サイトURL}}/beginner/</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://www.louiserever.com/campaign/</loc>
+    <loc>{{サイトURL}}/campaign/</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://www.louiserever.com/course_plan/</loc>
+    <loc>{{サイトURL}}/course_plan/</loc>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://www.louiserever.com/faq/</loc>
+    <loc>{{サイトURL}}/faq/</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://www.louiserever.com/how_to_choose/</loc>
+    <loc>{{サイトURL}}/how_to_choose/</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://www.louiserever.com/</loc>
+    <loc>{{サイトURL}}/</loc>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://www.louiserever.com/shopinfo/</loc>
+    <loc>{{サイトURL}}/shopinfo/</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://www.louiserever.com/singlefolder/reservation.html</loc>
+    <loc>{{サイトURL}}/singlefolder/reservation.html</loc>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://www.louiserever.com/singlefolder/staff_1.html</loc>
+    <loc>{{サイトURL}}/singlefolder/staff_1.html</loc>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
   <url>
-    <loc>https://www.louiserever.com/singlefolder/staff_3.html</loc>
+    <loc>{{サイトURL}}/singlefolder/staff_3.html</loc>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
   <url>
-    <loc>https://www.louiserever.com/singlefolder/staff_3_1.html</loc>
+    <loc>{{サイトURL}}/singlefolder/staff_3_1.html</loc>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
   <url>
-    <loc>https://www.louiserever.com/singlefolder/staff_4.html</loc>
+    <loc>{{サイトURL}}/singlefolder/staff_4.html</loc>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
   <url>
-    <loc>https://www.louiserever.com/singlefolder/staff_5.html</loc>
+    <loc>{{サイトURL}}/singlefolder/staff_5.html</loc>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
   <url>
-    <loc>https://www.louiserever.com/singlefolder/staff_6.html</loc>
+    <loc>{{サイトURL}}/singlefolder/staff_6.html</loc>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
   <url>
-    <loc>https://www.louiserever.com/trial/</loc>
+    <loc>{{サイトURL}}/trial/</loc>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
