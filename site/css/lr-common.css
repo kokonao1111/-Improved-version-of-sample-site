@@ -2524,10 +2524,12 @@ body {
    これで拡大は最大でも 300→350（17%）に収まり、縁も揃ったままになる。 */
 @media screen and (max-width: 640px) {
 	#SF-contents ul.thumbnailList > li:has(.thumbnail img) {
-		max-width: 350px;
+		width: 100%;
+		max-width: 420px;
 		margin-left: auto;
 		margin-right: auto;
 		height: auto;
+		box-sizing: border-box;
 	}
 }
 
@@ -3080,10 +3082,16 @@ a.button-rink2:focus {
 		row-gap: 40px;
 		justify-content: center;
 	}
+	/* ★ margin:auto を使ってはいけない。格子の項目に auto の余白を付けると
+	   「引き伸ばし」が無効になり、中身の幅（写真の原寸300px）まで縮む。
+	   実測で器360pxに対し札が300px（画面の77%）で止まっていた原因がこれ。
+	   幅は100%で取り、上限だけ与えて、寄せは justify-self で行う。 */
 	#SF-contents :is(#B000000033,#B000000054,#B000000071,#B000000077,#B000000124,#B000000148,#B000000158,#B000000397,#B000000010,#B000000260) ul.thumbnailList li {
-		max-width: 350px;      /* 写真300 ＋ 左右25 */
-		margin-left: auto;
-		margin-right: auto;
+		width: 100%;
+		max-width: 420px;
+		margin-left: 0;
+		margin-right: 0;
+		justify-self: center;
 	}
 }
 /* ── ④ コース札（写真＋表） ────────────────────────────────
@@ -3143,7 +3151,9 @@ table.trial td.t_r {
 		display: block;
 		width: auto;
 	}
-	table.trial td.t_l { padding: 0 0 5px; }
+	/* 積んだときの見出しは左に揃える（中央だと値と軸が合わない） */
+	table.trial td.t_l { padding: 0 0 5px; text-align: left; }
+	table.trial td.t_l .box { display: block; text-align: left; }
 	table.trial td.t_r { padding: 0 0 20px; }
 	table.trial tr:last-child td.t_r { padding-bottom: 0; }
 }
@@ -3939,4 +3949,99 @@ a.button-rink2 {
 	overflow: hidden;            /* clip 非対応の環境への保険（横だけは効く） */
 	overflow-x: clip;
 	overflow-y: visible;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   作者が意図した改行を、幅ごとに効かせる
+   ──────────────────────────────────────────────────────────────
+   元のHTMLには携帯用とPC用の改行が入っていた。
+
+     index.html   「初めての方へおすすめトライアル<br class="forSP">（お試し）プラン」
+     trial (5箇所) 本文とコース内容の、PCでの改行位置
+
+   ところが cgiFolder/corestyle.css:61 が
+     .forSP { display: none !important }
+   で携帯用を殺しており、PC用のほうは幅に関係なく常に効いていた。
+   結果、携帯で「初めての方へおすすめトラ / イアル（お試し）プラン」のように
+   単語の途中で割れていた（**作者はそこで割れと言っていない**）。
+
+   !important を持ち込まずに済ませるため、クラス名を自分のものに置き換えた
+   （HTML側 forSP→lr-br-sp / forPC→lr-br-pc。計7箇所）。
+   ══════════════════════════════════════════════════════════════ */
+.lr-br-sp { display: none; }
+.lr-br-pc { display: inline; }
+@media screen and (max-width: 640px) {
+	.lr-br-sp { display: inline; }
+	.lr-br-pc { display: none; }
+}
+
+/* ══════════════════════════════════════════════════════════════
+   携帯で画面を使い切る ― 「両端の見えない壁」をなくす
+   ──────────────────────────────────────────────────────────────
+   実測（画面390px、トップの見出しまでの連鎖）:
+
+     BODY / .wrap                     390
+     #SF-outer-container  padding 20  → 350
+     .newslistdata        padding 15  → 320   ← この15pxは私が足したもの
+     見出しの器                        320  ＝ 画面の82%
+
+   写真も 300px（画面の77%）や 175px（45%）で、
+   サンプルのSP版が画面幅いっぱい近くまで使っているのに比べて明らかに小さい。
+   利用者から「両端に見えない壁があるように見える」「写真が小さい」と指摘。
+
+   ・器の余白を 20 → 15px（サイトの余白の語彙にある数）
+   ・私が足した .newslistdata の左右15pxを外す
+   ・札の上限 350px → 420px。写真300pxを1.4倍までに抑えつつ、
+     390pxの画面では器いっぱい（360px＝画面の92%）になる
+   ・4枚組の回遊札は2列×2段（1枚175px）をやめて1列にする
+   ══════════════════════════════════════════════════════════════ */
+@media screen and (max-width: 640px) {
+	#SF-outer-container {
+		padding-left: 15px;
+		padding-right: 15px;
+	}
+	#SF-contents ul.thumbnailList li .newslistdata {
+		padding-left: 0;
+		padding-right: 0;
+	}
+	/* 札の幅の上限。写真の原寸300pxに対して最大1.4倍まで */
+	#SF-contents ul.thumbnailList > li:has(.thumbnail img),
+	#SF-contents :is(#B000000033,#B000000054,#B000000071,#B000000077,#B000000124,#B000000148,#B000000158,#B000000397,#B000000010,#B000000260) ul.thumbnailList li {
+		max-width: 420px;
+	}
+	.lr-nav3-list { max-width: 420px; }
+
+	/* 4枚組の回遊札。2列だと1枚175px（画面の45%）にしかならない */
+	#B000000024 ul.lr-tiles > li,
+	.lr-tiles > li {
+		-ms-flex: 1 1 100%;
+		flex: 1 1 100%;
+		max-width: 100%;
+		border-left: 0;
+	}
+	#B000000024 ul.lr-tiles > li:nth-child(n+2),
+	.lr-tiles > li:nth-child(n+2) { border-top: 1px solid #D9CCBD; }
+	#B000000024 ul.lr-tiles > li:first-child,
+	.lr-tiles > li:first-child { border-top: 0; }
+}
+
+/* 4枚組の回遊札を1列にしたら、640pxの画面で 400pxの写真が610px（1.52倍）まで
+   伸びて滲んだ。原寸の1.3倍を上限にして、余れば中央に置く。 */
+@media screen and (max-width: 640px) {
+	#B000000024 ul.lr-tiles a.lr-tile,
+	.lr-tiles a.lr-tile {
+		max-width: 520px;
+		margin-left: auto;
+		margin-right: auto;
+	}
+}
+
+/* LINEのQRは読み取ってもらうためのもの。90pxでは実用にならない
+   （原寸300px。150pxなら滲まずに読み取れる）。Instagramの写真も対にする。 */
+@media screen and (max-width: 640px) {
+	#B000000402 img,
+	#B000000398 img.lr-sns-ph {
+		width: 150px;
+		height: auto;
+	}
 }
