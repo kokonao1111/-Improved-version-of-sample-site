@@ -132,6 +132,33 @@ def main():
         print('   {{%s}}  %d箇所 / %dファイル' % (k, len(fs), len(set(fs))))
     print()
 
+    # HTML が使っている自作クラスに、CSS/JS 側の受け手があるか。
+    #
+    # 一度、CSSの区間を差し替えたときに範囲の中にあった2つの節を
+    # まとめて消してしまい、HTML側の class だけが残ったことがある
+    # （.lr-faqnav-c と .lr-go）。表示は一見変わらないので気づけない。
+    # 名前の対応を数えるだけで捕まえられるので、常に見る。
+    own = set()
+    for p2 in files:
+        if not p2.endswith('.html') or p2.startswith('sp' + os.sep):
+            continue
+        s = open(p2, encoding='utf-8', errors='replace').read()
+        own |= set(re.findall(r'class="([^"]*\blr-[\w-]+[^"]*)"', s))
+    names = set()
+    for v in own:
+        names |= {x for x in v.split() if x.startswith('lr-')}
+    style = ''
+    for f2 in ('css/lr-common.css', 'js/lr-reveal.js', 'js/lr-nav.js',
+               'js/lr-form.js', 'js/lr-schedule.js'):
+        if os.path.exists(f2):
+            style += open(f2, encoding='utf-8', errors='replace').read()
+    orphan = sorted(n for n in names if n not in style)
+    print('■ HTML の自作クラス %d種 → 受け手のないもの: %d種'
+          % (len(names), len(orphan)))
+    for n in orphan:
+        print('   ✗ .%s  ― HTMLにあるが CSS/JS に無い' % n)
+    print()
+
     print('■ 仮の料金（0,000）: %d件' % prices)
     # 他店の写真を差し替えた分。一覧は _data/仮画像の一覧.txt に残してある
     lst = '_data/仮画像の一覧.txt'
@@ -144,6 +171,9 @@ def main():
 
     if hits:
         print('判定: 公開不可（他店のデータが残っています）')
+        return 1
+    if orphan:
+        print('判定: 不整合（HTMLのクラスに受け手がありません）')
         return 1
     if tokens or prices:
         print('判定: 未完成（他店のデータは無し。伏せ字と仮の値が残っています）')

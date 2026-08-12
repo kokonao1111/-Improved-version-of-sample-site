@@ -3103,19 +3103,31 @@ table.trial td.t_r {
 
 /* ── ⑥ 写真の横に本文を置く2枚組（beginner・campaign） ──────
    img が float で、その横に本文が流れる形。器が狭くなると本文が
-   写真の右の細い隙間に押し込まれる。同じく flex-wrap にして、
-   入らなくなったら本文が下へ回るようにする。 */
+   写真の右の細い隙間に押し込まれ、金額が写真の下で割れる
+   （実測：「特別価格」までは右の段に入り、続く金額だけが写真の下の左端へ落ちる）。
+   ※この注釈に金額の見本を書くと、仮の値の件数に混ざって数を狂わせる。
+   flex-wrap にして、入らなくなったら本文が下へ回るようにする。
+
+   ・写真の基準は宣言どおりの400px。最初 0 0 300px にしていたため
+     400x250 の写真を 300x188 に潰していた。
+   ・justify-content:center は「写真だけが行に残ったとき」に効く。
+     並んでいる間は本文が伸びるので影響しない。
+   ・row-gap:30px。申し込みの枠が本文の1px下に貼り付いていた。 */
 #SF-contents :is(#B000000045,#B000000163) ul.thumbnailList li {
 	display: flex;
 	flex-wrap: wrap;
 	align-items: flex-start;
+	justify-content: center;
 	column-gap: 30px;
+	row-gap: 30px;
 }
-#SF-contents :is(#B000000045,#B000000163) ul.thumbnailList li .newslistHeadlineStyle { flex: 1 1 100%; }
+#SF-contents :is(#B000000045,#B000000163) ul.thumbnailList li .newslistHeadlineStyle { width: auto; }
 #SF-contents :is(#B000000045,#B000000163) ul.thumbnailList li .thumbnail {
-	flex: 0 0 300px;
+	-ms-flex: 0 1 400px;
+	flex: 0 1 400px;
 	max-width: 100%;
 	margin: 0;
+	order: 1;
 }
 #SF-contents :is(#B000000045,#B000000163) ul.thumbnailList li .thumbnail img {
 	float: none;
@@ -3125,23 +3137,278 @@ table.trial td.t_r {
 	margin: 0;
 }
 #SF-contents :is(#B000000045,#B000000163) ul.thumbnailList li .newslistdata {
+	-ms-flex: 1 1 360px;
 	flex: 1 1 360px;
 	min-width: 0;
 	width: auto;
 	margin: 0;
+	order: 2;
 }
+/* csLibrary.js:236 の articleEvenOdd() が写真に csArticleRight / csArticleLeft を
+   付けて左右交互に組んでいる。float でやっていたその交互を order で引き継ぐ。 */
+#SF-contents :is(#B000000045,#B000000163) ul.thumbnailList li .thumbnail.csArticleRight { order: 3; }
+
+/* 申し込みの枠は段を跨いで1本にする。
+   放っておくと写真の下にぶら下がる300pxの枠として並んでしまう。 */
+#SF-contents #B000000163 ul.thumbnailList li .lr-apply {
+	-ms-flex: 1 1 100%;
+	flex: 1 1 100%;
+	order: 4;
+	margin: 0;
+}
+
+/* 横に並ぶ幅では、申し込みの枠を**本文の列の下**に置く。
+   段いっぱいの1本にすると、写真と本文の境目の下に浮いて
+   どちらのものか分からなくなる（実測で写真の真下に来ていた）。
+   flex では「2列目の2行目」を指定できないので、この幅だけ格子にする。
+   901px 以上＝器861px以上で、写真400 ＋ 間30 ＋ 本文360 が必ず入る。 */
+@media screen and (min-width: 901px) {
+	#SF-contents :is(#B000000045,#B000000163) ul.thumbnailList li {
+		display: -ms-grid;
+		display: grid;
+		grid-template-columns: minmax(0, 400px) minmax(0, 1fr);
+		column-gap: 30px;
+		row-gap: 30px;
+		align-items: start;
+	}
+	#SF-contents :is(#B000000045,#B000000163) ul.thumbnailList li .thumbnail { grid-area: 1 / 1; }
+	#SF-contents :is(#B000000045,#B000000163) ul.thumbnailList li .newslistdata { grid-area: 1 / 2; }
+	#SF-contents #B000000163 ul.thumbnailList li .lr-apply { grid-area: 2 / 2; text-align: left; }
+
+	/* articleEvenOdd() が写真に csArticleRight を付けた札は左右を入れ替える */
+	#SF-contents :is(#B000000045,#B000000163) ul.thumbnailList li:has(.thumbnail.csArticleRight) .thumbnail { grid-area: 1 / 2; }
+	#SF-contents :is(#B000000045,#B000000163) ul.thumbnailList li:has(.thumbnail.csArticleRight) .newslistdata { grid-area: 1 / 1; }
+	#SF-contents #B000000163 ul.thumbnailList li:has(.thumbnail.csArticleRight) .lr-apply { grid-area: 2 / 1; }
+}
+
+/* 上下に積む幅では、写真を必ず先に出す。
+   交互の組みは「横に並んでいる」ことが前提の装置なので、
+   積んだときに本文が上・写真が下になると読み順がおかしくなる。 */
+@media screen and (max-width: 900px) {
+	#SF-contents :is(#B000000045,#B000000163) ul.thumbnailList li .thumbnail.csArticleRight { order: 1; }
+}
+
+/* ══════════════════════════════════════════════════════════════
+   携帯のメニュー
+   ──────────────────────────────────────────────────────────────
+   最初は「50pxの帯を画面上端に貼り付けて、押すと項目が下に伸びる」
+   形にしたが、それは作り直した。理由は3つ。
+
+     ・常に50pxの帯が居座り、扉写真の上に一段よそ者が挟まる
+     ・押すと本文を押し下げるので、読んでいた場所が動く
+     ・「押したら、それだけの画面が一番上に出る」のが普通の作り
+
+   いまは
+     ・押しボタンは**左下に固定**。右下の PAGE TOP と対になる
+       （下端の帯＝電話/LINE/予約、左下＝メニュー、右下＝先頭へ）
+     ・押すと**画面全体**が項目だけの面に切り替わる（本文は動かない）
+     ・同じボタンがその場で × に変わる。閉じる操作を探さなくてよい
+
+   ■ 畳むのは data-lr-nav="ready" が付いてから。
+   これは js/lr-nav.js が「押す仕掛けを用意できた」時に自分で付ける印。
+   JSが落ちれば印が付かず、従来の一覧表示のまま残る。
+   押せないボタンだけが残る、という行き止まりを作らないため。
+
+   ■ 状態は aria-expanded だけが持つ。CSSはそれを見て描く。
+   ══════════════════════════════════════════════════════════════ */
+.lr-navb { display: none; }
+
+@media screen and (max-width: 640px) {
+	/* ── 押しボタン。右下の #page-top と同じ寸法・同じ色でそろえる
+	      （44px幅 / 地 #614E3B / 字 白 / 枠 1px #A4896A / 10px）。
+	      下端の帯は 50px・z-index 100 なので、bottom:72px でその上に立つ。 */
+	html[data-lr-nav="ready"] .lr-navb {
+		display: -ms-flexbox;
+		display: flex;
+		-ms-flex-direction: column;
+		flex-direction: column;
+		-ms-flex-align: center;
+		align-items: center;
+		-ms-flex-pack: center;
+		justify-content: center;
+		row-gap: 5px;
+		position: fixed;
+		left: 10px;
+		bottom: 72px;
+		z-index: 210;
+		width: 44px;
+		min-height: 44px;
+		padding: 10px 0;
+		box-sizing: border-box;
+		background: #614E3B;
+		border: 1px solid #A4896A;
+		color: #ffffff;
+		font-family: 'Noto Sans JP', sans-serif;
+		font-size: 10px;
+		line-height: 1.2;
+		letter-spacing: 0;
+		cursor: pointer;
+		-webkit-appearance: none;
+		appearance: none;
+	}
+	html[data-lr-nav="ready"] .lr-navb:hover,
+	html[data-lr-nav="ready"] .lr-navb:focus-visible { background: #4E3F2F; }
+
+	/* 3本の線。真ん中は器の背景で描き、上下は疑似要素にする。
+	   開いたときに上下だけを中央へ寄せて交差させれば × になる。 */
+	.lr-navb-i {
+		position: relative;
+		display: block;
+		-ms-flex: 0 0 auto;
+		flex: 0 0 auto;
+		width: 18px;
+		height: 11px;
+		background: linear-gradient(#ffffff, #ffffff) center center / 18px 1px no-repeat;
+	}
+	.lr-navb-i:before,
+	.lr-navb-i:after {
+		content: '';
+		position: absolute;
+		left: 0;
+		width: 18px;
+		height: 1px;
+		background: #ffffff;
+		-webkit-transition: top var(--lr-t) var(--lr-e), -webkit-transform var(--lr-t) var(--lr-e);
+		transition: top var(--lr-t) var(--lr-e), transform var(--lr-t) var(--lr-e);
+	}
+	.lr-navb-i:before { top: 0; }
+	.lr-navb-i:after { top: 10px; }
+	.lr-navb[aria-expanded="true"] .lr-navb-i { background-image: none; }
+	.lr-navb[aria-expanded="true"] .lr-navb-i:before { top: 5px; -webkit-transform: rotate(45deg); transform: rotate(45deg); }
+	.lr-navb[aria-expanded="true"] .lr-navb-i:after  { top: 5px; -webkit-transform: rotate(-45deg); transform: rotate(-45deg); }
+
+	/* ボタンは position:fixed で流れから出ているので、
+	   ナビの器は高さ0になる。線や余白が残らないようにする。 */
+	html[data-lr-nav="ready"] #SF-navigation {
+		height: 0;
+		min-height: 0;
+		margin: 0;
+		padding: 0;
+		border: 0;
+		background: transparent;
+	}
+	html[data-lr-nav="ready"] #SF-navigation #lr-navlist { display: none; }
+
+	/* ── 面が透けていた原因 ─────────────────────────────────
+	   生成CSSがナビの器（#B000000002 など15個）に
+	     position: relative; z-index: 10
+	   を宣言していて、そこが**重なりの文脈**になっている。
+	   その中で z-index:200 と書いても、外から見れば「10の塊」なので、
+	   ヘッダー（#Module-default-container の z:100）と
+	   下端の固定帯（.lr-cta-fixed の z:100）に負けて後ろに回る。
+	   実測で、白い面の上にロゴと電話番号が乗って見えていた。
+	   器そのものを持ち上げないと直らない。 */
+	html[data-lr-nav="ready"] #SF-navigation :is(#B000000002,#B000000034,#B000000055,#B000000119,#B000000136,#B000000144,#B000000154,#B000000164,#B000000182,#B000000261,#B000000270,#B000000278,#B000000286,#B000000294,#B000000302) {
+		position: relative;
+		z-index: 200;
+	}
+
+	/* ── 押したら出る面。画面いっぱいを白で覆う。
+	      本文は動かさない（押し下げない）。 */
+	html[data-lr-nav="ready"] #SF-navigation .lr-navb[aria-expanded="true"] + #lr-navlist {
+		display: -ms-flexbox;
+		display: flex;
+		-ms-flex-direction: column;
+		flex-direction: column;
+		/* 横並びのときの flex-wrap:wrap と、上下の金の罫が残る。
+		   縦1列にしたのに8個目が「次の列」へ折り返して面の外に飛び出し、
+		   幅も文字なり（実測221px）になっていた。 */
+		-ms-flex-wrap: nowrap;
+		flex-wrap: nowrap;
+		-ms-flex-align: stretch;
+		align-items: stretch;
+		/* 中央に置きたいが justify-content:center は溢れたときに
+		   上端が切れて手が届かなくなる（320x568 でロゴが切れた）。
+		   先頭寄せ＋上下の auto 余白なら、余っていれば中央、
+		   足りなければ上から素直に並んで全部たどれる。 */
+		-ms-flex-pack: start;
+		justify-content: flex-start;
+		border-top: 0;
+		border-bottom: 0;
+		position: fixed;
+		top: 0;
+		right: 0;
+		bottom: 0;
+		left: 0;
+		z-index: 200;
+		width: auto;
+		max-width: none;
+		min-height: 0;
+		margin: 0;
+		/* 上20 ／ 下130 は左下のボタンの逃げ（bottom72 ＋ 高さ44 ＋ 余白）。
+		   667px の画面でロゴ込み8項目がちょうど収まる寸法にしてある。 */
+		padding: 20px 20px 130px;
+		box-sizing: border-box;
+		background: #ffffff;
+		overflow-y: auto;
+		-webkit-overflow-scrolling: touch;
+	}
+	/* 面の頭に店の顔を置く。これが無いと、どこの店の何の一覧か
+	   分からない素のリンク集に見える。装飾なので背景で描き、
+	   参照は「/」始まりにする（どの階層から開いても同じ絵を指す）。
+	   560:201 の比なので 200px幅 → 72px。 */
+	html[data-lr-nav="ready"] #SF-navigation .lr-navb[aria-expanded="true"] + #lr-navlist:before {
+		content: '';
+		display: block;
+		-ms-flex: 0 0 auto;
+		flex: 0 0 auto;
+		width: 200px;
+		height: 72px;
+		margin: auto auto 30px;
+		background: url("/assets/logo.png") center center / contain no-repeat;
+	}
+	html[data-lr-nav="ready"] #SF-navigation #lr-navlist > li:last-child { margin-bottom: auto; }
+
+	/* 背の低い画面ではロゴを出さない。
+	   8項目（51px×8＋罫）で407px、ロゴを足すと519pxになり、
+	   568pxの画面（iPhone SE）では入らずスクロールが必要になる。
+	   飾りより、一覧が一目で収まることを優先する。 */
+	@media screen and (max-height: 640px) {
+		html[data-lr-nav="ready"] #SF-navigation .lr-navb[aria-expanded="true"] + #lr-navlist:before { display: none; }
+		html[data-lr-nav="ready"] #SF-navigation .lr-navb[aria-expanded="true"] + #lr-navlist { padding-top: 20px; }
+		html[data-lr-nav="ready"] #SF-navigation #lr-navlist > li > a { min-height: 50px; }
+	}
+	html[data-lr-nav="ready"] #SF-navigation #lr-navlist > li {
+		-ms-flex: 0 0 auto;
+		flex: 0 0 auto;
+		width: auto;
+		max-width: none;
+		border-left: 0;
+		border-top: 1px solid #D9CCBD;
+	}
+	html[data-lr-nav="ready"] #SF-navigation #lr-navlist > li:first-child { border-top: 0; }
+	html[data-lr-nav="ready"] #SF-navigation #lr-navlist > li:last-child { border-bottom: 1px solid #D9CCBD; }
+	html[data-lr-nav="ready"] #SF-navigation #lr-navlist > li > a {
+		display: -ms-flexbox;
+		display: flex;
+		-ms-flex-align: center;
+		align-items: center;
+		-ms-flex-pack: center;
+		justify-content: center;
+		width: auto;
+		min-height: 56px;
+		padding: 0 10px;
+		font-size: 16px;
+	}
+
+	/* 面が出ている間は後ろを動かさない（JSが html に付ける） */
+	html.lr-navopen,
+	html.lr-navopen body { overflow: hidden; }
+}
+
 /* ── ⑦ faq の分類ボタン4つ ──────────────────────────────────
    HTML が <table width="100%"><td width="25%"> の4列で組んでいる。
    表の自動レイアウトは「中身の最小幅」を下回れないので、
    「ブライダルエステについて」の入った枠が250pxを要求し、
    25%の縛りで4枠すべてが250pxになって表が1000pxに膨らむ。
-   器が960pxなので20pxはみ出す（1000px幅のときだけ起きていた）。
+   器が960pxなので20pxはみ出す（1000px幅のときだけ起きる）。
 
    表としての意味は無い（ボタンを4つ並べているだけ）ので段組みにする。
    4個は 4列 / 2列 / 1列 のどれでも割り切れて空きが出ない。 */
 #B000000153 table,
 #B000000153 tbody { display: block; width: auto; }
 #B000000153 tr {
+	display: -ms-grid;
 	display: grid;
 	grid-template-columns: repeat(4, minmax(0, 1fr));
 	column-gap: 20px;
@@ -3156,20 +3423,19 @@ table.trial td.t_r {
 	width: auto;
 	box-sizing: border-box;
 }
-@media screen and (max-width: 900px) {
-	#B000000153 tr { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-}
 /* 枠の下の余白。もとは HTML のインラインstyleで padding-bottom:50px だった。
    インラインは !important でしか上回れないので、HTML から外してここに移した
    （レイアウト目的の !important を持ち込まないため）。 */
 #B000000153 .lr-faqnav-c { padding-bottom: 50px; }
 @media screen and (max-width: 900px) {
+	#B000000153 tr { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 	#B000000153 .lr-faqnav-c { padding-bottom: 30px; }
 }
 @media screen and (max-width: 480px) {
 	#B000000153 tr { grid-template-columns: minmax(0, 1fr); }
 	#B000000153 .lr-faqnav-c { padding-bottom: 20px; }
 }
+
 /* ── ⑧ 回遊札の見出しの「≫」 ────────────────────────────────
    HTML が <i style="padding-left:20px"> で文字の直後に置いていたので、
    700px幅で「トライアル（体験）コース」＋「≫」が入りきらず
@@ -3178,129 +3444,28 @@ table.trial td.t_r {
    （lr-go クラスに置換）、文字は左・矢印は罫の右端に置く。
    これで折り返しても矢印の居場所が変わらない。 */
 #SF-contents ul.thumbnailList li .newslistHeadlineStyle:has(.lr-go) {
+	display: -ms-flexbox;
 	display: flex;
+	-ms-flex-align: start;
 	align-items: flex-start;
+	-ms-flex-pack: justify;
 	justify-content: space-between;
 	column-gap: 15px;
 }
 #SF-contents ul.thumbnailList li .newslistHeadlineStyle .lr-go {
+	-ms-flex: 0 0 auto;
 	flex: 0 0 auto;
 	padding-left: 0;
 	line-height: 25px;
 }
-/* ══════════════════════════════════════════════════════════════
-   携帯のメニュー（ハンバーガー）
-   ──────────────────────────────────────────────────────────────
-   携帯では8項目を2列×4段で常に開いていた。画面の3割を占めるうえ、
-   下へ進むともう届かない。50pxの帯を1本だけ上端に残す形にした。
+/* ── 名前だけあって指定が無かった2つ（check.py が検出） ─────────
+   どちらも「あってもなくても一見同じ」ため気づけなかったが、
+   狭いところで必要な指定だった。 */
 
-   ■ 畳むのは data-lr-nav="ready" が付いてから。
-   これは js/lr-nav.js が「押す仕掛けを用意できた」時に自分で付ける印。
-   JSが落ちれば印が付かず、従来の一覧表示のまま残る。
-   押せないボタンだけが残る、という行き止まりを作らないため。
-   （html.lr-js は <head> の最後で付けており、そちらは
-     「一瞬だけ開いた一覧が見える」のを防ぐためのもの）
+/* 選択肢の文言。予約時間の段は 1/6 幅の枠に入るので、
+   min-width:0 が無いと文言が枠から張り出す（flex の既定は auto）。 */
+.lr-choice-t { min-width: 0; }
 
-   ■ 状態は aria-expanded だけが持つ。CSSはそれを見て描く。
-   状態を2箇所に持たせると必ず食い違う。
-   ══════════════════════════════════════════════════════════════ */
-.lr-navb { display: none; }
-
-@media screen and (max-width: 640px) {
-	html[data-lr-nav="ready"] .lr-navb {
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		column-gap: 15px;
-		width: 100%;
-		min-height: 50px;
-		margin: 0;
-		padding: 0;
-		background: transparent;
-		border: 0;
-		border-top: 1px solid #AE967A;
-		border-bottom: 1px solid #AE967A;
-		color: #614E3B;
-		font-family: 'Noto Serif JP', serif;
-		font-size: 15px;
-		letter-spacing: .16em;
-		line-height: 1;
-		cursor: pointer;
-		-webkit-appearance: none;
-		appearance: none;
-	}
-	html[data-lr-nav="ready"] .lr-navb:hover,
-	html[data-lr-nav="ready"] .lr-navb[aria-expanded="true"] { background: #EFEAE6; }
-
-	/* 3本の線。真ん中は器の背景で描き、上下は疑似要素にする。
-	   開いたときに上下だけを中央へ寄せて交差させれば × になる。 */
-	.lr-navb-i {
-		position: relative;
-		display: block;
-		flex: 0 0 auto;
-		width: 20px;
-		height: 13px;
-		background: linear-gradient(#614E3B, #614E3B) center center / 20px 1px no-repeat;
-	}
-	.lr-navb-i:before,
-	.lr-navb-i:after {
-		content: '';
-		position: absolute;
-		left: 0;
-		width: 20px;
-		height: 1px;
-		background: #614E3B;
-		-webkit-transition: top var(--lr-t) var(--lr-e), -webkit-transform var(--lr-t) var(--lr-e);
-		transition: top var(--lr-t) var(--lr-e), transform var(--lr-t) var(--lr-e);
-	}
-	.lr-navb-i:before { top: 0; }
-	.lr-navb-i:after { top: 12px; }
-	.lr-navb[aria-expanded="true"] .lr-navb-i { background-image: none; }
-	.lr-navb[aria-expanded="true"] .lr-navb-i:before { top: 6px; -webkit-transform: rotate(45deg); transform: rotate(45deg); }
-	.lr-navb[aria-expanded="true"] .lr-navb-i:after  { top: 6px; -webkit-transform: rotate(-45deg); transform: rotate(-45deg); }
-
-	/* 帯を上端に貼り付ける。器（#SF-outer-container）が左右20pxの余白を
-	   持っているので、その分だけ外へ出して画面いっぱいにする。
-	   z-index は下端の固定帯（100）より下に置く。 */
-	html[data-lr-nav="ready"] #SF-navigation {
-		position: -webkit-sticky;
-		position: sticky;
-		top: 0;
-		z-index: 90;
-		margin-left: -20px;
-		margin-right: -20px;
-		background: #ffffff;
-	}
-
-	/* 畳む。上の2列×4段の指定より詳細度を上げる必要がある
-	   （あちらは #SF-navigation :is(#B…) ul.SF-dropdown ＝ ID2つ） */
-	html[data-lr-nav="ready"] #SF-navigation #lr-navlist { display: none; }
-	html[data-lr-nav="ready"] #SF-navigation .lr-navb[aria-expanded="true"] + #lr-navlist {
-		display: block;
-		max-height: calc(100vh - 50px);
-		overflow-y: auto;
-		-webkit-overflow-scrolling: touch;
-	}
-	/* 開いたときは1項目1行。仕切りは内側のヘアライン */
-	html[data-lr-nav="ready"] #SF-navigation #lr-navlist > li {
-		/* 2列のときの max-width:50% が残ると、1項目1行にしても
-		   半分の幅（実測195px）で左に寄る */
-		-ms-flex: 0 0 auto;
-		flex: 0 0 auto;
-		width: auto;
-		max-width: none;
-		border-left: 0;
-		border-top: 1px solid #D9CCBD;
-	}
-	html[data-lr-nav="ready"] #SF-navigation #lr-navlist > li:first-child { border-top: 0; }
-	html[data-lr-nav="ready"] #SF-navigation #lr-navlist > li > a {
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		width: auto;
-		min-height: 50px;
-		padding: 0 20px;
-	}
-}
-
-/* 動きを減らす設定のときは × への変形も止める（既存の一括指定に含まれる） */
+/* 左下のボタンの「メニュー」。器は44pxで文字は10px×4字＝40px。
+   書体が変わると折り返して×印と重なるので、折り返さない。 */
+.lr-navb-t { white-space: nowrap; }
