@@ -2559,7 +2559,7 @@ body {
 	}
 	#B000000035 img, #B000000056 img, #B000000120 img, #B000000137 img,
 	#B000000145 img, #B000000155 img, #B000000165 img {
-		min-height: 200px;
+		min-height: 260px;
 		-o-object-fit: cover;
 		object-fit: cover;
 		-o-object-position: center;
@@ -4900,6 +4900,15 @@ body {
 		width: auto;
 		max-width: 100%;
 		margin: 0 0 20px;
+		/* ★ 写真の下に180〜193pxの空白ができていた原因。
+		   この器は横並びのとき用に flex: 0 1 400px を持っている。
+		   **縦並び（flex-direction: column）では flex-basis は「高さ」になる**ので、
+		   400pxの高さが指定されたのと同じことになり、
+		   中の写真223pxとの差がそのまま空白として残っていた（実測 356×400）。
+		   height:auto を足しても直らない。basis の側を止める必要がある。 */
+		-ms-flex: 0 0 auto;
+		flex: 0 0 auto;
+		height: auto;
 	}
 	#SF-contents :is(#B000000045,#B000000163) ul.thumbnailList li > .newslistHeadlineStyle {
 		-ms-flex-order: 2;
@@ -5017,11 +5026,11 @@ body {
    ══════════════════════════════════════════════════════════════ */
 
 
-#SF-contents #B000000081, #SF-contents #B000000082, #SF-contents #B000000190, #SF-contents #B000000079, #SF-contents #B000000080, #SF-contents #B000000258, #SF-contents #B000000072, #SF-contents #B000000125, #SF-contents #B000000131, #SF-contents #B000000135, #SF-contents #B000000142, #SF-contents #B000000149, #SF-contents #B000000159, #SF-contents #B000000169, #SF-contents #B000000188 {
+#SF-contents #B000000081, #SF-contents #B000000079, #SF-contents #B000000072, #SF-contents #B000000125, #SF-contents #B000000142, #SF-contents #B000000149, #SF-contents #B000000159, #SF-contents #B000000169, #SF-contents #B000000188 {
 	position: relative;
 	overflow: visible;
 }
-#SF-contents #B000000081::before, #SF-contents #B000000082::before, #SF-contents #B000000190::before, #SF-contents #B000000079::before, #SF-contents #B000000080::before, #SF-contents #B000000258::before, #SF-contents #B000000072::before, #SF-contents #B000000125::before, #SF-contents #B000000131::before, #SF-contents #B000000135::before, #SF-contents #B000000142::before, #SF-contents #B000000149::before, #SF-contents #B000000159::before, #SF-contents #B000000169::before, #SF-contents #B000000188::before {
+#SF-contents #B000000081::before, #SF-contents #B000000079::before, #SF-contents #B000000072::before, #SF-contents #B000000125::before, #SF-contents #B000000142::before, #SF-contents #B000000149::before, #SF-contents #B000000159::before, #SF-contents #B000000169::before, #SF-contents #B000000188::before {
 	content: "";
 	position: absolute;
 	left: 0;
@@ -5035,51 +5044,39 @@ body {
 
 
 /* index ― 左右対称の唐草 */
-#SF-contents #B000000081 { margin-top: 150px; }
+#SF-contents #B000000081 { margin-top: 110px; }
 #SF-contents #B000000081::before { width: min(380px, 80%); height: 89px; top: -69px; background-image: url("/assets/orn-a.png"); }
-#SF-contents #B000000082 { margin-top: 150px; }
-#SF-contents #B000000082::before { width: min(380px, 80%); height: 89px; top: -69px; background-image: url("/assets/orn-a.png"); }
-#SF-contents #B000000190 { margin-top: 150px; }
-#SF-contents #B000000190::before { width: min(380px, 80%); height: 89px; top: -69px; background-image: url("/assets/orn-a.png"); }
 
 /* 初めての方へ ― 描き込みの濃い唐草 */
-#SF-contents #B000000079 { margin-top: 170px; }
+#SF-contents #B000000079 { margin-top: 120px; }
 #SF-contents #B000000079::before { width: min(320px, 80%); height: 93px; top: -84px; background-image: url("/assets/orn-c.png"); }
-#SF-contents #B000000080 { margin-top: 180px; }
-#SF-contents #B000000080::before { width: min(400px, 80%); height: 116px; top: -96px; background-image: url("/assets/orn-c.png"); }
-#SF-contents #B000000258 { margin-top: 60px; }
-#SF-contents #B000000258::before { width: min(400px, 80%); height: 116px; top: -96px; background-image: url("/assets/orn-c.png"); }
 
 /* トライアル ― 長い流線＋葉 */
-#SF-contents #B000000072 { margin-top: 110px; }
+#SF-contents #B000000072 { margin-top: 65px; }
 #SF-contents #B000000072::before { width: min(460px, 80%); height: 60px; top: -40px; background-image: url("/assets/orn-b.png"); }
 
 /* コース・プラン ― 細い線の区切り */
-#SF-contents #B000000125 { margin-top: 90px; }
+#SF-contents #B000000125 { margin-top: 60px; }
 #SF-contents #B000000125::before { width: min(420px, 80%); height: 39px; top: -19px; background-image: url("/assets/orn-d.png"); }
-#SF-contents #B000000131 { margin-top: 100px; }
-#SF-contents #B000000131::before { width: min(420px, 80%); height: 39px; top: -19px; background-image: url("/assets/orn-d.png"); }
-#SF-contents #B000000135 { margin-top: 100px; }
-#SF-contents #B000000135::before { width: min(420px, 80%); height: 39px; top: -19px; background-image: url("/assets/orn-d.png"); }
 
 /* 選び方 ― 菱形と雫 */
-#SF-contents #B000000142 { margin-top: 80px; }
+#SF-contents #B000000142 { margin-top: 65px; }
 #SF-contents #B000000142::before { width: min(560px, 80%); height: 45px; top: -25px; background-image: url("/assets/orn-1.svg"); }
 
 /* よくある質問 ― 羽根のような両端 */
-#SF-contents #B000000149 { margin-top: 90px; }
+#SF-contents #B000000149 { margin-top: 65px; }
 #SF-contents #B000000149::before { width: min(560px, 80%); height: 54px; top: -34px; background-image: url("/assets/orn-2.svg"); }
 
 /* キャンペーン ― 一度だけうねる波 */
-#SF-contents #B000000159 { margin-top: 80px; }
+#SF-contents #B000000159 { margin-top: 65px; }
 #SF-contents #B000000159::before { width: min(560px, 80%); height: 44px; top: -24px; background-image: url("/assets/orn-3.svg"); }
 
 /* 店舗のご案内 ― 中央に一輪 */
-#SF-contents #B000000169 { margin-top: 90px; }
+#SF-contents #B000000169 { margin-top: 65px; }
 #SF-contents #B000000169::before { width: min(560px, 80%); height: 47px; top: -27px; background-image: url("/assets/orn-4.svg"); }
 
 /* ご予約 ― 左右に小さな渦 */
-#SF-contents #B000000188 { margin-top: 90px; }
+#SF-contents #B000000188 { margin-top: 45px; }
 #SF-contents #B000000188::before { width: min(560px, 80%); height: 45px; top: -25px; background-image: url("/assets/orn-5.svg"); }
 
 /* ══════════════════════════════════════════════════════════════
