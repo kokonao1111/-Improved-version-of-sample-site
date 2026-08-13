@@ -4555,8 +4555,8 @@ body {
 
    ■ ② 料金が2行とも流し込みだった
 
-     通常90分　￥00,000
-     初回トライアル　90分　￥0,000
+     通常90分　￥…
+     初回トライアル　90分　￥…
 
    語の長さが違うので金額の位置が揃わず、ぶら下がって見えていた。
    品名を左、金額を右に置いて、2行の金額を同じ縦線に揃える。
@@ -4998,27 +4998,22 @@ body {
 }
 
 /* ══════════════════════════════════════════════════════════════
-   節の区切り ― 15箇所、4種類を使い分ける
+   節の区切り ― 1ページ＝1種類、9ページとも別の絵
    ──────────────────────────────────────────────────────────────
-   全10ページの .kome_line（節の英字副題）を数えると19個。そのうち
-   節の頭にあたる15箇所へ区切りを置く。同じ絵が続かないよう配る。
+   最初は15箇所に4種類を混ぜて配ったが、それだと
+   **1ページの中で絵が変わり、ページ間では同じ絵が出る**という逆になる。
+   飾りが毎回変わると「素材集から貼った」ように見える。
+   そのページの印を1つ決め、ページが変わると印も変わる形にした。
 
-     orn-a 640×150  左右対称の唐草      40.0KB
-     orn-b 640× 84  長い流線＋葉        16.4KB
-     orn-c 640×186  描き込みの濃い唐草  58.8KB
-     orn-d 560× 52  細い線の区切り       6.1KB
-     orn-e 560× 14  一番細い罫           1.3KB（予約帯の上で使用）
+   ■ 素材
+     orn-a〜d … PNG（唐草・流線）。40／16／59／7KB
+     orn-1〜5 … SVG（細い罫）。1.1〜1.3KB。どんな大きさでも滲まない
 
-   ■ 空きの測り方を1度間違えている
-   最初 #SF-contents の中だけを見て「589px空いている」と読んだが、
-   ページ見出しの**全幅の帯は #SF-contents の外**にあり、勘定から漏れていた。
-   実際の空きは多くのページで **15px** しかなく、置いた絵が帯の中に食い込んだ
-   （campaign で実際に起きた）。文書全体から「見えているもの」を探して測り直した。
-
-   ■ 余白を足している
-   絵の高さ＋上下30pxずつが要る。足りない分だけ margin-top を足す。
-   ページ見出しの帯の直後に間が生まれるので、どのページも
-   「帯 → ひと呼吸 → 節」の運びになる。
+   ■ SVGに手を入れている
+     線幅 … viewBox 900 を 420px で描くと 0.68 が **0.32px** になり、
+             画面に出ない（＝薄く見える）。2.4倍して1px以上にした
+     色   … #d7c29b/#c8ad81/#b89a6e を、この店の金 #B79A72/#AE9068/#A4896A へ
+     濃さ … 端が消えていく所（opacity 0）はそのまま、途中の薄さだけ1.25倍
    ══════════════════════════════════════════════════════════════ */
 
 
@@ -5039,62 +5034,50 @@ body {
 }
 
 
-/* index 「New trial plan」 ― 細い線の区切り  実測の空き130px / 必要99px */
-#SF-contents #B000000081 { margin-top: 100px; }
-#SF-contents #B000000081::before { width: min(420px, 78%); height: 39px; top: -69px; background-image: url("/assets/orn-d.png"); }
-
-/* index 「Recommendation」 ― 左右対称の唐草  実測の空き50px / 必要149px　→ +100px */
+/* index ― 左右対称の唐草 */
+#SF-contents #B000000081 { margin-top: 150px; }
+#SF-contents #B000000081::before { width: min(380px, 80%); height: 89px; top: -119px; background-image: url("/assets/orn-a.png"); }
 #SF-contents #B000000082 { margin-top: 150px; }
-#SF-contents #B000000082::before { width: min(380px, 78%); height: 89px; top: -119px; background-image: url("/assets/orn-a.png"); }
+#SF-contents #B000000082::before { width: min(380px, 80%); height: 89px; top: -119px; background-image: url("/assets/orn-a.png"); }
+#SF-contents #B000000190 { margin-top: 150px; }
+#SF-contents #B000000190::before { width: min(380px, 80%); height: 89px; top: -119px; background-image: url("/assets/orn-a.png"); }
 
-/* index 「Schedule」 ― 長い流線＋葉  実測の空き80px / 必要120px　→ +40px */
-#SF-contents #B000000190 { margin-top: 120px; }
-#SF-contents #B000000190::before { width: min(460px, 78%); height: 60px; top: -90px; background-image: url("/assets/orn-b.png"); }
-
-/* 初めての方へ 「For guest」 ― 描き込みの濃い唐草  実測の空き15px / 必要176px　→ +170px */
+/* 初めての方へ ― 描き込みの濃い唐草 */
 #SF-contents #B000000079 { margin-top: 170px; }
-#SF-contents #B000000079::before { width: min(400px, 78%); height: 116px; top: -146px; background-image: url("/assets/orn-c.png"); }
+#SF-contents #B000000079::before { width: min(400px, 80%); height: 116px; top: -146px; background-image: url("/assets/orn-c.png"); }
+#SF-contents #B000000080 { margin-top: 180px; }
+#SF-contents #B000000080::before { width: min(400px, 80%); height: 116px; top: -146px; background-image: url("/assets/orn-c.png"); }
+#SF-contents #B000000258 { margin-top: 60px; }
+#SF-contents #B000000258::before { width: min(400px, 80%); height: 116px; top: -146px; background-image: url("/assets/orn-c.png"); }
 
-/* 初めての方へ 「Flow of treatment」 ― 細い線の区切り  実測の空き110px / 必要99px */
-#SF-contents #B000000080 { margin-top: 100px; }
-#SF-contents #B000000080::before { width: min(420px, 78%); height: 39px; top: -69px; background-image: url("/assets/orn-d.png"); }
+/* トライアル ― 長い流線＋葉 */
+#SF-contents #B000000072 { margin-top: 110px; }
+#SF-contents #B000000072::before { width: min(460px, 80%); height: 60px; top: -90px; background-image: url("/assets/orn-b.png"); }
 
-/* 初めての方へ 「Staff」 ― 左右対称の唐草  実測の空き122px / 必要149px　→ +30px */
-#SF-contents #B000000258 { margin-top: 30px; }
-#SF-contents #B000000258::before { width: min(380px, 78%); height: 89px; top: -119px; background-image: url("/assets/orn-a.png"); }
-
-/* トライアル 「Trial course」 ― 長い流線＋葉  実測の空き15px / 必要120px　→ +105px */
-#SF-contents #B000000072 { margin-top: 105px; }
-#SF-contents #B000000072::before { width: min(460px, 78%); height: 60px; top: -90px; background-image: url("/assets/orn-b.png"); }
-
-/* コース・プラン 「Course / Menu」 ― 描き込みの濃い唐草  実測の空き15px / 必要176px　→ +170px */
-#SF-contents #B000000125 { margin-top: 170px; }
-#SF-contents #B000000125::before { width: min(400px, 78%); height: 116px; top: -146px; background-image: url("/assets/orn-c.png"); }
-
-/* コース・プラン 「BODY CARE」 ― 左右対称の唐草  実測の空き50px / 必要149px　→ +100px */
-#SF-contents #B000000131 { margin-top: 150px; }
-#SF-contents #B000000131::before { width: min(380px, 78%); height: 89px; top: -119px; background-image: url("/assets/orn-a.png"); }
-
-/* コース・プラン 「HEAD SPA」 ― 細い線の区切り  実測の空き0px / 必要99px　→ +100px */
+/* コース・プラン ― 細い線の区切り */
+#SF-contents #B000000125 { margin-top: 90px; }
+#SF-contents #B000000125::before { width: min(420px, 80%); height: 39px; top: -69px; background-image: url("/assets/orn-d.png"); }
+#SF-contents #B000000131 { margin-top: 100px; }
+#SF-contents #B000000131::before { width: min(420px, 80%); height: 39px; top: -69px; background-image: url("/assets/orn-d.png"); }
 #SF-contents #B000000135 { margin-top: 100px; }
-#SF-contents #B000000135::before { width: min(420px, 78%); height: 39px; top: -69px; background-image: url("/assets/orn-d.png"); }
+#SF-contents #B000000135::before { width: min(420px, 80%); height: 39px; top: -69px; background-image: url("/assets/orn-d.png"); }
 
-/* 選び方 「Trial course」 ― 左右対称の唐草  実測の空き15px / 必要149px　→ +135px */
-#SF-contents #B000000142 { margin-top: 135px; }
-#SF-contents #B000000142::before { width: min(380px, 78%); height: 89px; top: -119px; background-image: url("/assets/orn-a.png"); }
+/* 選び方 ― 菱形と雫 */
+#SF-contents #B000000142 { margin-top: 80px; }
+#SF-contents #B000000142::before { width: min(560px, 80%); height: 45px; top: -75px; background-image: url("/assets/orn-1.svg"); }
 
-/* よくある質問 「Q & A」 ― 長い流線＋葉  実測の空き15px / 必要120px　→ +105px */
-#SF-contents #B000000149 { margin-top: 105px; }
-#SF-contents #B000000149::before { width: min(460px, 78%); height: 60px; top: -90px; background-image: url("/assets/orn-b.png"); }
+/* よくある質問 ― 羽根のような両端 */
+#SF-contents #B000000149 { margin-top: 90px; }
+#SF-contents #B000000149::before { width: min(560px, 80%); height: 54px; top: -84px; background-image: url("/assets/orn-2.svg"); }
 
-/* キャンペーン 「Campaign」 ― 描き込みの濃い唐草  実測の空き15px / 必要176px　→ +170px */
-#SF-contents #B000000159 { margin-top: 170px; }
-#SF-contents #B000000159::before { width: min(400px, 78%); height: 116px; top: -146px; background-image: url("/assets/orn-c.png"); }
+/* キャンペーン ― 一度だけうねる波 */
+#SF-contents #B000000159 { margin-top: 80px; }
+#SF-contents #B000000159::before { width: min(560px, 80%); height: 44px; top: -74px; background-image: url("/assets/orn-3.svg"); }
 
-/* 店舗のご案内 「Shop info」 ― 左右対称の唐草  実測の空き15px / 必要149px　→ +135px */
-#SF-contents #B000000169 { margin-top: 135px; }
-#SF-contents #B000000169::before { width: min(380px, 78%); height: 89px; top: -119px; background-image: url("/assets/orn-a.png"); }
+/* 店舗のご案内 ― 中央に一輪 */
+#SF-contents #B000000169 { margin-top: 90px; }
+#SF-contents #B000000169::before { width: min(560px, 80%); height: 47px; top: -77px; background-image: url("/assets/orn-4.svg"); }
 
-/* 予約 「Reservation」 ― 細い線の区切り  実測の空き15px / 必要99px　→ +85px */
-#SF-contents #B000000188 { margin-top: 85px; }
-#SF-contents #B000000188::before { width: min(420px, 78%); height: 39px; top: -69px; background-image: url("/assets/orn-d.png"); }
+/* ご予約 ― 左右に小さな渦 */
+#SF-contents #B000000188 { margin-top: 90px; }
+#SF-contents #B000000188::before { width: min(560px, 80%); height: 45px; top: -75px; background-image: url("/assets/orn-5.svg"); }
