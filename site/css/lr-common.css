@@ -4875,13 +4875,44 @@ body {
 		text-align: center;
 	}
 	/* ★ この写真は site.css が float:left/right !important で左右交互に
-	   組んでいる（外せない）。枠を inline-block や固定幅にすると
-	   float が復活して左右に振れる（実測 左62/右0 と 左0/右62 が交互）。
-	   枠は器いっぱいの block のままにして、中の写真を行の揃えで寄せる。 */
-	#SF-contents :is(#B000000045,#B000000163) ul.thumbnailList li > .thumbnail {
-		display: block;
-		width: 100%;
+	   組んでいる。!important なので float 自体は消せない。
+	   ただし **flex の項目になった要素の float は無視される**（仕様）。
+	   器を縦並びの flex にすれば、!important を1つも増やさずに止められる。
+	   （器を block に戻した瞬間に float が復活し、写真が左右に振れていた） */
+	#SF-contents :is(#B000000045,#B000000163) ul.thumbnailList li {
+		display: -webkit-box;
+		display: -ms-flexbox;
+		display: flex;
+		-webkit-box-orient: vertical;
+		-webkit-box-direction: normal;
+		-ms-flex-direction: column;
+		flex-direction: column;
+		-webkit-box-align: center;
+		-ms-flex-align: center;
+		align-items: center;
+	}
+	#SF-contents :is(#B000000045,#B000000163) ul.thumbnailList li > .thumbnail,
+	#SF-contents :is(#B000000045,#B000000163) ul.thumbnailList li > .thumbnail.csArticleRight,
+	#SF-contents :is(#B000000045,#B000000163) ul.thumbnailList li > .thumbnail.csArticleLeft {
+		-webkit-box-ordinal-group: 2;
+		-ms-flex-order: 1;
+		order: 1;              /* 携帯では写真が先。左右交互はやめる */
+		width: auto;
 		max-width: 100%;
+		margin: 0 0 20px;
+	}
+	#SF-contents :is(#B000000045,#B000000163) ul.thumbnailList li > .newslistHeadlineStyle {
+		-ms-flex-order: 2;
+		order: 2;
+		-ms-flex-item-align: stretch;
+		align-self: stretch;
+	}
+	#SF-contents :is(#B000000045,#B000000163) ul.thumbnailList li > .newslistdata {
+		-ms-flex-order: 3;
+		order: 3;
+		-ms-flex-item-align: stretch;
+		align-self: stretch;
+		text-align: left;
 	}
 	#SF-contents :is(#B000000045,#B000000163) ul.thumbnailList li > .newslistdata {
 		text-align: left;
@@ -4926,3 +4957,108 @@ body {
 	margin-bottom: 50px;   /* 次の札の見出しに接していた */
 	line-height: 2;
 }
+
+/* ══════════════════════════════════════════════════════════════
+   線の飾り ― 空いている所にだけ置く
+   ──────────────────────────────────────────────────────────────
+   置いてよい場所を実測で探した。条件は「今そこに何も無い」こと。
+
+     ① 版面の外側 … 窓1440pxに対し版面1040px。**左右200pxずつ空いている**
+     ② 予約帯の上 … .lr-book の margin-top 100px が全ページで完全な空き
+
+   どちらも既存の罫・文字・写真と重ならない。
+   1つの見出しに線は1本まで、という決まりも破らない
+   （.kome_line や .lr-book-h の罫には触れていない）。
+
+   ■ 素材の作り方
+   もらった10点はどれも**白地が焼き込まれたPNG**だった（αは全面255）。
+   そのまま置くと白い四角が出るので、濃さを透明度に変換し、
+   色はこの店の金 #A4896A に置き換えて焼き直した。
+   新しい金を1色も増やしていない。
+     角  300×261 / 12.4KB ×2
+     罫  560×14  /  1.3KB
+   ══════════════════════════════════════════════════════════════ */
+
+/* ★ 角飾り（左下・右上）は**採用しなかった**。
+   版面の外の余白は左右200pxずつあるが、
+     ・扉やページ見出しの帯が全幅なので、その高さでは余白ごと覆われる
+     ・幅を余白に収めると窓の右端で切れ、飾りではなく「破片」に見える
+   実測で2通り試して、どちらも見た目が落ちたので置いていない。
+   素材が悪いのではなく、この版面に**飾りを置ける角が無い**ということ。 */
+
+/* ② 予約帯の上の空きに、細い罫飾り。
+   帯の margin-top を padding に振り替えるので、縦の寸法は1pxも変わらない。 */
+.lr-book {
+	margin-top: 60px;
+	padding-top: 40px;
+	background-image: url("/assets/orn-rule.png");
+	background-repeat: no-repeat;
+	background-position: center top;
+	background-size: min(560px, 82%) auto;
+}
+
+/* ③ 節の区切り（初めての方へ・スタッフ紹介の前）
+   実測：#B000000053 の下端 y3856 → #B000000258 の上端 y3979 で **122pxの空き**。
+   うち50pxは #B000000258 が既に持っている padding-top。
+   飾りは48pxなので、その50pxの中にそのまま収まる。
+   margin も padding も**1pxも足していない**ので、縦の寸法は変わらない。
+   置いたのは1ページに1つだけ。3箇所の空きが見つかったが、
+   同じページに3つ並べると区切りが主張しすぎる。 */
+/* 背景画像で padding の中に描くやり方は、絵が高いと見出しに重なる
+   （実測：padding 50px に対し絵は131px）。3ページとも空きに浮かせる。 */
+
+/* ④ 節の区切りをもう2ページに。
+   実測で70px以上の空きがあるのは4ページだけ（course_plan / how_to_choose /
+   campaign / shopinfo / 予約 / staff には空きが無い＝入れる場所が無い）。
+
+     index  78px  … コース札の手前
+     faq   165px  … 「施術について」の手前
+     trial 124px×3 … 回遊カード3枚の手前。**節の変わり目ではない**ので入れない
+
+   置き方は #B000000258 と違って**絶対配置**にする。
+   この2つは次の器が padding-top を持っていないので、
+   padding を足すと縦が伸びてしまう。空きの中に浮かせれば寸法は動かない。
+   transform は使わない（祖先に付けると position:fixed の PAGE TOP が
+   包含ブロックごと変わって消える。ここは擬似要素だが、前例に倣う）。 */
+#SF-contents #B000000010,
+#SF-contents #B000000258 {
+	position: relative;
+	/* 生成CSSの overflow:hidden が、空きに浮かせた飾りを切っていた（実測）。
+	   この2つの器は高さが auto なので、解いても中身は何も動かない。
+	   切り落としは verify.py が毎回見ている。 */
+	overflow: visible;
+}
+#SF-contents #B000000010::before,
+#SF-contents #B000000258::before {
+	content: "";
+	position: absolute;
+	left: 0;
+	right: 0;
+	margin: 0 auto;
+	width: min(470px, 82%);
+	height: 110px;
+	background-image: url("/assets/orn-divider.png");
+	background-repeat: no-repeat;
+	background-position: center center;
+	background-size: contain;
+	pointer-events: none;
+}
+/* 空きは index 78px / faq 165px（うち分類ボタンが上半分）/ beginner 122px。
+   絵の高さ110pxを、それぞれの空きの中に収める。 */
+/* ★ 実測すると、飾りは上の「※表示価格はすべて税込です」と85px重なり、
+   下は札まで3pxしかなかった。空きが足りていない。
+   ここだけ縦に150px空ける。飾りはその中央に置き、上下に34pxずつ残す。
+   150 はこの店が持っている数（版面1000 − 読む段700 の半分）。 */
+#SF-contents #B000000010 { margin-top: 150px; }
+#SF-contents #B000000010::before  { top: -123px; width: min(380px, 78%); height: 89px; }
+/* -105px では分類ボタン（施術について／料金について…）に重なった。
+   ボタンの下、見出しの上の空きに収める（実測で確認）。 */
+/* ★ faq には入れられなかった。器どうしの間は165pxあるが、
+   その中に分類ボタンの列（#B000000153）が入っていて、
+   **実際に空いているのは20pxだけ**だった（実測）。
+   絵は110pxあるのでボタンに重なる。器の間隔ではなく、
+   直上の「見えている要素」との距離で測らないと誤る。 */
+/* beginner も空きが122pxしかなく、飾り110pxに対して上下12pxしか残らない。
+   80px足して、上下46pxずつにする。 */
+#SF-contents #B000000258 { margin-top: 80px; }
+#SF-contents #B000000258::before { top: -156px; }
