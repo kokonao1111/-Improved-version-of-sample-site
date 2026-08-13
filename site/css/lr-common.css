@@ -4991,74 +4991,110 @@ body {
 .lr-book {
 	margin-top: 60px;
 	padding-top: 40px;
-	background-image: url("/assets/orn-rule.png");
+	background-image: url("/assets/orn-e.png");
 	background-repeat: no-repeat;
 	background-position: center top;
 	background-size: min(560px, 82%) auto;
 }
 
-/* ③ 節の区切り（初めての方へ・スタッフ紹介の前）
-   実測：#B000000053 の下端 y3856 → #B000000258 の上端 y3979 で **122pxの空き**。
-   うち50pxは #B000000258 が既に持っている padding-top。
-   飾りは48pxなので、その50pxの中にそのまま収まる。
-   margin も padding も**1pxも足していない**ので、縦の寸法は変わらない。
-   置いたのは1ページに1つだけ。3箇所の空きが見つかったが、
-   同じページに3つ並べると区切りが主張しすぎる。 */
-/* 背景画像で padding の中に描くやり方は、絵が高いと見出しに重なる
-   （実測：padding 50px に対し絵は131px）。3ページとも空きに浮かせる。 */
+/* ══════════════════════════════════════════════════════════════
+   節の区切り ― 15箇所、4種類を使い分ける
+   ──────────────────────────────────────────────────────────────
+   全10ページの .kome_line（節の英字副題）を数えると19個。そのうち
+   節の頭にあたる15箇所へ区切りを置く。同じ絵が続かないよう配る。
 
-/* ④ 節の区切りをもう2ページに。
-   実測で70px以上の空きがあるのは4ページだけ（course_plan / how_to_choose /
-   campaign / shopinfo / 予約 / staff には空きが無い＝入れる場所が無い）。
+     orn-a 640×150  左右対称の唐草      40.0KB
+     orn-b 640× 84  長い流線＋葉        16.4KB
+     orn-c 640×186  描き込みの濃い唐草  58.8KB
+     orn-d 560× 52  細い線の区切り       6.1KB
+     orn-e 560× 14  一番細い罫           1.3KB（予約帯の上で使用）
 
-     index  78px  … コース札の手前
-     faq   165px  … 「施術について」の手前
-     trial 124px×3 … 回遊カード3枚の手前。**節の変わり目ではない**ので入れない
+   ■ 空きの測り方を1度間違えている
+   最初 #SF-contents の中だけを見て「589px空いている」と読んだが、
+   ページ見出しの**全幅の帯は #SF-contents の外**にあり、勘定から漏れていた。
+   実際の空きは多くのページで **15px** しかなく、置いた絵が帯の中に食い込んだ
+   （campaign で実際に起きた）。文書全体から「見えているもの」を探して測り直した。
 
-   置き方は #B000000258 と違って**絶対配置**にする。
-   この2つは次の器が padding-top を持っていないので、
-   padding を足すと縦が伸びてしまう。空きの中に浮かせれば寸法は動かない。
-   transform は使わない（祖先に付けると position:fixed の PAGE TOP が
-   包含ブロックごと変わって消える。ここは擬似要素だが、前例に倣う）。 */
-#SF-contents #B000000010,
-#SF-contents #B000000258 {
+   ■ 余白を足している
+   絵の高さ＋上下30pxずつが要る。足りない分だけ margin-top を足す。
+   ページ見出しの帯の直後に間が生まれるので、どのページも
+   「帯 → ひと呼吸 → 節」の運びになる。
+   ══════════════════════════════════════════════════════════════ */
+
+
+#SF-contents #B000000081, #SF-contents #B000000082, #SF-contents #B000000190, #SF-contents #B000000079, #SF-contents #B000000080, #SF-contents #B000000258, #SF-contents #B000000072, #SF-contents #B000000125, #SF-contents #B000000131, #SF-contents #B000000135, #SF-contents #B000000142, #SF-contents #B000000149, #SF-contents #B000000159, #SF-contents #B000000169, #SF-contents #B000000188 {
 	position: relative;
-	/* 生成CSSの overflow:hidden が、空きに浮かせた飾りを切っていた（実測）。
-	   この2つの器は高さが auto なので、解いても中身は何も動かない。
-	   切り落としは verify.py が毎回見ている。 */
 	overflow: visible;
 }
-#SF-contents #B000000010::before,
-#SF-contents #B000000258::before {
+#SF-contents #B000000081::before, #SF-contents #B000000082::before, #SF-contents #B000000190::before, #SF-contents #B000000079::before, #SF-contents #B000000080::before, #SF-contents #B000000258::before, #SF-contents #B000000072::before, #SF-contents #B000000125::before, #SF-contents #B000000131::before, #SF-contents #B000000135::before, #SF-contents #B000000142::before, #SF-contents #B000000149::before, #SF-contents #B000000159::before, #SF-contents #B000000169::before, #SF-contents #B000000188::before {
 	content: "";
 	position: absolute;
 	left: 0;
 	right: 0;
 	margin: 0 auto;
-	width: min(470px, 82%);
-	height: 110px;
-	background-image: url("/assets/orn-divider.png");
 	background-repeat: no-repeat;
 	background-position: center center;
 	background-size: contain;
 	pointer-events: none;
 }
-/* 空きは index 78px / faq 165px（うち分類ボタンが上半分）/ beginner 122px。
-   絵の高さ110pxを、それぞれの空きの中に収める。 */
-/* ★ 実測すると、飾りは上の「※表示価格はすべて税込です」と85px重なり、
-   下は札まで3pxしかなかった。空きが足りていない。
-   ここだけ縦に150px空ける。飾りはその中央に置き、上下に34pxずつ残す。
-   150 はこの店が持っている数（版面1000 − 読む段700 の半分）。 */
-#SF-contents #B000000010 { margin-top: 150px; }
-#SF-contents #B000000010::before  { top: -123px; width: min(380px, 78%); height: 89px; }
-/* -105px では分類ボタン（施術について／料金について…）に重なった。
-   ボタンの下、見出しの上の空きに収める（実測で確認）。 */
-/* ★ faq には入れられなかった。器どうしの間は165pxあるが、
-   その中に分類ボタンの列（#B000000153）が入っていて、
-   **実際に空いているのは20pxだけ**だった（実測）。
-   絵は110pxあるのでボタンに重なる。器の間隔ではなく、
-   直上の「見えている要素」との距離で測らないと誤る。 */
-/* beginner も空きが122pxしかなく、飾り110pxに対して上下12pxしか残らない。
-   80px足して、上下46pxずつにする。 */
-#SF-contents #B000000258 { margin-top: 80px; }
-#SF-contents #B000000258::before { top: -156px; }
+
+
+/* index 「New trial plan」 ― 細い線の区切り  実測の空き130px / 必要99px */
+#SF-contents #B000000081 { margin-top: 100px; }
+#SF-contents #B000000081::before { width: min(420px, 78%); height: 39px; top: -69px; background-image: url("/assets/orn-d.png"); }
+
+/* index 「Recommendation」 ― 左右対称の唐草  実測の空き50px / 必要149px　→ +100px */
+#SF-contents #B000000082 { margin-top: 150px; }
+#SF-contents #B000000082::before { width: min(380px, 78%); height: 89px; top: -119px; background-image: url("/assets/orn-a.png"); }
+
+/* index 「Schedule」 ― 長い流線＋葉  実測の空き80px / 必要120px　→ +40px */
+#SF-contents #B000000190 { margin-top: 120px; }
+#SF-contents #B000000190::before { width: min(460px, 78%); height: 60px; top: -90px; background-image: url("/assets/orn-b.png"); }
+
+/* 初めての方へ 「For guest」 ― 描き込みの濃い唐草  実測の空き15px / 必要176px　→ +170px */
+#SF-contents #B000000079 { margin-top: 170px; }
+#SF-contents #B000000079::before { width: min(400px, 78%); height: 116px; top: -146px; background-image: url("/assets/orn-c.png"); }
+
+/* 初めての方へ 「Flow of treatment」 ― 細い線の区切り  実測の空き110px / 必要99px */
+#SF-contents #B000000080 { margin-top: 100px; }
+#SF-contents #B000000080::before { width: min(420px, 78%); height: 39px; top: -69px; background-image: url("/assets/orn-d.png"); }
+
+/* 初めての方へ 「Staff」 ― 左右対称の唐草  実測の空き122px / 必要149px　→ +30px */
+#SF-contents #B000000258 { margin-top: 30px; }
+#SF-contents #B000000258::before { width: min(380px, 78%); height: 89px; top: -119px; background-image: url("/assets/orn-a.png"); }
+
+/* トライアル 「Trial course」 ― 長い流線＋葉  実測の空き15px / 必要120px　→ +105px */
+#SF-contents #B000000072 { margin-top: 105px; }
+#SF-contents #B000000072::before { width: min(460px, 78%); height: 60px; top: -90px; background-image: url("/assets/orn-b.png"); }
+
+/* コース・プラン 「Course / Menu」 ― 描き込みの濃い唐草  実測の空き15px / 必要176px　→ +170px */
+#SF-contents #B000000125 { margin-top: 170px; }
+#SF-contents #B000000125::before { width: min(400px, 78%); height: 116px; top: -146px; background-image: url("/assets/orn-c.png"); }
+
+/* コース・プラン 「BODY CARE」 ― 左右対称の唐草  実測の空き50px / 必要149px　→ +100px */
+#SF-contents #B000000131 { margin-top: 150px; }
+#SF-contents #B000000131::before { width: min(380px, 78%); height: 89px; top: -119px; background-image: url("/assets/orn-a.png"); }
+
+/* コース・プラン 「HEAD SPA」 ― 細い線の区切り  実測の空き0px / 必要99px　→ +100px */
+#SF-contents #B000000135 { margin-top: 100px; }
+#SF-contents #B000000135::before { width: min(420px, 78%); height: 39px; top: -69px; background-image: url("/assets/orn-d.png"); }
+
+/* 選び方 「Trial course」 ― 左右対称の唐草  実測の空き15px / 必要149px　→ +135px */
+#SF-contents #B000000142 { margin-top: 135px; }
+#SF-contents #B000000142::before { width: min(380px, 78%); height: 89px; top: -119px; background-image: url("/assets/orn-a.png"); }
+
+/* よくある質問 「Q & A」 ― 長い流線＋葉  実測の空き15px / 必要120px　→ +105px */
+#SF-contents #B000000149 { margin-top: 105px; }
+#SF-contents #B000000149::before { width: min(460px, 78%); height: 60px; top: -90px; background-image: url("/assets/orn-b.png"); }
+
+/* キャンペーン 「Campaign」 ― 描き込みの濃い唐草  実測の空き15px / 必要176px　→ +170px */
+#SF-contents #B000000159 { margin-top: 170px; }
+#SF-contents #B000000159::before { width: min(400px, 78%); height: 116px; top: -146px; background-image: url("/assets/orn-c.png"); }
+
+/* 店舗のご案内 「Shop info」 ― 左右対称の唐草  実測の空き15px / 必要149px　→ +135px */
+#SF-contents #B000000169 { margin-top: 135px; }
+#SF-contents #B000000169::before { width: min(380px, 78%); height: 89px; top: -119px; background-image: url("/assets/orn-a.png"); }
+
+/* 予約 「Reservation」 ― 細い線の区切り  実測の空き15px / 必要99px　→ +85px */
+#SF-contents #B000000188 { margin-top: 85px; }
+#SF-contents #B000000188::before { width: min(420px, 78%); height: 39px; top: -69px; background-image: url("/assets/orn-d.png"); }
