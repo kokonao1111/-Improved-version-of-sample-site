@@ -4499,11 +4499,24 @@ body {
 		margin-left: auto;
 		margin-right: auto;
 	}
-	#B000000024 ul.lr-tiles a.lr-tile,
-	.lr-tiles a.lr-tile {
-		max-width: 380px;
+	/* ★ 上限は札（a）ではなく**列（ul）**に置く。
+	   a に置くと、中身は380pxで中央に寄るのに、区切りの罫は
+	   ul と li が持っているので版面いっぱいのまま残る。
+	   実測（画面580px）：罫550px に対して中身380px で、
+	   線だけが長く飛び出して見えていた。
+	   列ごと380pxにすれば、上下の金の罫も札の間の罫も中身と同じ幅になる。 */
+	#B000000024 ul.lr-tiles,
+	.lr-tiles {
+		max-width: 340px;
 		margin-left: auto;
 		margin-right: auto;
+	}
+	/* 列を写真と同じ340pxにしたので、札の左右の余白は要らない。
+	   残すと罫（列が持つ）が写真より20pxずつ長く飛び出す。 */
+	#B000000024 ul.lr-tiles a.lr-tile,
+	.lr-tiles a.lr-tile {
+		padding-left: 0;
+		padding-right: 0;
 	}
 	/* 記事型の札は本文が左揃えなので、写真も左に置く（中央だと揃わない）。
 	   札そのものは flex で、既定の justify-content: center が効いている。
@@ -4691,4 +4704,225 @@ body {
 		-o-object-position: center;
 		object-position: center;
 	}
+}
+
+/* ══════════════════════════════════════════════════════════════
+   お店の説明（クライアント支給の原文）
+   ──────────────────────────────────────────────────────────────
+   扉の下の一言は、テンプレートの「輝く女性のための、サロンです。」の
+   ままだった。支給された原文に差し替え、続けて本文3段落を置く。
+   原文は1文字も変えていない（改行位置だけ、読む段に合わせて指定）。
+
+   読む段は 700px。この店が既に持っている数
+   （版面1000 − 余白150×2）で、他の本文と同じ。 */
+.lr-words-body {
+	max-width: 700px;
+	margin: 30px auto 0;
+	text-align: left;
+	font-size: 14px;
+	line-height: 2.1;
+	color: #6E5C48;
+}
+.lr-words-body p {
+	margin: 0 0 20px;
+}
+.lr-words-body p:last-child {
+	margin-bottom: 0;
+}
+@media screen and (max-width: 640px) {
+	.lr-words-body {
+		margin-top: 20px;
+		font-size: 13px;
+		line-height: 2;
+	}
+}
+
+/* ご来店の流れの4枚は、札の並びとしては他と同じ（上限380・中央）だが、
+   中身は**読ませる文**なので、本文だけ左に戻す。
+   数行ある文を中央揃えにすると行頭が揃わず読みにくい。
+   （:is() の一覧に入れた副作用で center になっていた） */
+#SF-contents :is(#B000000047,#B000000049,#B000000051,#B000000053) ul.thumbnailList li .newslistdata,
+#SF-contents :is(#B000000047,#B000000049,#B000000051,#B000000053) ul.thumbnailList li p {
+	text-align: left;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   写真の左右の空きを揃える（携帯）
+   ──────────────────────────────────────────────────────────────
+   写真に上限を与えたので、器のほうが広い場所では
+   **写真が左に貼り付いて右だけ空く**状態が11箇所残っていた（実測）。
+
+     index    B398/B402  器360 写真150 … 右に210px
+     beginner B045       器450 写真340 … 右に110px
+     trial    B073ほか6枚 器360 写真300 … 右に 60px
+     shopinfo B179       器450 写真340 … 右に110px
+     campaign B163       器446 写真340 … 右に106px
+
+   記事型の3ブロック（B045/B163/B179）は上の :is() に入れて
+   「上限380・中央・内側20px」に揃えた。本文だけは読ませる文なので左に戻す。
+   残り（trial の6枚・SNSの2枚）は器の中で中央に置く。
+   ══════════════════════════════════════════════════════════════ */
+#SF-contents :is(#B000000045,#B000000047,#B000000049,#B000000051,#B000000053,#B000000163,#B000000179) ul.thumbnailList li .newslistdata,
+#SF-contents :is(#B000000045,#B000000047,#B000000049,#B000000051,#B000000053,#B000000163,#B000000179) ul.thumbnailList li p {
+	text-align: left;
+}
+@media screen and (max-width: 640px) {
+	/* 見出しだけ左に残ると、中央に置いた札と左端が食い違う */
+	#SF-contents #B000000044 h2.headlineStyle {
+		text-align: center;
+	}
+	/* trial のコース札（写真＋表）と、LINEのQR・Instagram */
+	#SF-contents :is(#B000000073,#B000000074,#B000000085,#B000000087,#B000000089,#B000000091) ul.thumbnailList li > .thumbnail {
+		text-align: center;
+	}
+	#SF-contents :is(#B000000073,#B000000074,#B000000085,#B000000087,#B000000089,#B000000091) ul.thumbnailList li > .thumbnail img,
+	#SF-contents :is(#B000000398,#B000000402) img {
+		margin-left: auto;
+		margin-right: auto;
+	}
+}
+
+/* 残り8箇所。上の中央寄せが届かなかった2種を、器の側で直接置き直す。
+     trial の写真＋表の札 … .thumbnail が flex の項目で margin:0 を持つ
+     LINEのQR / Instagram … img が幅150pxのまま行頭に置かれる */
+@media screen and (max-width: 640px) {
+	#SF-contents ul.thumbnailList li:has(table.trial) > .thumbnail {
+		margin-left: auto;
+		margin-right: auto;
+	}
+	#B000000402 img,
+	#B000000398 img.lr-sns-ph {
+		display: block;
+		margin-left: auto;
+		margin-right: auto;
+	}
+	/* a.lr-sns は display:flex。中の img は flex の項目なので
+	   text-align も margin:auto も届かない（実測 m=0px）。
+	   並べている器の側で寄せる。 */
+	#SF-contents :is(#B000000398,#B000000402) a.lr-sns {
+		-webkit-box-pack: center;
+		-ms-flex-pack: center;
+		justify-content: center;
+	}
+}
+
+/* ══════════════════════════════════════════════════════════════
+   記事型の札は、段を細くしない
+   ──────────────────────────────────────────────────────────────
+   写真の左右の空きを揃えるために、記事型（写真＋読ませる文）の7ブロックも
+   「上限380・中央」に入れたが、**文の段が340pxまで細くなった**。
+   画面492pxで左右に61pxずつ空き、利用者から
+   「文の両端が壁のようになって真ん中にギュッとなっている」と指摘。
+
+   読ませる文の段を削ってはいけない。札は段いっぱいに戻す。
+   上限は**写真の原寸**で持たせる（引き伸ばさないための上限なので、
+   本来そこに置くのが筋だった）。素材の実寸は width 属性に入っている。
+
+     beginner_flow*  450×230 → 450px
+     beginner_gaz*   400×230 → 400px
+     campaign_img*   400×250 → 400px
+     garage_gaz      500×300 → 500px
+
+   器のほうが広ければ中央に置く（左に貼り付かせない）。
+   ══════════════════════════════════════════════════════════════ */
+@media screen and (max-width: 640px) {
+	#SF-contents :is(#B000000045,#B000000047,#B000000049,#B000000051,#B000000053,#B000000163,#B000000179) ul.thumbnailList li .thumbnail {
+		text-align: center;
+	}
+	#SF-contents :is(#B000000045,#B000000047,#B000000049,#B000000051,#B000000053,#B000000163,#B000000179) ul.thumbnailList li .thumbnail img {
+		max-width: 100%;
+		margin-left: auto;
+		margin-right: auto;
+	}
+	/* 上限は素材の実寸。同じ :is() の中に置かないと、上の max-width:100% に負ける */
+	#SF-contents :is(#B000000045,#B000000047,#B000000049,#B000000051,#B000000053,#B000000163,#B000000179) ul.thumbnailList li .thumbnail img[width="400"] { max-width: 400px; }
+	#SF-contents :is(#B000000045,#B000000047,#B000000049,#B000000051,#B000000053,#B000000163,#B000000179) ul.thumbnailList li .thumbnail img[width="450"] { max-width: 450px; }
+	#SF-contents :is(#B000000045,#B000000047,#B000000049,#B000000051,#B000000053,#B000000163,#B000000179) ul.thumbnailList li .thumbnail img[width="500"] { max-width: 500px; }
+	/* 写真の枠ごと中央に。札は flex なので、枠を寄せないと左に貼り付く */
+	#SF-contents :is(#B000000045,#B000000047,#B000000049,#B000000051,#B000000053,#B000000163,#B000000179) ul.thumbnailList li {
+		-webkit-box-pack: center;
+		-ms-flex-pack: center;
+		justify-content: center;
+	}
+	#SF-contents :is(#B000000045,#B000000047,#B000000049,#B000000051,#B000000053,#B000000163,#B000000179) ul.thumbnailList li > .thumbnail {
+		margin-left: auto;
+		margin-right: auto;
+	}
+}
+
+/* 左右交互に組むための .csArticleRight（order:3）が付いた写真だけ、
+   上の中央寄せが効かず右端に寄っていた（実測 左210/右0）。
+   携帯では上下に積むので、左右交互そのものが意味を持たない。 */
+@media screen and (max-width: 640px) {
+	/* margin-left だけが auto になって右端に寄っていた（実測 m=0 0 0 62px）。
+	   一括指定で両側とも auto に上書きする。 */
+	#SF-contents :is(#B000000045,#B000000163) ul.thumbnailList li > .thumbnail.csArticleRight,
+	#SF-contents :is(#B000000045,#B000000163) ul.thumbnailList li > .thumbnail.csArticleLeft {
+		margin: 0 auto;
+	}
+}
+
+/* B000000045 だけ、flex の自動余白が片側にしか効かず右端に残った
+   （実測 m=0 0 0 62px）。携帯では写真と本文を上下に積むだけなので、
+   flex をやめて普通の積み上げにする。margin:0 auto が素直に効く。 */
+@media screen and (max-width: 640px) {
+	#SF-contents :is(#B000000045,#B000000163) ul.thumbnailList li {
+		display: block;
+	}
+	/* 自動余白（margin:auto）は、どこかの規則に margin:0 で潰され続けた。
+	   行の揃えで寄せるほうは潰されない。枠を inline-block にして親で中央に。 */
+	#SF-contents :is(#B000000045,#B000000163) ul.thumbnailList li {
+		text-align: center;
+	}
+	/* ★ この写真は site.css が float:left/right !important で左右交互に
+	   組んでいる（外せない）。枠を inline-block や固定幅にすると
+	   float が復活して左右に振れる（実測 左62/右0 と 左0/右62 が交互）。
+	   枠は器いっぱいの block のままにして、中の写真を行の揃えで寄せる。 */
+	#SF-contents :is(#B000000045,#B000000163) ul.thumbnailList li > .thumbnail {
+		display: block;
+		width: 100%;
+		max-width: 100%;
+	}
+	#SF-contents :is(#B000000045,#B000000163) ul.thumbnailList li > .newslistdata {
+		text-align: left;
+	}
+	#SF-contents :is(#B000000179) ul.thumbnailList li .thumbnail img {
+		display: block;
+		margin-left: auto;
+		margin-right: auto;
+	}
+}
+
+/* ══════════════════════════════════════════════════════════════
+   長文を持つ札の組版（パソコン）
+   ──────────────────────────────────────────────────────────────
+   実測（画面1440px）：本文 13px／行送り 22.1px ＝ **1.70倍**。
+   400pxの段に1.70倍で流すと行が詰まって「資料」に見える、と指摘。
+   日本語の長文は 1.9〜2.0倍がよく読める。この店の他の場所
+   （扉の下のコンセプト文）も 2.1倍で組んである。
+
+   段落の間も空ける。<br /><br /> で切っているだけだったので、
+   段落の境目が行間と同じ幅しか無かった。
+
+   ★ 足した段落（肌診断器の話）だけ 左170px から始まっていた。
+     .lr-lead が「読む段700px」の中央寄せを持っているため、
+     左20pxから始まる節の見出しと頭が揃わない。左端を揃える。
+   ══════════════════════════════════════════════════════════════ */
+#SF-contents :is(#B000000045,#B000000047,#B000000049,#B000000051,#B000000053,#B000000163,#B000000179) ul.thumbnailList li .newslistdata,
+#SF-contents :is(#B000000045,#B000000047,#B000000049,#B000000051,#B000000053,#B000000163,#B000000179) ul.thumbnailList li .newslistdata p {
+	line-height: 2;
+}
+#SF-contents :is(#B000000045,#B000000047,#B000000049,#B000000051,#B000000053,#B000000163,#B000000179) ul.thumbnailList li .newslistdata p {
+	margin-bottom: 20px;
+}
+#SF-contents :is(#B000000045,#B000000047,#B000000049,#B000000051,#B000000053,#B000000163,#B000000179) ul.thumbnailList li .newslistdata p:last-child {
+	margin-bottom: 0;
+}
+/* 見出しの直下に足した段落。頭を見出しに揃える */
+#SF-contents #B000000044 + .SF-module-container .lr-lead {
+	max-width: 700px;
+	margin-left: 0;
+	margin-right: 0;
+	margin-bottom: 50px;   /* 次の札の見出しに接していた */
+	line-height: 2;
 }
