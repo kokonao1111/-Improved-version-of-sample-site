@@ -73,6 +73,13 @@ document.getElementById('f').onload=function(){setTimeout(function(){
   for(var n=e;n&&n.nodeType===1;n=n.parentNode){
    var c=getComputedStyle(n),nr=n.getBoundingClientRect();
    if(parseFloat(c.opacity)<0.1||c.visibility==='hidden')return true;
+   /* position:fixed は本文の上に浮くもの（メニューのボタン、下端の帯）。
+      この検査は6000pxの窓に流し込んで撮っているので、浮きものは
+      「窓の下端から72px」＝ y5928 に描かれ、そこにたまたま来た本文の罫と
+      重なる。実機では指で送った位置に浮くだけで、罫が字を貫くわけではない。
+      ボタンは地色を持っているので、その地色自体も「横に長い非地色」として
+      罫に見えてしまう。浮きものの中の字は数えない。 */
+   if(c.position==='fixed')return true;
    if(n===e&&(nr.width<=1||nr.height<=1))return true;
    if(c.overflow!=='visible'&&c.overflow!==''){
     var iw=Math.max(0,Math.min(nr.right,r.right)-Math.max(nr.left,r.left));
