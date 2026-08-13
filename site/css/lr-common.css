@@ -5090,8 +5090,10 @@ body {
    （以前ページ全体の角に置こうとして、全幅の帯に切られて破片に見えた。
      ここは帯の左右が白いので同じことは起きない）
 
-   素材は「corner transparent.png」1.1MB → 200×185 / 13.3KB。
-   色はこの店の金 #A4896A に統一。右下は左上を反転して作った。
+   素材は「corner transparent.png」1.1MB → 200×185 / 13.3KB。色は #A4896A に統一。
+   ★ 向きに注意。素材は**右上の角**として描かれている。
+     左上には左右反転、右下には上下反転が要る。
+     最初これを間違えて、左上に右上の絵、右下に左下の絵を置いていた。
    ══════════════════════════════════════════════════════════════ */
 @media screen and (min-width: 1440px) {
 	.lr-book::after {
@@ -5101,7 +5103,7 @@ body {
 		left: -198px;
 		width: 200px;
 		height: 185px;
-		background-image: url("/assets/orn-corner.png");
+		background-image: url("/assets/orn-corner-tl.png");
 		background-repeat: no-repeat;
 		background-size: contain;
 		opacity: .55;
@@ -5114,7 +5116,7 @@ body {
 		right: -198px;
 		width: 200px;
 		height: 185px;
-		background-image: url("/assets/orn-corner2.png");
+		background-image: url("/assets/orn-corner-br.png");
 		background-repeat: no-repeat;
 		background-size: contain;
 		opacity: .55;
@@ -5157,4 +5159,84 @@ body {
    ══════════════════════════════════════════════════════════════ */
 #SF-contents .lr-card .c_box2 {
 	position: static;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   表示前の幕（プリローダー）
+   ──────────────────────────────────────────────────────────────
+   回るアイコンは使わない。この店の道具だけで組む。
+     地   … #F5F1E7（札で使っている生成り）
+     紋章 … assets/logo.png を150pxで一度だけ
+     罫   … 金1px。中央から左右へ引かれる。既にある「線は引かれる」の曲線
+            （--lr-t-draw / --lr-e-draw）をそのまま使う。新しい演出を足さない
+
+   ■ 閉じ込めない作り
+     ・幕が出るのは html.lr-js のときだけ。JSが無い環境では出ない
+     ・head のインライン1行が 3200ms で必ず lr-pre-done を付ける
+     ・js/lr-pre.js は読み込み完了で早めに上げるだけ（最短1100msは見せる。
+       罫は120ms待って500msで引き終わるので、それより短いと線が途中で消える）
+     ・上がった幕は visibility:hidden で操作の邪魔にならない
+
+   ■ prefers-reduced-motion
+     罫を引く動きは止める。幕は出して、すぐ消えるだけにする。
+   ══════════════════════════════════════════════════════════════ */
+.lr-pre { display: none; }
+html.lr-js .lr-pre {
+	display: -webkit-box;
+	display: -ms-flexbox;
+	display: flex;
+	-webkit-box-orient: vertical;
+	-ms-flex-direction: column;
+	flex-direction: column;
+	-webkit-box-pack: center;
+	-ms-flex-pack: center;
+	justify-content: center;
+	-webkit-box-align: center;
+	-ms-flex-align: center;
+	align-items: center;
+	position: fixed;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	z-index: 300;
+	background-color: #F5F1E7;
+	opacity: 1;
+	visibility: visible;
+	-webkit-transition: opacity 600ms var(--lr-e), visibility 0s 600ms;
+	transition: opacity 600ms var(--lr-e), visibility 0s 600ms;
+}
+html.lr-pre-done .lr-pre {
+	opacity: 0;
+	visibility: hidden;
+}
+.lr-pre-mark {
+	width: 150px;
+	height: 123px;
+	background-image: url("/assets/logo.png");
+	background-repeat: no-repeat;
+	background-position: center center;
+	background-size: contain;
+}
+/* 罫は中央から左右へ。幅だけを動かすので、版面は1pxも動かない */
+.lr-pre-rule {
+	width: 0;
+	height: 1px;
+	margin-top: 24px;
+	background-color: #A4896A;
+	-webkit-animation: lr-pre-draw var(--lr-t-draw) var(--lr-e-draw) 120ms forwards;
+	animation: lr-pre-draw var(--lr-t-draw) var(--lr-e-draw) 120ms forwards;
+}
+@-webkit-keyframes lr-pre-draw { to { width: 180px; } }
+@keyframes lr-pre-draw { to { width: 180px; } }
+@media (prefers-reduced-motion: reduce) {
+	.lr-pre-rule {
+		width: 180px;
+		-webkit-animation: none;
+		animation: none;
+	}
+	html.lr-js .lr-pre {
+		-webkit-transition: none;
+		transition: none;
+	}
 }
