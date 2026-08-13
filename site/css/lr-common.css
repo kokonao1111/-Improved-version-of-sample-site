@@ -2559,7 +2559,7 @@ body {
 	}
 	#B000000035 img, #B000000056 img, #B000000120 img, #B000000137 img,
 	#B000000145 img, #B000000155 img, #B000000165 img {
-		min-height: 150px;
+		min-height: 200px;
 		-o-object-fit: cover;
 		object-fit: cover;
 		-o-object-position: center;
@@ -5036,48 +5036,106 @@ body {
 
 /* index ― 左右対称の唐草 */
 #SF-contents #B000000081 { margin-top: 150px; }
-#SF-contents #B000000081::before { width: min(380px, 80%); height: 89px; top: -119px; background-image: url("/assets/orn-a.png"); }
+#SF-contents #B000000081::before { width: min(380px, 80%); height: 89px; top: -69px; background-image: url("/assets/orn-a.png"); }
 #SF-contents #B000000082 { margin-top: 150px; }
-#SF-contents #B000000082::before { width: min(380px, 80%); height: 89px; top: -119px; background-image: url("/assets/orn-a.png"); }
+#SF-contents #B000000082::before { width: min(380px, 80%); height: 89px; top: -69px; background-image: url("/assets/orn-a.png"); }
 #SF-contents #B000000190 { margin-top: 150px; }
-#SF-contents #B000000190::before { width: min(380px, 80%); height: 89px; top: -119px; background-image: url("/assets/orn-a.png"); }
+#SF-contents #B000000190::before { width: min(380px, 80%); height: 89px; top: -69px; background-image: url("/assets/orn-a.png"); }
 
 /* 初めての方へ ― 描き込みの濃い唐草 */
 #SF-contents #B000000079 { margin-top: 170px; }
-#SF-contents #B000000079::before { width: min(400px, 80%); height: 116px; top: -146px; background-image: url("/assets/orn-c.png"); }
+#SF-contents #B000000079::before { width: min(320px, 80%); height: 93px; top: -84px; background-image: url("/assets/orn-c.png"); }
 #SF-contents #B000000080 { margin-top: 180px; }
-#SF-contents #B000000080::before { width: min(400px, 80%); height: 116px; top: -146px; background-image: url("/assets/orn-c.png"); }
+#SF-contents #B000000080::before { width: min(400px, 80%); height: 116px; top: -96px; background-image: url("/assets/orn-c.png"); }
 #SF-contents #B000000258 { margin-top: 60px; }
-#SF-contents #B000000258::before { width: min(400px, 80%); height: 116px; top: -146px; background-image: url("/assets/orn-c.png"); }
+#SF-contents #B000000258::before { width: min(400px, 80%); height: 116px; top: -96px; background-image: url("/assets/orn-c.png"); }
 
 /* トライアル ― 長い流線＋葉 */
 #SF-contents #B000000072 { margin-top: 110px; }
-#SF-contents #B000000072::before { width: min(460px, 80%); height: 60px; top: -90px; background-image: url("/assets/orn-b.png"); }
+#SF-contents #B000000072::before { width: min(460px, 80%); height: 60px; top: -40px; background-image: url("/assets/orn-b.png"); }
 
 /* コース・プラン ― 細い線の区切り */
 #SF-contents #B000000125 { margin-top: 90px; }
-#SF-contents #B000000125::before { width: min(420px, 80%); height: 39px; top: -69px; background-image: url("/assets/orn-d.png"); }
+#SF-contents #B000000125::before { width: min(420px, 80%); height: 39px; top: -19px; background-image: url("/assets/orn-d.png"); }
 #SF-contents #B000000131 { margin-top: 100px; }
-#SF-contents #B000000131::before { width: min(420px, 80%); height: 39px; top: -69px; background-image: url("/assets/orn-d.png"); }
+#SF-contents #B000000131::before { width: min(420px, 80%); height: 39px; top: -19px; background-image: url("/assets/orn-d.png"); }
 #SF-contents #B000000135 { margin-top: 100px; }
-#SF-contents #B000000135::before { width: min(420px, 80%); height: 39px; top: -69px; background-image: url("/assets/orn-d.png"); }
+#SF-contents #B000000135::before { width: min(420px, 80%); height: 39px; top: -19px; background-image: url("/assets/orn-d.png"); }
 
 /* 選び方 ― 菱形と雫 */
 #SF-contents #B000000142 { margin-top: 80px; }
-#SF-contents #B000000142::before { width: min(560px, 80%); height: 45px; top: -75px; background-image: url("/assets/orn-1.svg"); }
+#SF-contents #B000000142::before { width: min(560px, 80%); height: 45px; top: -25px; background-image: url("/assets/orn-1.svg"); }
 
 /* よくある質問 ― 羽根のような両端 */
 #SF-contents #B000000149 { margin-top: 90px; }
-#SF-contents #B000000149::before { width: min(560px, 80%); height: 54px; top: -84px; background-image: url("/assets/orn-2.svg"); }
+#SF-contents #B000000149::before { width: min(560px, 80%); height: 54px; top: -34px; background-image: url("/assets/orn-2.svg"); }
 
 /* キャンペーン ― 一度だけうねる波 */
 #SF-contents #B000000159 { margin-top: 80px; }
-#SF-contents #B000000159::before { width: min(560px, 80%); height: 44px; top: -74px; background-image: url("/assets/orn-3.svg"); }
+#SF-contents #B000000159::before { width: min(560px, 80%); height: 44px; top: -24px; background-image: url("/assets/orn-3.svg"); }
 
 /* 店舗のご案内 ― 中央に一輪 */
 #SF-contents #B000000169 { margin-top: 90px; }
-#SF-contents #B000000169::before { width: min(560px, 80%); height: 47px; top: -77px; background-image: url("/assets/orn-4.svg"); }
+#SF-contents #B000000169::before { width: min(560px, 80%); height: 47px; top: -27px; background-image: url("/assets/orn-4.svg"); }
 
 /* ご予約 ― 左右に小さな渦 */
 #SF-contents #B000000188 { margin-top: 90px; }
-#SF-contents #B000000188::before { width: min(560px, 80%); height: 45px; top: -75px; background-image: url("/assets/orn-5.svg"); }
+#SF-contents #B000000188::before { width: min(560px, 80%); height: 45px; top: -25px; background-image: url("/assets/orn-5.svg"); }
+
+/* ══════════════════════════════════════════════════════════════
+   予約の帯を、角飾りで囲む（1440px以上だけ）
+   ──────────────────────────────────────────────────────────────
+   実測：.lr-book は 1000×248。ボタンが幅いっぱいに3つ並ぶので
+   **内側には置けない**。外側の余白（窓1440pxで左右220pxずつ）に置く。
+   左上と右下の2つだけ。四隅を囲むと「枠」になり、この意匠に無い形になる。
+
+   1440px未満では余白が200pxを切るので出さない。
+   （以前ページ全体の角に置こうとして、全幅の帯に切られて破片に見えた。
+     ここは帯の左右が白いので同じことは起きない）
+
+   素材は「corner transparent.png」1.1MB → 200×185 / 13.3KB。
+   色はこの店の金 #A4896A に統一。右下は左上を反転して作った。
+   ══════════════════════════════════════════════════════════════ */
+@media screen and (min-width: 1440px) {
+	.lr-book::after {
+		content: "";
+		position: absolute;
+		top: 24px;
+		left: -198px;
+		width: 200px;
+		height: 185px;
+		background-image: url("/assets/orn-corner.png");
+		background-repeat: no-repeat;
+		background-size: contain;
+		opacity: .55;
+		pointer-events: none;
+	}
+	.lr-book-row::after {
+		content: "";
+		position: absolute;
+		bottom: -110px;
+		right: -198px;
+		width: 200px;
+		height: 185px;
+		background-image: url("/assets/orn-corner2.png");
+		background-repeat: no-repeat;
+		background-size: contain;
+		opacity: .55;
+		pointer-events: none;
+	}
+	.lr-book-row { position: relative; }
+}
+
+/* 下層ページの扉。1600×400 の比のままだと 1440pxの窓で360pxにしかならず、
+   「もう少し大きく」との指摘。min-height で下限を上げる
+   （自然高がこれを超える幅では一切切らない）。 */
+@media screen and (min-width: 641px) {
+	#B000000035 img, #B000000056 img, #B000000120 img, #B000000137 img,
+	#B000000145 img, #B000000155 img, #B000000165 img {
+		min-height: 420px;
+		-o-object-fit: cover;
+		object-fit: cover;
+		-o-object-position: center;
+		object-position: center;
+	}
+}
