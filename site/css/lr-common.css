@@ -2655,20 +2655,33 @@ body {
    ②で写真を札の幅に合わせたが、器が600pxある幅（500〜640px）では
    300pxの写真が600×400まで2倍に伸び、ぼやけたうえ札の高さを超えて
    次の札の上に文字が乗っていた（実測：640pxで4箇所、500pxで3箇所）。
-   札の上限を定め、器が広ければ中央へ置く。
+   ★ 上限は「札」ではなく「写真」に置く。
 
-   上限は 380px。内訳は 写真の上限340 ＋ 札の余白20×2。
-   340 は写真の原寸300pxの1.13倍で、ここが拡大の上限になる。
-   （350 → 420 → 380 と動かしている。420では500〜640pxの幅で
-     300pxの写真が380pxまで伸びて眠かった） */
+   札に max-width:380px を与えて中央に寄せていたが、見出しは版面いっぱいの
+   ままなので、480〜640pxの幅で **見出しが x=15、札が x=50〜130** と
+   左端が揃わなくなった（実測。利用者から「位置が左によっておかしい」）。
+
+     画面480px … 見出し 左15/幅450   札 左50/幅380
+     画面640px … 見出し 左15/幅610   札 左130/幅380
+
+   札は段いっぱいに置き、伸びて困るのは写真だけなので写真に上限340pxを与える。
+   340 は写真の原寸300pxの1.13倍で、ここが拡大の上限。
+   （札の上限は 350 → 420 → 380 と動かしたが、そもそも札に置くのが誤りだった） */
 @media screen and (max-width: 640px) {
 	#SF-contents ul.thumbnailList > li:has(.thumbnail img) {
 		width: 100%;
-		max-width: 380px;
-		margin-left: auto;
-		margin-right: auto;
 		height: auto;
 		box-sizing: border-box;
+	}
+	#SF-contents ul.thumbnailList li .thumbnail img {
+		max-width: 340px;
+	}
+	/* 記事型の札（写真＋本文）は上下に積む。写真だけ中央に置くと
+	   本文・見出しの左端と揃わない。左に寄せる。 */
+	#SF-contents :is(#B000000045,#B000000163) ul.thumbnailList li {
+		-webkit-box-pack: start;
+		-ms-flex-pack: start;
+		justify-content: flex-start;
 	}
 }
 
@@ -3227,10 +3240,8 @@ a.button-rink2:focus {
 	   幅は100%で取り、上限だけ与えて、寄せは justify-self で行う。 */
 	#SF-contents :is(#B000000033,#B000000054,#B000000071,#B000000077,#B000000124,#B000000148,#B000000158,#B000000397,#B000000010,#B000000260) ul.thumbnailList li {
 		width: 100%;
-		max-width: 420px;
 		margin-left: 0;
 		margin-right: 0;
-		justify-self: center;
 	}
 }
 /* ── ④ コース札（写真＋表） ────────────────────────────────
@@ -4213,9 +4224,10 @@ body {
 	       画面480〜640px … 写真340px（1.13倍）
 
 	     max-width は border-box で数える。380 ＝ 写真の上限340 ＋ 余白20×2。 */
-	#SF-contents ul.thumbnailList > li:has(.thumbnail img),
+	/* 余白を入れるのは**地色を持つ札**だけ。
+	   地色の無い記事型の札（#B000000045 など）にも入れると、
+	   本文の左端が節の見出しから20pxずれる。 */
 	#SF-contents :is(#B000000033,#B000000054,#B000000071,#B000000077,#B000000124,#B000000148,#B000000158,#B000000397,#B000000010,#B000000260) ul.thumbnailList li {
-		max-width: 380px;
 		box-sizing: border-box;
 		padding-left: 20px;
 		padding-right: 20px;
@@ -4248,12 +4260,13 @@ body {
 @media screen and (max-width: 640px) {
 	#B000000024 ul.lr-tiles a.lr-tile,
 	.lr-tiles a.lr-tile {
-		max-width: 380px;
 		box-sizing: border-box;
 		padding-left: 20px;
 		padding-right: 20px;
-		margin-left: auto;
-		margin-right: auto;
+	}
+	#B000000024 ul.lr-tiles a.lr-tile img,
+	.lr-tiles a.lr-tile img {
+		max-width: 340px;
 	}
 }
 @media screen and (max-width: 359px) {
@@ -4345,7 +4358,6 @@ body {
 	   「フェイシャルトリートメ／ント」「“部／分痩せ”」が戻ってきた（実測）。
 	   一番小さい画面だけ余白を10pxにして、段を270pxに戻す。
 	   10 も 20 もこの店が持っている余白の数。 */
-	#SF-contents ul.thumbnailList > li:has(.thumbnail img),
 	#SF-contents :is(#B000000033,#B000000054,#B000000071,#B000000077,#B000000124,#B000000148,#B000000158,#B000000397,#B000000010,#B000000260) ul.thumbnailList li {
 		padding-left: 10px;
 		padding-right: 10px;
@@ -4424,4 +4436,212 @@ body {
      そこだけ四角く抜けていた） */
 #SF-footer {
 	background-color: transparent;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   トップの6枚のコース札（#B000000010）
+   ──────────────────────────────────────────────────────────────
+   実測すると、1枚の札が「題の帯／写真／料金の帯」の3段に見えていた。
+
+     札 313×360（高さは決め打ち）  地 #F5F1E7
+       題    左0 幅313（中の字は10px内側）
+       写真  左0 幅313 ← **写真だけが札の端まで届いている**
+       料金  左0 幅313（中の字は10px内側）
+       料金の最終行は y318 で終わり、下に **42pxの空きの塗り** が残る
+
+   一度この塗りをやめて白地にしたが、**素っ気なくなりすぎた**。
+   塗りは残す。直すのは「写真だけが端まで届いている」ことのほうで、
+   札の四辺に20pxの余白を入れて、題・写真・料金を同じ左端に揃える。
+   仕切りは既にある題の下の金1px（#AE967A）がそのまま使える。
+   新しい色も線も画像も1つも足していない。決め打ちの高さ360pxはやめる
+   （料金の下に42pxの空きの塗りが残っていたため）。
+
+   詳細度：生成CSSの #B000000010 ul.thumbnailList li は (1,2,2)。
+   #SF-contents を足して (2,2,2) で上回る。
+   ══════════════════════════════════════════════════════════════ */
+#SF-contents #B000000010 ul.thumbnailList li {
+	height: auto;
+	box-sizing: border-box;
+	padding: 20px;
+}
+#SF-contents #B000000010 ul.thumbnailList li .newslistHeadlineStyle {
+	padding-bottom: 12px;
+	margin-bottom: 14px;
+}
+#SF-contents #B000000010 ul.thumbnailList li .thumbnail {
+	text-align: left;
+}
+#SF-contents #B000000010 ul.thumbnailList li .c_box {
+	padding: 14px 0 0;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   札の上限は「札」に戻す
+   ──────────────────────────────────────────────────────────────
+   写真だけに上限を与えたら、札は段いっぱいに広がるのに写真は320pxで
+   止まり、430〜640pxの画面で写真が左に貼り付いて右が最大290px空いた（実測）。
+
+   全10ブロックの直前の見出しを測ったところ、**札の一覧はすべて
+   中央揃えの見出しの下にあった**（.kome_line も headlineStyle も center）。
+   なので札ごと上限を付けて中央に置いてよい。見出しと喧嘩しない。
+
+     画面640px  札380（中央）… 中身340px。写真も340pxで余りゼロ
+     画面390px  札360        … 中身320px
+
+   ★ 例外は記事型の札（#B000000045 / #B000000163）。
+     こちらは**左揃えの見出し**（h2.headlineStyle「お客様が満足できる…」）の
+     下にあるので、札は段いっぱいのまま・写真だけ上限340pxで左に置く。
+     ここを中央に寄せると、見出しが x=15、札が x=130 とずれる。
+   ══════════════════════════════════════════════════════════════ */
+@media screen and (max-width: 640px) {
+	#SF-contents :is(#B000000033,#B000000054,#B000000071,#B000000077,#B000000124,#B000000148,#B000000158,#B000000397,#B000000010,#B000000260) ul.thumbnailList li {
+		max-width: 380px;
+		margin-left: auto;
+		margin-right: auto;
+	}
+	#B000000024 ul.lr-tiles a.lr-tile,
+	.lr-tiles a.lr-tile {
+		max-width: 380px;
+		margin-left: auto;
+		margin-right: auto;
+	}
+	/* 記事型の札は本文が左揃えなので、写真も左に置く（中央だと揃わない）。
+	   札そのものは flex で、既定の justify-content: center が効いている。
+	   これを外さないと、写真の枠ごと中央に置かれて左端が揃わない
+	   （実測：画面600pxで 本文 左15 に対し 写真 左100）。 */
+	#SF-contents :is(#B000000045,#B000000163) ul.thumbnailList li {
+		-webkit-box-pack: start;
+		-ms-flex-pack: start;
+		justify-content: flex-start;
+	}
+	#SF-contents :is(#B000000045,#B000000163) ul.thumbnailList li .thumbnail {
+		text-align: left;
+	}
+	#SF-contents :is(#B000000045,#B000000163) ul.thumbnailList li .thumbnail img {
+		margin-left: 0;
+		margin-right: auto;
+	}
+}
+
+/* ══════════════════════════════════════════════════════════════
+   コース札 ― 押せることと、料金の組み方
+   ──────────────────────────────────────────────────────────────
+   ■ ① 押せなくなっていた
+
+   この札の唯一のリンクは右下に絶対配置された50pxの塗り三角だった。
+   その画像を「押せることは2pxの金枠が既に語っている」として
+   display:none にしたが、**a の中身がそれだけだったので、
+   リンクが 0×19px になって押せなくなっていた**（実測・6枚とも）。
+   行き先は trial ページの #A〜#F。
+
+   三角は戻さない（この意匠に塗りの三角は無い）。
+   代わりに **札そのものを行き先にする**。50pxの角より押しやすく、
+   .lr-tiles で既にやっている作りと同じ。
+   読み上げ用の名前は HTML 側に aria-label で入れた
+   （中身が画像1枚なので、名前が無いと読み上げで無名のリンクになる）。
+
+   ■ ② 料金が2行とも流し込みだった
+
+     通常90分　￥00,000
+     初回トライアル　90分　￥0,000
+
+   語の長さが違うので金額の位置が揃わず、ぶら下がって見えていた。
+   品名を左、金額を右に置いて、2行の金額を同じ縦線に揃える。
+   お品書きの組み方で、この店の意匠と喧嘩しない。
+
+   ■ ③ 触れたときの返し
+   地色を1段深くするだけ（#F5F1E7 → #EFEAE6、押し込みで #E5DED6）。
+   どちらもこの店が既に持っている色で、新しい色は足していない。
+   時間と曲線も既存の変数をそのまま使う。
+   ══════════════════════════════════════════════════════════════ */
+#SF-contents #B000000010 ul.thumbnailList li {
+	position: relative;
+	-webkit-transition: background-color var(--lr-t) var(--lr-e);
+	transition: background-color var(--lr-t) var(--lr-e);
+}
+/* .c_box が位置の基準になっていると、伸ばした先が料金の箱で止まる */
+#SF-contents #B000000010 ul.thumbnailList li .c_box {
+	position: static;
+}
+#SF-contents #B000000010 ul.thumbnailList li .c_box > a {
+	position: absolute;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	z-index: 1;
+}
+#SF-contents #B000000010 ul.thumbnailList li:hover,
+#SF-contents #B000000010 ul.thumbnailList li:focus-within {
+	background-color: #EFEAE6;
+}
+#SF-contents #B000000010 ul.thumbnailList li:active {
+	background-color: #E5DED6;
+	-webkit-transition: none;
+	transition: none;
+}
+/* 焦点は札の外周に出す（中の 0px のリンクに出ても見えない） */
+#SF-contents #B000000010 ul.thumbnailList li:focus-within {
+	outline: 2px solid #A4896A;
+	outline-offset: 2px;
+}
+
+/* 料金 ― 品名を左、金額を右 */
+#SF-contents .lr-price {
+	display: -webkit-box;
+	display: -ms-flexbox;
+	display: flex;
+	-webkit-box-pack: justify;
+	-ms-flex-pack: justify;
+	justify-content: space-between;
+	-webkit-box-align: baseline;
+	-ms-flex-align: baseline;
+	align-items: baseline;
+	column-gap: 15px;
+}
+#SF-contents .lr-price-l {
+	-ms-flex: 0 1 auto;
+	flex: 0 1 auto;
+	min-width: 0;
+}
+#SF-contents .lr-price-v {
+	-ms-flex: 0 0 auto;
+	flex: 0 0 auto;
+	white-space: nowrap;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   携帯の扉は窓いっぱいに
+   ──────────────────────────────────────────────────────────────
+   実測（画面390px）：ヘッダー152px、扉は 左15・幅360・高さ250。
+   最初の画面のうち扉が占めるのは **36%** で、左右にも15pxの隙があり、
+   「着いた」感じが出ていなかった。トップを開いて最初に目に入るのは
+   この1枚なので、ここは窓を使い切らせる。
+
+     ・器を版面から出して 100vw に（body の overflow-x:clip が横送りを止める）
+     ・高さは 68svh（上限560px）。ヘッダー152 ＋ 扉476 ＝ 628 で、
+       画面700pxなら次の節が70pxだけ覗く＝下に続くことが分かる
+     ・svh を使うのは、携帯のURLバーが出入りしても高さが動かないため。
+       対応していない環境には vh がそのまま残る（先に書いてある方が使われる）
+     ・object-fit:cover は既に入っている。切っても要が残ることは
+       原寸で確認済み（上の①のコメント）
+
+   ★ クライアントの実物写真は**縦に切られる**ことになる。
+     1600×700 の横長を 390×476 に収めるので、左右の端は落ちる。
+     顔・看板・入口は中央寄りに写っているものを選んでもらうこと。
+   ══════════════════════════════════════════════════════════════ */
+@media screen and (max-width: 640px) {
+	#B000000204 {
+		width: 100vw;
+		max-width: 100vw;
+		margin-left: calc(50% - 50vw);
+		margin-right: calc(50% - 50vw);
+	}
+	#B000000204 .slides img {
+		width: 100%;
+		min-height: 0;
+		height: 68vh;
+		height: 68svh;
+		max-height: 560px;
+	}
 }
