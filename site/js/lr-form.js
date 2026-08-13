@@ -117,7 +117,34 @@
 		form.insertBefore(box, form.firstChild);
 	}
 
+	/* 同意を通さないと送信できないようにする。
+	   ------------------------------------------------------------------
+	   ■ ここで止める理由
+	   HTML の required は使えない。このフォームの送信は
+	   javascript:TW_confirm(...) で横取りされていて、
+	   ブラウザの検証が走らないまま確認画面へ進む。
+
+	   ■ 壊れない作り
+	   ・印か送信ボタンのどちらかが見つからなければ、何もせずに帰る
+	   ・JSが読まれなければボタンは押せるまま。送れなくなる方が害が大きい
+	   ・状態は checkbox の checked だけが持つ。二重に持たない
+	   ・ページを戻ってきたときのために、読み込み時にも今の状態を反映する
+	     （Firefox などは checked を復元するので、押せない見た目のまま
+	       印だけ入っている食い違いが起きる） */
+	function gate() {
+		var box = document.getElementById('lr-agree-check');
+		var btn = document.querySelector('.lr-submit');
+		if (!box || !btn) { return; }
+
+		function sync() { btn.disabled = !box.checked; }
+
+		box.addEventListener('change', sync);
+		sync();
+	}
+
+	function boot() { run(); gate(); }
+
 	if (document.readyState === 'loading') {
-		document.addEventListener('DOMContentLoaded', run);
-	} else { run(); }
+		document.addEventListener('DOMContentLoaded', boot);
+	} else { boot(); }
 }());

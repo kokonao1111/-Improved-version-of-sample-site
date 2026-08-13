@@ -672,6 +672,64 @@ img[width][height] {
 }
 
 
+/* ------------------------------------------------------------------
+   プライバシーポリシーと同意
+   ------------------------------------------------------------------
+   改修前、方針は **送信ボタンより下** に置かれていた。
+   読んで納得してから押すものが、押した後にしか目に入らない並びで、
+   同意を取る仕組みも無かった。方針を送信の直前へ移し、
+   「確認しました」を通さないと送信できないようにする。
+
+   ・印は入れ子の label に入れて inline-flex。印と文言が行またぎで割れない
+     （.lr-choice で同じことをしている）
+   ・止めるのは JS。JSが動かない環境ではボタンは押せるまま残す。
+     送れなくなる方が害が大きい（方針の掲示という目的は並び替えで既に達している）
+   ------------------------------------------------------------------ */
+.lr-agree {
+	margin: 30px auto 40px;
+	text-align: center;
+}
+.lr-agree-l {
+	display: -ms-inline-flexbox;
+	display: inline-flex;
+	-ms-flex-align: center;
+	align-items: center;
+	padding: 10px 0;
+	line-height: 20px;
+	color: #6E5C48;
+	font-size: 14px;
+	cursor: pointer;
+}
+.lr-agree-l input {
+	-ms-flex: 0 0 auto;
+	flex: 0 0 auto;
+	margin: 0 10px 0 0;
+}
+.lr-agree-l:hover { color: #614E3B; }
+/* 20字＋印で303px。320pxの画面では段が290pxしかないので折り返させる。
+   inline-flex の中の文字は、min-width を 0 にしないと縮まない。 */
+.lr-agree-l {
+	max-width: 100%;
+	box-sizing: border-box;
+	text-align: left;
+}
+.lr-agree-t { min-width: 0; }
+
+/* 押せない間は「押せる符号」を外す。この店では 2px の金枠＝押せる。
+   枠を1pxの薄い色に落とせば、押せないことが色ではなく符号で伝わる。 */
+#B000000311 input.lr-submit:disabled,
+.lr-submit:disabled {
+	border-width: 1px;
+	border-color: #D9CCBD;
+	color: #A79684;
+	cursor: not-allowed;
+}
+.lr-submit:disabled:hover {
+	background: transparent;
+	color: #A79684;
+}
+
+
 /* ==================================================================
    ここから下は、版面監査（余白・組版・階層・部品・構図／確定86件）の是正
    ================================================================== */
@@ -717,10 +775,65 @@ img[width][height] {
 }
 /* 列の間に余白がなく、360px幅で品名と時間の字が触っていた
    （実測 course_l 242px / course_c 30px / course_r 48px ＝ 320px、余白0）。
-   間を空ければ、狭いところでは品名が折り返して収まる。 */
-.course_l { padding-right: 20px; }
-.course_c { padding-right: 15px; white-space: nowrap; }
-.course_r { white-space: nowrap; text-align: right; }
+   間を空ければ、狭いところでは品名が折り返して収まる。
+
+   ■ word-break: auto-phrase を入れてからの手当て（3手かかった）
+     ① auto-phrase にすると、この列の「これ以上縮められない幅」が
+        1文字ぶんから**一番長い文節ぶん**に変わり、表が画面から21px出た。
+     ② 逃げ道（overflow-wrap: anywhere）を足すと表は収まったが、
+        今度は品名の列が「1文字でも成立する」ことになり、
+        nowrap で幅を主張する時間・価格の2列に押されて
+        自動割付が品名に2文字しか渡さず「●ミ／ネラ」まで割れた。
+     ③ 品名に width:100% を与えるのも駄目。自動割付では 100% が
+        表そのものを器より広げ、430pxで表が1px出て字が2px重なった。
+     正しいのは逆で、**時間と価格の側を縮める**。自動割付での width:1% は
+     「中身に必要なだけ」の意味になり、余りは指定の無い列に回る。
+     どれも実測で確かめた。 */
+.course_l { padding-right: 20px; overflow-wrap: anywhere; }
+.course_c { padding-right: 15px; white-space: nowrap; width: 1%; }
+.course_r { white-space: nowrap; text-align: right; width: 1%; }
+
+/* 折ってはいけない語をひとまとまりにする。
+   auto-phrase の文節判定にも取りこぼしがあり、
+   「お手伝／いいたします。」「お客様一人／ひとりに」「全身／脱毛」の3つは
+   どの幅でも語の途中で割れていた（実測）。
+   宣言ではなく語の側に印を付けるのは、この3つが**例外**だから。
+   幅320pxでも一番長い「お手伝いいたします。」で130px、段は290pxある。 */
+.lr-nb { white-space: nowrap; }
+
+/* 携帯では3列を保てない。価格の列に
+   「(二の腕 …円 / お腹・ウエスト …円 …」のような一続きの字が入っていて、
+   nowrap のまま幅を主張するので、品名の列が **59px** まで潰れて
+   「●ミ／ネラ」と2文字ずつに割れていた（320px・実測）。
+   列を横に並べるのをやめ、品名を上、時間と価格を右下に置く。
+   罫は各セルから行へ移す。セルのままだと1行に3本引かれる。
+
+   ★ 目印は div.course ではなくセルの側に置く。course_plan の35個の表の
+     うち div.course に入っているのは5個だけで、同じページの
+     「FACIAL CARE」の表は3列のまま残り、組み方が食い違っていた（実測）。
+     この先クライアントが182件の仮の料金を実物に差し替えるので、
+     どんな長さが来ても崩れない形にしておく。 */
+@media screen and (max-width: 640px) {
+	#SF-contents table:has(td.course_l),
+	#SF-contents table:has(td.course_l) > tbody,
+	#SF-contents tr:has(> td.course_l) { display: block; width: auto; }
+	#SF-contents tr:has(> td.course_l) {
+		padding: 8px 0;
+		border-bottom: 1px solid #E5DED6;
+		text-align: right;
+	}
+	#SF-contents tr:has(> td.course_l):last-child { border-bottom: 0; }
+	#SF-contents td.course_l,
+	#SF-contents td.course_c,
+	#SF-contents td.course_r {
+		border-bottom: 0;
+		width: auto;
+		padding-right: 0;
+	}
+	#SF-contents td.course_l { display: block; text-align: left; }
+	#SF-contents td.course_c,
+	#SF-contents td.course_r { display: inline-block; margin-left: 14px; }
+}
 tr:last-child .course_l,
 tr:last-child .course_c,
 tr:last-child .course_r {
@@ -1305,6 +1418,18 @@ a.lr-headtel {
 	font-family: 'Noto Sans JP', sans-serif;
 	font-size: 12px;
 	letter-spacing: .16em;
+}
+/* 「Campaign」の札は見出しと同じ行に置かれている。
+   段が狭いところでは札のぶんだけ題が右へ押し出され、
+   1行に217px要る「ミネラリアダイエット」に残りが30pxしか無くなって
+   「ミネラリアダイ／エット」と割れていた（320px・実測）。
+   札を上に出せば題は行頭から始まる。肩書きとして読めるので体裁も落ちない。 */
+@media screen and (max-width: 900px) {
+	#SF-contents h3.newslistHeadlineStyle > .box_c,
+	#SF-contents h4.newslistHeadlineStyle > .box_c {
+		display: block;
+		margin-bottom: 2px;
+	}
 }
 #SF-contents .box2 {
 	background: transparent;
@@ -1923,7 +2048,12 @@ body {
    代わりに段そのものを flex にする。各列は宣言された px を基準値として
    持ったまま、器が狭まったぶんだけ比率を保って縮む。1040px以上では
    基準値の合計がちょうど版面1000pxなので縮まず、480+20+500 も 320×3+20×2 も
-   今と1pxも変わらない。どの群にも同じ1つの規則で効く。 */
+   今と1pxも変わらない。どの群にも同じ1つの規則で効く。
+
+   ★ flex-wrap: wrap にして「床を割ったら折り返す」を試したが、駄目だった。
+     折り返す器では段が基準値より縮まなくなり、700〜1024pxの全ページで
+     幅1000pxの段が器からはみ出した（実測72組）。
+     縮むのは nowrap のまま。狭いところは下の @media で積む。 */
 #SF-row1, #SF-row2, #SF-row3, #SF-row4, #SF-row5, #SF-row6, #SF-row7 {
 	display: -ms-flexbox;
 	display: flex;
@@ -2057,8 +2187,13 @@ body {
 	#SF-navigation :is(#B000000002,#B000000034,#B000000055,#B000000119,#B000000136,#B000000144,#B000000154,#B000000164,#B000000182,#B000000261,#B000000270,#B000000278,#B000000286,#B000000294,#B000000302) ul li:nth-child(n+3)  { border-top: 1px solid #D9CCBD; }
 }
 
-/* ── 段を積む ─────────────────────────────────────────────────── */
-@media screen and (max-width: 640px) {
+/* ── 段を積む ───────────────────────────────────────────────────
+   640pxで切っていたが足りなかった。3段組の how_to_choose は
+   画面768pxで段が **229px** まで潰れ、写真100pxを引いた残り129pxに
+   「おすすめメニュー▼」を流し込んでいた（実測）。読める幅ではない。
+   段の基準値は320px。3段なら 320×3＋余白40＝1000px 要るので、
+   版面がそれを下回る画面（＝1040px未満）では横に並べる意味がない。 */
+@media screen and (max-width: 900px) {
 	#SF-row1, #SF-row2, #SF-row3, #SF-row4, #SF-row5, #SF-row6, #SF-row7 { -ms-flex-wrap: wrap; flex-wrap: wrap; }
 	#SF-row1 > .SF-col1, #SF-row1 > .SF-col2, #SF-row1 > .SF-col3,
 	#SF-row2 > .SF-col1, #SF-row2 > .SF-col2, #SF-row2 > .SF-col3,
@@ -3138,7 +3273,12 @@ table.trial td.t_l {
 }
 table.trial td.t_r {
 	vertical-align: top;
-	word-break: normal;
+	/* ★ ここに word-break: normal と書いていたせいで、
+	     #SF-contents の auto-phrase がこの列だけ届かず、
+	     「ハンドトリ／ートメント」「ヒ／ーティング」と割れていた（実測）。
+	   overflow-wrap は残す。文節が列より長いときの逃げ道で、
+	   word-break と喧嘩しない（折る場所が無いときだけ働く）。 */
+	word-break: auto-phrase;
 	overflow-wrap: anywhere;
 }
 /* 携帯では見出しの列を残すと本文が170pxしか残らない。上下に積む */
@@ -3860,6 +4000,21 @@ body {
 
    どちらも「効けば良くなる／効かなくても元のまま」なので !important も
    要素の作り替えも要らない。 */
+/* ★ word-break: auto-phrase が本命。
+   形態素解析で**語の切れ目**を選んで折るので、
+   「こだわっ／て」「寄り／添った」「カウンセリ／ング」のような
+   語中での分断が起きない。実測での違い（幅300px・20px）：
+
+     なし         「お客様が満足できる結果にこだわ」「って、施術・サポートしておりま」「す。」
+     auto-phrase  「お客様が満足できる結果に」「こだわって、施術・」「サポートしております。」
+
+   ■ 効かせるには要素の言語が日本語である必要がある。
+     lang の無い文書では**宣言しても何も起きない**（実測で確認）。
+     このサイトは <html lang="ja"> があるので継承で効く。
+
+   ■ text-wrap: balance とは併用できない。balance が勝って
+     語の切れ目の判断が打ち消される（実測）。
+     対応していないブラウザ（Safari 等）のためだけに @supports で残す。 */
 #SF-contents h1, #SF-contents h2, #SF-contents h3, #SF-contents h4,
 #SF-startPage h1, #SF-startPage h2, #SF-startPage h3, #SF-startPage h4,
 .headlineStyle,
@@ -3871,8 +4026,37 @@ body {
 .lr-apply a.lr-apply-b,
 a.button-rink,
 a.button-rink2 {
-	text-wrap: balance;
+	word-break: auto-phrase;
 	line-break: strict;
+}
+@supports not (word-break: auto-phrase) {
+	#SF-contents h1, #SF-contents h2, #SF-contents h3, #SF-contents h4,
+	#SF-startPage h1, #SF-startPage h2, #SF-startPage h3, #SF-startPage h4,
+	.headlineStyle,
+	.newslistHeadlineStyle,
+	.lr-nav3-t,
+	.lr-nav3-h,
+	.lr-book-h,
+	.kome_line,
+	.lr-apply a.lr-apply-b,
+	a.button-rink,
+	a.button-rink2 {
+		text-wrap: balance;
+	}
+}
+
+/* 本文も語の切れ目で折る。
+   ★ 要素を数え上げてはいけない。p・td・li・.gothic・.mincho と並べていたら、
+     how_to_choose の説明文がどれにも当たらず、768pxで
+     「…ニーズの高い“部」／「分痩せ”を…」「…しわ・たる」／「み”」と
+     語の途中で割れていた（実測）。日本語の既定の折り返しは
+     **どの2文字の間でも折れる**ので、宣言が届かない要素は必ずこうなる。
+   word-break は継承する。器に一度書けば中の全部に届く。
+   #SF-contents では足りない。ヘッダーの
+   「定休日 月曜日・第１第３日曜日」が外にあり、390pxで「…第３日／曜日」と
+   割れていた。body に書けば本文もヘッダーもフッターも一度で済む。 */
+body {
+	word-break: auto-phrase;
 }
 
 /* 本文は均さない（長い段落で balance は効かないうえ、
@@ -4044,4 +4228,61 @@ a.button-rink2 {
 		width: 150px;
 		height: auto;
 	}
+}
+
+/* ══════════════════════════════════════════════════════════════
+   番号つきの見出し（beginner の「1. 予約・受付」など）
+   ──────────────────────────────────────────────────────────────
+   ① 携帯で級数が36pxのままだった。
+      「アフターカウンセリング」を1行に置くと392px必要なのに、
+      番号（61px）を除いて使えるのは280pxしかなく、
+      語の切れ目が無いまま「…セリン／グ」と割れていた（実測）。
+      24pxなら261pxで収まる。番号も釣り合う大きさに落とす。
+
+   ② 見出しが display:inline のままだった。
+      インライン要素の border-bottom は**行ごとに**引かれるので、
+      2行になると罫が2本出る（利用者の画面で確認）。
+      block にすれば下に1本だけ引かれる。
+   ══════════════════════════════════════════════════════════════ */
+#SF-contents h3.newslistHeadlineStyle,
+#SF-contents h4.newslistHeadlineStyle,
+#SF-contents li.SF-clearfix:has(> .thumbnail) h4.newslistHeadlineStyle {
+	display: block;
+}
+/* 900px まで。段が折り返す範囲では段の幅が本文と変わらないので、
+   640pxで切ると 768px で「アフターカウン／セリング」と割れた（実測）。
+   36pxの「アフターカウンセリング」は1行に392px要るのに、
+   768pxのときの段は249pxしかない。 */
+@media screen and (max-width: 900px) {
+	/* 生成CSS（module_B000000053.css など）の
+	     #B000000053 ul.thumbnailList li .newslistHeadlineStyle { font-size:36px }
+	   が (1,2,2)。ul と li を足して (1,3,3) にしないと勝てない。 */
+	#SF-contents ul.thumbnailList li h4.newslistHeadlineStyle:has(.number),
+	#SF-contents ul.thumbnailList li h3.newslistHeadlineStyle:has(.number) { font-size: 24px; }
+	#SF-contents .number { font-size: 40px; }
+}
+
+/* ══════════════════════════════════════════════════════════════
+   幅320px級（iPhone SE ほか）の見出し
+   ──────────────────────────────────────────────────────────────
+   auto-phrase は「文節で折る」だけで、文節そのものは縮めない。
+   本文の段が290pxしかないと、24〜25pxでは文節がまるごと入らず、
+   はみ出した分が単独の行として取り残される（実測）。
+
+     25px 「お客様が満足できる」／「結果にこだわって、」／「施術・」／「サポートしております。」
+     24px 「初めてのご来店でも」／「安心して施術していただく」／「ため」
+
+   22pxに落とすと文節が段に収まり、素直に2〜3行で折れる。
+
+     22px 「お客様が満足できる結果に」／「こだわって、施術・」／「サポートしております。」
+     22px 「初めてのご来店でも安心して」／「施術していただくため」
+
+   ★ 一律に 22px と書くと、15px・18px・20px の見出しまで**大きく**なる。
+     320pxで23px以上あるのは全12ページでこの2種だけなので、その2種だけを指す。
+       h4.newslistHeadlineStyle … 24px（17か所。この形は全部24px）
+       #B000000044 h2.headlineStyle … 25px（1か所。module_B000000044.css:47）
+   ══════════════════════════════════════════════════════════════ */
+@media screen and (max-width: 359px) {
+	#SF-contents ul.thumbnailList li h4.newslistHeadlineStyle,
+	#SF-contents #B000000044 h2.headlineStyle { font-size: 22px; }
 }
