@@ -4645,3 +4645,50 @@ body {
 		max-height: 560px;
 	}
 }
+
+/* ══════════════════════════════════════════════════════════════
+   パソコンの扉も、最初の画面に収める
+   ──────────────────────────────────────────────────────────────
+   扉の高さは画像の比（1600×700）のままなので、画面が広いほど背が伸びる。
+   実測すると、よくある 1440×808 の窓では
+
+     ヘッダー＋ナビ 214 ＋ 扉630 ＝ 844 > 808
+
+   で **扉の下が切れて、1枚が最後まで見えない**。
+   1920×900 でも 214＋840＝1054 で切れる。
+   「写真の位置がちょい下」に見えていたのはこれで、位置ではなく丈の問題だった。
+
+   扉の上端は幅によらず2値しかない（実測）。
+     641〜1040px … 277
+     1041px以上  … 214
+   残りをそのまま扉に渡す。svh を使うのは携帯と同じ理由。
+
+   ・上限700px … 素材の実寸（1600×700）。**原寸より引き伸ばさない**
+   ・下限380px … 窓が低いときに帯にならない高さ
+   ・object-fit: cover は携帯側と同じ扱い。切っても要が残ることは
+     原寸で確認済み（前掲「扉の写真」のコメント）
+   ══════════════════════════════════════════════════════════════ */
+@media screen and (min-width: 641px) and (max-width: 1040px) {
+	#B000000204 .slides img {
+		height: calc(100vh - 277px);
+		height: calc(100svh - 277px);
+		min-height: 320px;
+		max-height: 700px;
+		-o-object-fit: cover;
+		object-fit: cover;
+		-o-object-position: center;
+		object-position: center;
+	}
+}
+@media screen and (min-width: 1041px) {
+	#B000000204 .slides img {
+		height: calc(100vh - 214px);
+		height: calc(100svh - 214px);
+		min-height: 380px;
+		max-height: 700px;
+		-o-object-fit: cover;
+		object-fit: cover;
+		-o-object-position: center;
+		object-position: center;
+	}
+}
