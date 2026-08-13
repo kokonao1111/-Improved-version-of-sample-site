@@ -4237,14 +4237,38 @@ body {
 }
 
 /* 4枚組の回遊札を1列にしたら、640pxの画面で 400pxの写真が610px（1.52倍）まで
-   伸びて滲んだ。原寸の1.3倍を上限にして、余れば中央に置く。 */
+   伸びて滲んだ。上限を与えて、余れば中央に置く。
+
+   ★ 520pxでは足りなかった。390pxの画面で写真が360px＝**画面の92%**のまま
+     残っていて、コース札（82%）だけを直したせいで、同じページの中で
+     写真の大きさが2種類になっていた（実測）。
+     コース札と同じ数に揃える ― 上限380px、内側の余白20px。
+       画面390px … 写真320px（画面の82%）
+       画面320px … 写真250px（同78%。ここだけ余白は10px） */
 @media screen and (max-width: 640px) {
 	#B000000024 ul.lr-tiles a.lr-tile,
 	.lr-tiles a.lr-tile {
-		max-width: 520px;
+		max-width: 380px;
+		box-sizing: border-box;
+		padding-left: 20px;
+		padding-right: 20px;
 		margin-left: auto;
 		margin-right: auto;
 	}
+}
+@media screen and (max-width: 359px) {
+	#B000000024 ul.lr-tiles a.lr-tile,
+	.lr-tiles a.lr-tile {
+		padding-left: 10px;
+		padding-right: 10px;
+	}
+}
+/* 札を細くしたら、今まで写真が全幅で覆い隠していた #B000000024 の地紋
+   （assets/contents_bg.png のダマスク）が、札の左右に20pxの帯として
+   現れた。柄の切れ端が縦に並ぶだけで意味を持たないので、
+   横に1列で積む幅では地紋を出さない。 */
+@media screen and (max-width: 640px) {
+	#B000000024 { background-image: none; }
 }
 
 /* LINEのQRは読み取ってもらうためのもの。90pxでは実用にならない
@@ -4376,7 +4400,7 @@ body {
 	margin-left: -50vw;
 	z-index: -1;
 	background: url("/assets/orn-light.jpg") center center / cover no-repeat;
-	opacity: .42;
+	opacity: .78;
 	-webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,0) 0%, #000 26%, #000 66%, rgba(0,0,0,0) 100%);
 	mask-image: linear-gradient(to bottom, rgba(0,0,0,0) 0%, #000 26%, #000 66%, rgba(0,0,0,0) 100%);
 	pointer-events: none;
@@ -4385,7 +4409,7 @@ body {
 	.lr-book::before {
 		top: -40px;
 		bottom: -90px;
-		opacity: .34;
+		opacity: .62;
 	}
 }
 
