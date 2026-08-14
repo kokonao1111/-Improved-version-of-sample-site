@@ -1001,6 +1001,55 @@ h4.newslistHeadlineStyle {
 #SF-contents h4.newslistHeadlineStyle * {
 	font-family: 'Noto Serif JP', "ヒラギノ明朝 ProN W3", "Hiragino Mincho ProN", "游明朝", YuMincho, serif;
 }
+/* ★ アイコンの書体まで置き換えて、字が出なくなった
+   ------------------------------------------------------------------
+   指摘：「横のマークが文字化けみたいになってる」
+
+   上の指定は見出しの **中の全部**（*）に明朝を掛ける。そこには
+     <i class="fas fa-angle-down">
+   も含まれる。Font Awesome の記号は専用の書体の中にしか無い文字なので、
+   書体を明朝に替えると **その文字が存在しない** ことになり、□ が出る。
+
+   `*` を使うときは、**字ではないものが混ざっていないか**を必ず見る。
+   ここでは記号（Font Awesome）が混ざっていた。
+
+   v5.7.2 の書体名に戻す。fas/far は Free、fab は Brands、太さも
+   合わせて指定しないと別の字形になる。
+   ------------------------------------------------------------------ */
+#SF-contents h2.headlineStyle .fa,
+#SF-contents h3.headlineStyle .fa,
+#SF-contents h4.headlineStyle .fa,
+#SF-contents h2.newslistHeadlineStyle .fa,
+#SF-contents h3.newslistHeadlineStyle .fa,
+#SF-contents h4.newslistHeadlineStyle .fa,
+#SF-contents h2.headlineStyle .fas,
+#SF-contents h3.headlineStyle .fas,
+#SF-contents h4.headlineStyle .fas,
+#SF-contents h2.newslistHeadlineStyle .fas,
+#SF-contents h3.newslistHeadlineStyle .fas,
+#SF-contents h4.newslistHeadlineStyle .fas {
+	font-family: "Font Awesome 5 Free";
+	font-weight: 900;
+}
+#SF-contents h2.headlineStyle .far,
+#SF-contents h3.headlineStyle .far,
+#SF-contents h4.headlineStyle .far,
+#SF-contents h2.newslistHeadlineStyle .far,
+#SF-contents h3.newslistHeadlineStyle .far,
+#SF-contents h4.newslistHeadlineStyle .far {
+	font-family: "Font Awesome 5 Free";
+	font-weight: 400;
+}
+#SF-contents h2.headlineStyle .fab,
+#SF-contents h3.headlineStyle .fab,
+#SF-contents h4.headlineStyle .fab,
+#SF-contents h2.newslistHeadlineStyle .fab,
+#SF-contents h3.newslistHeadlineStyle .fab,
+#SF-contents h4.newslistHeadlineStyle .fab {
+	font-family: "Font Awesome 5 Brands";
+	font-weight: 400;
+}
+
 /* 英字の小見出し（Staff / Trial course / BODY CARE …）はゴシックのまま。
    上より class が1つ多いので、順番に関係なく勝つ。 */
 #SF-contents h2.headlineStyle .gothic,
