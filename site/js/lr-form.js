@@ -139,6 +139,20 @@
 		function sync() { btn.disabled = !box.checked; }
 
 		box.addEventListener('change', sync);
+
+		/* ★ 「入力内容をすべて消去」で穴が開いていた
+		   隣にある <input type="reset"> を押すと、同意の印は外れるのに
+		   **change イベントは起きない**（reset は既定値へ戻すだけで、
+		   利用者が触った扱いにならない）。change しか見ていなかったので
+		   送信ボタンは有効なまま残り、画面は「未同意」なのに先へ進めた。
+		   同意を取る関門が、隣のボタン1つで無効になっていた。
+
+		   reset は「戻す前」に発火するので、戻り終えてから読み直す。 */
+		var form = box.form || document.querySelector('form');
+		if (form) {
+			form.addEventListener('reset', function () { setTimeout(sync, 0); });
+		}
+
 		sync();
 	}
 
