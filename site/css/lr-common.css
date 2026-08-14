@@ -3111,8 +3111,7 @@ a.button-rink2:focus {
    「アコーディオンの見出しを持つ区画の、次の区画」＝流れの中身。
    これなら今の6つも、あとで足りるものも、書き足さずに当たる。
    :has() が無い環境では灰緑の帯が残るだけで、壊れない。 */
-#SF-contents .SF-module-container:has(> h2.headlineStyle .csOpenClose)
-	+ .SF-module-container {
+#SF-contents .SF-module-container:has(> h2.headlineStyle .csOpenClose) + .SF-module-container {
 	background-color: transparent;
 }
 

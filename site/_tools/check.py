@@ -164,7 +164,8 @@ def css_comments(path):
         out.append('波括弧が %d 対 %d' % (bare.count('{'), bare.count('}')))
     for n, line in enumerate(bare.split('\n'), 1):
         st = line.strip()
-        if st and re.match(r'^[^{}@#.:\[\]a-zA-Z0-9_>*,\-]', st):
+        # + と ~ も結合子。行頭に来ることがある（複数行に跨がるセレクタ）
+        if st and re.match(r'^[^{}@#.:\[\]a-zA-Z0-9_>~+*,\-]', st):
             out.append('規則の外に文章 %d行目: %s' % (n, st[:40]))
     return out
 
