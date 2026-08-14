@@ -5198,53 +5198,66 @@ body {
    出るのは**そのセッションで最初の1ページだけ**。
    head のインライン1行が sessionStorage を見て html.lr-pre-on を付ける／
    付けない を決める。2ページ目からは幕そのものが display:none。
-   （「最初サイトに入った時だけでいい」という指示。1回しか見ないので
-     2.6秒かけてよい。毎ページ出すなら絶対にこの長さにはしない）
+   （1回しか見ないので 2.5秒かけてよい。毎ページ出すなら絶対にこの長さにしない）
 
-   ■ 動きの語彙を増やさない ― ここが一番の決まりごと
-   このサイトの運動は2つしかない。**線が引かれる（scaleX）／面が満ちる（opacity）**。
-   全5,200行のうち transform は scaleX と rotate(45deg) だけ、
-   translate は0件、filter も0件。例外ゼロで守られている。
-   だから幕でも、@keyframes は既にある lr-fill と lr-draw の2本しか呼ばない。
-   **幕のためだけの3本目（旧 lr-pre-draw：幅0→180px）は捨てた。**
+   ■ 動きの語彙は2つ ― 線が引かれる／面が満ちる
+   このサイトの運動は scaleX（線が引かれる）と opacity（面が満ちる）だけ。
+   全5,451行を数えて **translate 0件・filter 0件**（注釈を除いた本文で確認）。
+   transform は scaleX 8件と rotate(45deg) 4件だけ。例外ゼロで守られている。
+   幕でもこの2つしか使わない。**新しい動詞は持ち込まない。**
 
-     ・紋章がぼける→澄む（blur）は却下。ぼけは被写界深度＝奥行きで、
-       影も角丸も持たないこの版面の宣言に正面から当たる
-     ・文字がふわっと上がる（translateY）も却下。lr-reveal.js が
-       「現在のwebで最も配備された効果なので使わない」と名指ししている
-     ・字間が締まる（letter-spacing）も却下。3つ目の運動になる
-   「研ぎ澄ます」は動詞で言う ― 線が引かれる、面が満ちる。それだけで足りる。
+     却下したもの … blur（＝奥行き。影を持たない版面の宣言に当たる）
+                    translateY（lr-reveal.js が名指しで「使わない」と書いている）
+                    letter-spacing（3つ目の運動になる）
 
-   ■ 時間は 200（--lr-t）と 500（--lr-t-draw）の和だけでできている
+   ■ ただし「満ちる」だけでは足りなかった
+   最初の版は 紋章が満ちる → 上句が満ちる → 下句が満ちる → 罫が引かれる で、
+   **引かれる動きが最後の1本しかなかった**（＝ほぼ全部フェード）。
+   「何か動きが欲しい」という指摘はここ。語彙を増やさずに、
+   **既にある「引かれる」を2箇所に増やした。**
+
+     ① 句が**書かれる** … clip-path で左から右へ開く。筆が走る向きと同じ。
+        携帯（2行になる幅）だけは上から下へ開く。→ lr-pre-write-v の注釈。
+        字を1つずつ出す（SplitText 的なやつ）のとは別物で、
+        滑らかに1本の動きとして通る。
+        clip-path が効かない環境では opacity だけが残る＝前の版と同じ絵。
+     ② 罫が**続けて引かれる** … 書き終わりに重ねる（下の時間表の★）。
+
+   一度、去り際に「左右2枚の扉が開く」形も作ったが**やめた**。
+   クライアントの指示（「右と左に開かれる扉のような演出はいらない」）。
+   幕はただ薄くなって消える。opacity ＝ このサイトの「面が満ちる」の裏返し。
+
+   ■ 時間は 200（--lr-t）と 500（--lr-t-draw）の和だけ
 
        0ms  紋章が満ちる（500）
-     700ms  上句「輝きを研ぎ澄ます、」が満ちる（500） … 0+500+200
-    1400ms  下句「志摩の隠れ家」が満ちる（500）     … 700+500+200 ★読点
-    1900ms  金の1px罫が句の左右から外へ引かれる（500）
-    2400ms  版面が完成。200 静止
-    2600ms  幕が上がる（opacity 600）
-    3200ms  消え終わる
-
-   ★1400 が要点。上句と下句を 200ms ずらしただけの版で撮って確かめたら、
-     上句がまだ4割の濃さのうちに下句が動き出し、**読点の「間」が
-     見えなかった**（500のうち300が重なる＝ただの staggered fade）。
-     上句が満ち切ってから 200 空ける。読点を、字ではなく時間で打つ。
+     700ms  一句が左から右へ**一筆で**書かれる（500）
+    1000ms  金の1px罫が句の左右から外へ引かれる（500）
+            ★書き終わり（＝最後の字が置かれる1020ms）に**重ねる**。
+             1200ms にしていたら、字が止まってから罫が出るまで180ms
+             何も動かない時間ができた（実測）。重ねれば一度も止まらない。
+    1500ms  版面が完成
+            ── ここで**1000ms 待つ**（500+500）。動かさないで見せる時間 ──
+    2500ms  幕が薄くなって消える（600）
+    3100ms  消え終わる
 
    ■ 罫は「余りを分け合う」flex ― .kome_line / .lr-book-h と同じ建具
    固定幅にすると器が狭いとき文字に乗る。この形なら乗りようがない。
-   ただし**携帯では左右に置かない**。320px では片側30pxしか残らず、
-   2行の文字塊の縦中央に短い毛が2本刺さって「点」に見える（撮って確認）。
-   ≤640px では句の下に1本だけ引く。1px＝仕切る、は保たれる。
+   **携帯では左右に置かない。** 320px では片側30pxしか残らず、2行の文字塊の
+   縦中央に短い毛が2本刺さって「点」に見えた（撮って確認）。
+   ≤640px では **紋章と句のあいだ**に150pxを1本だけ引く（紋章の幅と同じ）。
+   句の下にぶら下げる形も試したが、線が何にも掛かっておらず余って見えた。
+   1px＝仕切る、はどちらでも保たれるが、仕切るものが在る側に置く。
 
    ■ 閉じ込めない作り（3段）
      1. 幕が出るのは html.lr-pre-on のときだけ。JSが死ねば**出ない**
      2. head のインラインが 4200ms で必ず lr-pre-done を付ける
-     3. js/lr-pre.js は読み込み完了で上げる（最短 2600ms は見せる）
-   幕が上がり始めた瞬間から pointer-events:none。
-   消えるまでの600msのあいだ、後ろの本文の操作を邪魔しない。
+     3. js/lr-pre.js は読み込み完了で上げる（最短 2500ms は見せる）
+   lr-pre-done が付いた瞬間から pointer-events:none。
+   消え切るまでの600msのあいだ、後ろの本文の操作を邪魔しない。
 
    ■ prefers-reduced-motion
-   最終状態を静止で見せる。JS側も最短を 1100ms に落とす（既存の数）。
+   書く動きも罫も止め、最終状態を静止で見せてただ消える。
+   JS側も最短を 1100ms に落とす（既存の数）。
    ══════════════════════════════════════════════════════════════ */
 .lr-pre { display: none; }
 html.lr-pre-on .lr-pre {
@@ -5280,6 +5293,28 @@ html.lr-pre-done .lr-pre {
 	pointer-events: none;
 }
 
+/* 中身の包み。紋章と句を縦に積んで中央に置くだけ。
+   ★ 覚え書き：扉の形だったときは、この包みに去り際の opacity を掛けていた。
+     紋章と句には lr-fill が animation-fill-mode: both で載っており、
+     **アニメーションが持っている値は transition より強い**ので、
+     同じ要素に opacity:0 を足しても効かなかった（実測で飛んだ）。
+     いまは幕ごと薄くなるので包みは触らないが、
+     子に animation が載っている要素を transition で消せない、は残る話。 */
+.lr-pre-in {
+	display: -webkit-box;
+	display: -ms-flexbox;
+	display: flex;
+	-webkit-box-orient: vertical;
+	-webkit-box-direction: normal;
+	-ms-flex-direction: column;
+	flex-direction: column;
+	-webkit-box-align: center;
+	-ms-flex-align: center;
+	align-items: center;
+	position: relative;
+	z-index: 1;
+	width: 100%;
+}
 /* 紋章 ― 満ちるだけ。位置も大きさも変えない */
 .lr-pre-mark {
 	width: 200px;
@@ -5318,8 +5353,8 @@ html.lr-pre-done .lr-pre {
 	flex: 1 1 auto;
 	height: 1px;
 	background-color: #A4896A;
-	-webkit-animation: lr-draw var(--lr-t-draw) var(--lr-e-draw) 1900ms both;
-	animation: lr-draw var(--lr-t-draw) var(--lr-e-draw) 1900ms both;
+	-webkit-animation: lr-draw var(--lr-t-draw) var(--lr-e-draw) 1000ms both;
+	animation: lr-draw var(--lr-t-draw) var(--lr-e-draw) 1000ms both;
 }
 .lr-pre-h:before {
 	-webkit-transform-origin: right center;
@@ -5329,27 +5364,42 @@ html.lr-pre-done .lr-pre {
 	-webkit-transform-origin: left center;
 	transform-origin: left center;
 }
+/* 一句まとめて、左から右へ**一筆で**書かれる。
+   ★ 最初は句ごとに2本の動きに分け、読点のところで200ms置いていた。
+     「一回止まるから止まらないようにして」と指摘を受けた。
+     間を詰めるだけでは直らない ― 2本に分けると、1本目の終わりで
+     --lr-e-draw が減速し、2本目の始まりで加速するので、
+     繋ぎ目に必ず「溜め」ができる（＝止まって見える）。
+     **器ごと1本**にすれば曲線も1本になり、筆が一度も止まらない。
+   長さは 500ms ― このサイトが線を1本引くときの長さ（--lr-t-draw）そのまま。
+   ★ 一度 1000ms にしたが、撮って測ると**書き終わってから罫が出るまで
+     400ms 止まって**いた。--lr-e-draw は収筆の減速が長いので、
+     1000ms だと末尾で 150ms あたり 2px しか進まない
+     （実測 149→93→45→2px／150ms）。器の右の余白30pxを開ける分も、
+     そこに字が無いので止まって見える。
+     500ms なら減速の尾が短く、書き終わりに罫がそのまま続く。 */
 .lr-pre-t {
 	-ms-flex: 0 1 auto;
 	flex: 0 1 auto;
 	padding: 0 30px;
 	text-align: center;
+	-webkit-clip-path: inset(0 100% 0 0);
+	clip-path: inset(0 100% 0 0);
+	-webkit-animation: lr-fill var(--lr-t-draw) var(--lr-e) 700ms both, lr-pre-write var(--lr-t-draw) var(--lr-e-draw) 700ms both;
+	animation: lr-fill var(--lr-t-draw) var(--lr-e) 700ms both, lr-pre-write var(--lr-t-draw) var(--lr-e-draw) 700ms both;
 }
-/* 語の途中では絶対に折れない。句ごとの器に入れてあるので、
-   折れる場所は読点のうしろ1箇所しか存在しない。 */
-.lr-pre-c1,
-.lr-pre-c2 {
-	-webkit-animation: lr-fill var(--lr-t-draw) var(--lr-e) both;
-	animation: lr-fill var(--lr-t-draw) var(--lr-e) both;
-}
-.lr-pre-c1 {
-	-webkit-animation-delay: 700ms;
-	animation-delay: 700ms;
-}
-.lr-pre-c2 {
-	-webkit-animation-delay: 1400ms;
-	animation-delay: 1400ms;
-}
+/* 幕のためだけの動きはこの2本。どちらも「引かれる」の字への当て方で、
+   1方向に1本、字を1つずつ出す仕掛けではない。軸だけが違う。
+     lr-pre-write   … 左→右。一句が1行に収まる幅（≥641px）で使う
+     lr-pre-write-v … 上→下。2行に割れる幅（≤640px）で使う
+   ★ 携帯で横に開くと、**2行が同時に半分ずつ出る**（撮って確認）。
+     滑らかではあるが、下の行が上の行より先に見え始めるので読む順が壊れる。
+     2行のときは上から下へ開けば、1行目 → 2行目の順に、動きは1本のまま。
+   clip-path が効かない環境ではどちらも opacity だけが残る（＝ただ満ちる）。 */
+@-webkit-keyframes lr-pre-write { to { -webkit-clip-path: inset(0 0 0 0); } }
+@keyframes lr-pre-write { to { clip-path: inset(0 0 0 0); } }
+@-webkit-keyframes lr-pre-write-v { to { -webkit-clip-path: inset(0 0 0 0); } }
+@keyframes lr-pre-write-v { to { clip-path: inset(0 0 0 0); } }
 
 /* 携帯 ― 句は2行。罫は左右をやめ、句の下に1本だけ中央から引く */
 @media screen and (max-width: 640px) {
@@ -5366,16 +5416,33 @@ html.lr-pre-done .lr-pre {
 		font-size: 18px;
 	}
 	.lr-pre-h:before { display: none; }
+	/* ★ 罫は句の**下**ではなく、紋章と句のあいだに置く。
+	   下にぶら下げると、何にも掛かっていない短い線が余って見えた
+	   （「スマホにしたら少しダサくなってる」という指摘。4案を並べて選んだ）。
+	   ここに置けば「1px＝仕切る」の役目が戻り、幅150pxが紋章の幅と揃う。
+	   引く時刻も 1000ms → 500ms へ。紋章が満ちたらすぐ引き、その下に句が来る ―
+	   **上から下へ、置かれる順と同じ順で動く**。
+	   句（700〜1200ms）と重なるので、ここでも一度も止まらない。 */
 	.lr-pre-h:after {
+		-webkit-box-ordinal-group: 0;
+		-ms-flex-order: -1;
+		order: -1;
 		-ms-flex: 0 0 auto;
 		flex: 0 0 auto;
 		width: 150px;
-		margin-top: 30px;
+		margin: 0 0 30px;
 		-webkit-transform-origin: center center;
 		transform-origin: center center;
+		-webkit-animation-delay: 500ms;
+		animation-delay: 500ms;
 	}
 	.lr-pre-t {
 		padding: 0 20px;
+		/* 2行なので上から下へ開く（→ lr-pre-write-v の注釈） */
+		-webkit-clip-path: inset(0 0 100% 0);
+		clip-path: inset(0 0 100% 0);
+		-webkit-animation: lr-fill var(--lr-t-draw) var(--lr-e) 700ms both, lr-pre-write-v var(--lr-t-draw) var(--lr-e-draw) 700ms both;
+		animation: lr-fill var(--lr-t-draw) var(--lr-e) 700ms both, lr-pre-write-v var(--lr-t-draw) var(--lr-e-draw) 700ms both;
 	}
 	.lr-pre-c1,
 	.lr-pre-c2 { display: block; }
@@ -5383,12 +5450,15 @@ html.lr-pre-done .lr-pre {
 
 @media (prefers-reduced-motion: reduce) {
 	.lr-pre-mark,
-	.lr-pre-c1,
-	.lr-pre-c2,
+	.lr-pre-t,
 	.lr-pre-h:before,
 	.lr-pre-h:after {
 		-webkit-animation: none;
 		animation: none;
+	}
+	.lr-pre-t {
+		-webkit-clip-path: none;
+		clip-path: none;
 	}
 	html.lr-pre-on .lr-pre {
 		-webkit-transition: none;
