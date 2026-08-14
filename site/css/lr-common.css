@@ -1336,10 +1336,122 @@ a.lr-headtel {
 .lr-anim [data-lr="rule"]:before { -webkit-transform-origin: right center; transform-origin: right center; }
 .lr-anim [data-lr="rule"]:after  { -webkit-transform-origin: left center;  transform-origin: left center; }
 
-/* 面は位置も大きさも変えない。満ちるだけ。 */
-.lr-anim [data-lr="fill"] {
+/* ══════════════════════════════════════════════════════════════
+   役割ごとの出現（画面に入ってから ― js/lr-reveal.js の IntersectionObserver）
+   ──────────────────────────────────────────────────────────────
+   伏せるのは html.lr-io が付いているときだけ。
+   その印は「印を付けた・観測を始めた」が両方成功したときにしか付かない。
+   出すのは data-lr-in が付いたとき。付けるのは観測の通知か、
+   3秒たっても通知が一度も来なかったときの逃げ道。
+
+   ★ 全部に同じ動きを配らない。動詞を役割で変える。
+       札   … 満ちる（opacity）    1枚の紙として。中身をばらばらに出さない
+       見出し… 書かれる（clip-path）字は読む向きに現れる。幕の一句と同じ動詞
+       装飾 … 満ちる（opacity）    いちばん遅い。::before だけなので本文に触らない
+       罫   … 引かれる（scaleX）    下の @supports の節。スクロール位置で進む
+     予約導線・扉写真・料金表・フォーム・開閉は**対象にしない**
+     （理由は js/lr-reveal.js の冒頭。改修前は予約導線に面が掛かっていた）
+
+   ■ CLS を出さない
+   使うのは opacity と clip-path と scaleX だけ。3つとも版面を動かさない。
+   高さも位置も1pxも変わらない（_tools/reveal.py が送りながら実測する）。
+   ══════════════════════════════════════════════════════════════ */
+
+/* 札 ― 1枚の紙が満ちる。位置も大きさも変えない */
+html.lr-io [data-lr="sheet"] { opacity: 0; }
+html.lr-io [data-lr="sheet"][data-lr-in] {
 	-webkit-animation: lr-fill var(--lr-t-draw) var(--lr-e) var(--lr-d, 0ms) both;
 	animation: lr-fill var(--lr-t-draw) var(--lr-e) var(--lr-d, 0ms) both;
+}
+
+/* 節の見出し ― 満ちる。場が開いたことを受けて題が在る。
+   ★ 字の掃き出しは当てられなかった。2通り試して2通り駄目だった。
+     左→右   … 器が持つ金の罫（border-top/bottom）まで字と同じ速さで
+               左から拭われる（実測98個。inset(0 50% 0 0) で上下の罫の
+               金の画素がちょうど500個・x=140..639 で切れた）。
+               「罫は見出しから外へ向かって引かれる」という掟に逆らう。
+     中央→外 … 器は版面幅1000pxなのに字は中央の約200pxだけなので、
+               30%開いた時点で字が全部読めてしまう（撮って確認）。
+               動いているのは罫だけで、字は動いていない。
+   掃き出しは**器が字に沿っている場所**でしか意味を持たない。
+   節の見出しはそうではないので、満ちるに留める。
+   順番は幾何が決める ― 節の見出しは札より上に在るので、先に画面へ入る。 */
+html.lr-io [data-lr="head"] { opacity: 0; }
+html.lr-io [data-lr="head"][data-lr-in] {
+	-webkit-animation: lr-fill var(--lr-t-draw) var(--lr-e) both;
+	animation: lr-fill var(--lr-t-draw) var(--lr-e) both;
+}
+
+/* 札の名前 ― 左から右へ書かれる。
+   札の題（h3/h4）は**左寄せ**で、器の幅が札の幅、下に金の罫を1本持つ。
+   左→右に開けば、字は読む向きに現れ、罫は「題の始まりから外へ」引かれる。
+   ＝掟どおり。向きは幾何が決めている。
+   紙が置かれた 200ms（--lr-t）後に書き始める。紙が先、名前が後。 */
+html.lr-io [data-lr="name"] {
+	-webkit-clip-path: inset(0 100% 0 0);
+	clip-path: inset(0 100% 0 0);
+}
+html.lr-io [data-lr="name"][data-lr-in] {
+	-webkit-animation: lr-write var(--lr-t-draw) var(--lr-e-draw) var(--lr-t) both;
+	animation: lr-write var(--lr-t-draw) var(--lr-e-draw) var(--lr-t) both;
+}
+
+/* 装飾 ― いちばん遅く、いちばん静かに。
+   ::before だけに掛ける。親に opacity を掛けると本文まで一緒に薄くなる。 */
+html.lr-io [data-lr="orn"]:before { opacity: 0; }
+html.lr-io [data-lr="orn"][data-lr-in]:before {
+	-webkit-animation: lr-fill var(--lr-t-draw) var(--lr-e) 200ms both;
+	animation: lr-fill var(--lr-t-draw) var(--lr-e) 200ms both;
+}
+
+/* ★ 走り終えたら animation を外して、元の描き方に戻す。
+   opacity のアニメーションが載っている間、その要素は自分の層に描かれる。
+   終わった後も載せたままだと **1pxの罫が薄くなる**
+   （実測：札の題の下罫が (174,150,122) → (192,173,149)）。
+   opacity:1 を明示しても層は作られない（1未満のときだけ作られる）ので、
+   ここで戻せば画素は打ち消したときと一致する。
+   印は js/lr-reveal.js が animationend で付ける。 */
+html.lr-io [data-lr][data-lr-done] {
+	-webkit-animation: none;
+	animation: none;
+	opacity: 1;
+	-webkit-clip-path: none;
+	clip-path: none;
+}
+html.lr-io [data-lr="orn"][data-lr-done]:before {
+	-webkit-animation: none;
+	animation: none;
+	opacity: 1;
+}
+
+/* 携帯ではさらに控えめに ― 動くのは札だけ。
+   小さい画面では見出しの掃き出しが画面幅いっぱいの動きになり、
+   「静か」ではなくなる。字は動かさず、ただ在る。
+   間（--lr-d）も作らない（JS が携帯では書かない）。 */
+@media screen and (max-width: 640px) {
+	html.lr-io [data-lr="name"] {
+		-webkit-clip-path: none;
+		clip-path: none;
+	}
+	html.lr-io [data-lr="name"][data-lr-in] {
+		-webkit-animation: none;
+		animation: none;
+	}
+}
+
+/* 印刷では伏せない。紙にはスクロールが無いので、
+   観測の通知が来ないまま白紙で刷られる。 */
+@media print {
+	html.lr-io [data-lr="sheet"],
+	html.lr-io [data-lr="head"],
+	html.lr-io [data-lr="name"],
+	html.lr-io [data-lr="orn"]:before {
+		-webkit-animation: none;
+		animation: none;
+		opacity: 1;
+		-webkit-clip-path: none;
+		clip-path: none;
+	}
 }
 
 /* ── 画面に入った時に「線が引かれる」 ──────────────────────────────
@@ -5217,7 +5329,7 @@ body {
    **既にある「引かれる」を2箇所に増やした。**
 
      ① 句が**書かれる** … clip-path で左から右へ開く。筆が走る向きと同じ。
-        携帯（2行になる幅）だけは上から下へ開く。→ lr-pre-write-v の注釈。
+        携帯（2行になる幅）だけは上から下へ開く。→ lr-write-v の注釈。
         字を1つずつ出す（SplitText 的なやつ）のとは別物で、
         滑らかに1本の動きとして通る。
         clip-path が効かない環境では opacity だけが残る＝前の版と同じ絵。
@@ -5385,21 +5497,21 @@ html.lr-pre-done .lr-pre {
 	text-align: center;
 	-webkit-clip-path: inset(0 100% 0 0);
 	clip-path: inset(0 100% 0 0);
-	-webkit-animation: lr-fill var(--lr-t-draw) var(--lr-e) 700ms both, lr-pre-write var(--lr-t-draw) var(--lr-e-draw) 700ms both;
-	animation: lr-fill var(--lr-t-draw) var(--lr-e) 700ms both, lr-pre-write var(--lr-t-draw) var(--lr-e-draw) 700ms both;
+	-webkit-animation: lr-fill var(--lr-t-draw) var(--lr-e) 700ms both, lr-write var(--lr-t-draw) var(--lr-e-draw) 700ms both;
+	animation: lr-fill var(--lr-t-draw) var(--lr-e) 700ms both, lr-write var(--lr-t-draw) var(--lr-e-draw) 700ms both;
 }
 /* 幕のためだけの動きはこの2本。どちらも「引かれる」の字への当て方で、
    1方向に1本、字を1つずつ出す仕掛けではない。軸だけが違う。
-     lr-pre-write   … 左→右。一句が1行に収まる幅（≥641px）で使う
-     lr-pre-write-v … 上→下。2行に割れる幅（≤640px）で使う
+     lr-write   … 左→右。一句が1行に収まる幅（≥641px）で使う
+     lr-write-v … 上→下。2行に割れる幅（≤640px）で使う
    ★ 携帯で横に開くと、**2行が同時に半分ずつ出る**（撮って確認）。
      滑らかではあるが、下の行が上の行より先に見え始めるので読む順が壊れる。
      2行のときは上から下へ開けば、1行目 → 2行目の順に、動きは1本のまま。
    clip-path が効かない環境ではどちらも opacity だけが残る（＝ただ満ちる）。 */
-@-webkit-keyframes lr-pre-write { to { -webkit-clip-path: inset(0 0 0 0); } }
-@keyframes lr-pre-write { to { clip-path: inset(0 0 0 0); } }
-@-webkit-keyframes lr-pre-write-v { to { -webkit-clip-path: inset(0 0 0 0); } }
-@keyframes lr-pre-write-v { to { clip-path: inset(0 0 0 0); } }
+@-webkit-keyframes lr-write { to { -webkit-clip-path: inset(0 0 0 0); } }
+@keyframes lr-write { to { clip-path: inset(0 0 0 0); } }
+@-webkit-keyframes lr-write-v { to { -webkit-clip-path: inset(0 0 0 0); } }
+@keyframes lr-write-v { to { clip-path: inset(0 0 0 0); } }
 
 /* 携帯 ― 句は2行。罫は左右をやめ、句の下に1本だけ中央から引く */
 @media screen and (max-width: 640px) {
@@ -5438,11 +5550,11 @@ html.lr-pre-done .lr-pre {
 	}
 	.lr-pre-t {
 		padding: 0 20px;
-		/* 2行なので上から下へ開く（→ lr-pre-write-v の注釈） */
+		/* 2行なので上から下へ開く（→ lr-write-v の注釈） */
 		-webkit-clip-path: inset(0 0 100% 0);
 		clip-path: inset(0 0 100% 0);
-		-webkit-animation: lr-fill var(--lr-t-draw) var(--lr-e) 700ms both, lr-pre-write-v var(--lr-t-draw) var(--lr-e-draw) 700ms both;
-		animation: lr-fill var(--lr-t-draw) var(--lr-e) 700ms both, lr-pre-write-v var(--lr-t-draw) var(--lr-e-draw) 700ms both;
+		-webkit-animation: lr-fill var(--lr-t-draw) var(--lr-e) 700ms both, lr-write-v var(--lr-t-draw) var(--lr-e-draw) 700ms both;
+		animation: lr-fill var(--lr-t-draw) var(--lr-e) 700ms both, lr-write-v var(--lr-t-draw) var(--lr-e-draw) 700ms both;
 	}
 	.lr-pre-c1,
 	.lr-pre-c2 { display: block; }
