@@ -3,6 +3,42 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
+<!-- ▼画面の幅を実機のままにする。**これを外すと携帯で全部が小さくなる**▼
+     cgiFolder/js/csLibrary.js:21-34（生成物・編集しない）が読み込み時と
+     リサイズ時に viewport を
+       width=device-width, initial-scale=screen.width/1024
+     へ書き換える。iPhone（screen.width=390）だと initial-scale=0.38 になり、
+     **版面が 1024x2217 に広がって38%に縮小表示**される。実測で確認。
+     その結果 @media (max-width: 640px) も (max-width: 900px) も一度も真にならず、
+     携帯用の指定が**全部効かない**（段を積む閾値・料金表・メニュー・写真の寸法）。
+     旧・携帯版（sp/）が現役だった頃の名残りで、いまのレスポンシブとは噛み合わない。
+     生成物は触らず、書き換えられた側を戻し続ける。 -->
+<script>
+(function () {
+	var WANT = "width=device-width, initial-scale=1";
+	function fix() {
+		var m = document.querySelector('meta[name="viewport"]');
+		if (!m) {
+			m = document.createElement("meta");
+			m.setAttribute("name", "viewport");
+			document.head.appendChild(m);
+		}
+		/* 同じ値なら書かない。書くと自分の監視がまた発火して往復する。 */
+		if (m.getAttribute("content") !== WANT) { m.setAttribute("content", WANT); }
+	}
+	fix();
+	try {
+		new MutationObserver(fix).observe(document.head, {
+			childList: true, subtree: true,
+			attributes: true, attributeFilter: ["content", "name"]
+		});
+	} catch (e) {}
+	/* 監視が使えない環境の保険。csLibrary はリサイズでも書き換える。 */
+	window.addEventListener("resize", function () { window.setTimeout(fix, 250); });
+	window.addEventListener("orientationchange", function () { window.setTimeout(fix, 250); });
+}());
+</script>
+<!-- ▲ここまで▲ -->
 <meta name="robots" content="noindex,follow" />
 <!-- ▼アクセス解析（GA4）。測定IDが入るまでは**何も読み込まない**▼
      _data/shop.json の {{GA4測定ID}} に G-XXXXXXXXXX を入れて
