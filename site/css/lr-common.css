@@ -957,6 +957,38 @@ h4.newslistHeadlineStyle {
 	border-bottom: 2px solid #A4896A;
 }
 
+/* ------------------------------------------------------------------
+   ナビが「詰まって硬い」理由は、項目数ではなく太字だった
+   ------------------------------------------------------------------
+   指摘：「項目が多く、文字が小さく、横一列に詰まって見える」
+   「重要な導線だけ残して余白を増やした方が格が出る」
+
+   実測すると、詰まりの正体は別にあった。
+     8項目 / 合計951px / ナビ幅1000px  ― 余りは 49px しかない
+     生成CSS: font-size 12px + **font-weight: bold** + padding 0
+
+   読み込んでいるのは Noto Serif JP の 400 と 700。12px の明朝を 700 で
+   組むと、縦画と横画の差が潰れて墨が溜まる。小さい明朝の太字は、
+   紙でもやってはいけない組み方で、これが「事務的」の正体。
+
+   項目は1つも減らさない。**どれを残すかは店が決めることで、
+   こちらが間引いてよいものではない。** 代わりに太さを落とす。
+   400 にすると字面が痩せて幅が空くので、空いた分をそのまま字間に回す。
+   合計幅はほぼ変わらないまま、字と字の間に息が入る。
+
+   行の高さも 30px → 38px。上下に4pxずつ。ここは余りがある。
+
+   生成側は #SF-navigation #B0000000xx ul li a（id 2つ）で書いてある。
+   こちらも :is() で id を2つに揃える。:is() の強さは中で一番強いものと
+   同じなので、これで並ぶ。並べば、後から読まれるこちらが勝つ。
+   ------------------------------------------------------------------ */
+#SF-navigation :is(#B000000002,#B000000034,#B000000055,#B000000119,#B000000136,#B000000144,#B000000154,#B000000164,#B000000182,#B000000261,#B000000270,#B000000278,#B000000286,#B000000294,#B000000302) ul li a {
+	font-weight: 400;
+	letter-spacing: .09em;
+	text-indent: .09em;   /* 字間の分だけ右にずれるのを戻す */
+	line-height: 38px;
+}
+
 
 /* ------------------------------------------------------------------
    SPのメニューパネル
@@ -1678,6 +1710,52 @@ html.lr-io [data-lr="orn"][data-lr-done]:before {
 }
 #page-top a:hover {
 	background-color: #A4896A;
+	color: #ffffff;
+}
+
+/* ------------------------------------------------------------------
+   ★ 上の指定は、一度も効いていなかった
+   ------------------------------------------------------------------
+   #page-top の見た目は各ページの **本文の途中** に置かれた <style> が
+   決めている。lr-common.css は <head>（259行目）で読まれるので、
+   本文中の <style> の方が後に来る。同じ強さなら後が勝つ。つまり
+   上の「1pxの金枠に戻す」は、書いた時点から茶のべた塗りに
+   打ち消されていた（実測 rgb(97,78,59) / 角丸5px / 100×76px）。
+
+   本文中の <style> を15ページ分消して回ってもよいが、生成物なので
+   作り直すと戻る。ここは強さで越える。`body` を足すと id 1 + 要素 2 に
+   なり、向こうの id 1 + 要素 1 より強い。順番に関係なく勝つ。
+   （携帯向けの調整は 2600行付近に既に body #page-top で書いてある。
+     あれはこの後に来るので、携帯の寸法はそのまま残る。）
+
+   高さは 76px → 30px。幅は固定値をやめて字に合わせる。
+   出続ける部品なので、この店では「読めるが目に留まらない」が正しい。
+   72px・88px と決め打ちしたら、字間を含めた実寸に足りず、折り返したり
+   枠からはみ出したりした。**箱に字を合わせず、字に箱を合わせる。**
+   #page-top は position:fixed なので、幅を auto にすれば中身に縮む。
+   ------------------------------------------------------------------ */
+body #page-top {
+	bottom: 24px;
+	right: 24px;
+	font-size: 100%;
+}
+body #page-top a {
+	width: auto;
+	white-space: nowrap;
+	padding: 8px 13px;
+	background: rgba(255, 255, 255, .92);
+	border: 1px solid #A4896A;
+	border-radius: 0;
+	color: #614E3B;
+	font-family: 'Noto Sans JP', sans-serif;
+	font-size: 9px;
+	font-weight: normal;
+	letter-spacing: .14em;
+	line-height: 12px;
+	text-indent: .14em;   /* 字間の分だけ右にずれるのを戻す */
+}
+body #page-top a:hover {
+	background: #A4896A;
 	color: #ffffff;
 }
 
@@ -5716,19 +5794,55 @@ html.lr-pre-done .lr-pre {
    左右・下と同じ並びになる。金は素材から採った #D9C79E。
    版面は1pxも動かない（position:absolute の重ねものなので）。
 
-   :has() が無い環境では線が出ないだけで、いまと同じ見え方に戻る。
+   ■ そして、素材ごと文字に戻した
+   欠けた線を重ねて凌いでいたが、素材の画素を最後まで読むと、もっと
+   悪いものが出てきた。
+
+     y36 に **純黒 rgb(0,0,0) が 145画素**（x43〜187）
+     地色 rgb(230,230,219) ― この店の生成り rgb(245,241,231) より濁る
+
+   このサイトの配色に黒は一度も出てこない。金茶（#A4896A・#D9C79E）と
+   焦茶（#6E5C48・#614E3B）と生成り（#F5F1E7）だけで組んである。
+   黒い下線は、型にした店の素材がそのまま残っていただけ。
+
+   head_bg.png（他店の電話番号が焼き込まれていた画像）を文字に戻したのと
+   同じ処置をする。画像をやめれば、黒も濁りも消え、拡大しても粗れず、
+   読み上げにも届く。
+
+     <img width="200" height="38" src="…top_reserve_btn.png" alt="ご予約はこちら">
+       ↓
+     <span class="lr-rsv">ご予約はこちら</span>
+
+   ■ 版面は1pxも動かさない
+   外寸を 200×38 に固定する。枠1px×2 ＋ 上下padding 8px×2 ＋ 行20px＝38。
+   素材が持っていた「金・透・金」の二重線は inset の影で作り直す。
+   素材では**上だけ欠けていた**その線が、四辺そろって出るようになる。
    ══════════════════════════════════════════════════════════════ */
-#SF-header p.header-discription-type2 > a:has(> img[src*="top_reserve_btn"]) {
-	position: relative;
+#SF-header p.header-discription-type2 > a:has(> .lr-rsv) {
+	display: inline-block;
+	text-decoration: none;
 }
-#SF-header p.header-discription-type2 > a:has(> img[src*="top_reserve_btn"]):before {
-	content: "";
-	position: absolute;
-	top: 0;
-	left: 0;
-	right: 0;
-	height: 3px;
-	border-top: 1px solid #D9C79E;
-	border-bottom: 1px solid #D9C79E;
-	pointer-events: none;
+.lr-rsv {
+	display: block;
+	box-sizing: border-box;
+	width: 200px;
+	height: 38px;
+	padding: 8px 0;
+	background: #F5F1E7;
+	border: 1px solid #D9C79E;
+	box-shadow: inset 0 0 0 1px #F5F1E7, inset 0 0 0 2px #D9C79E;
+	color: #6E5C48;
+	font-family: 'Noto Serif JP', serif;
+	font-size: 13px;
+	line-height: 20px;
+	letter-spacing: .16em;
+	text-indent: .16em;   /* 字間の分だけ右にずれるのを戻す */
+	text-align: center;
+	transition: background-color var(--lr-t, 200ms) var(--lr-e, ease),
+	            color var(--lr-t, 200ms) var(--lr-e, ease);
+}
+#SF-header p.header-discription-type2 > a:hover > .lr-rsv {
+	background: #A4896A;
+	box-shadow: inset 0 0 0 1px #A4896A, inset 0 0 0 2px #D9C79E;
+	color: #ffffff;
 }
