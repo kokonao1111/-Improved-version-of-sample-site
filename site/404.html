@@ -4,6 +4,26 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <meta name="robots" content="noindex,follow" />
+<!-- ▼アクセス解析（GA4）。測定IDが入るまでは**何も読み込まない**▼
+     _data/shop.json の {{GA4測定ID}} に G-XXXXXXXXXX を入れて
+     python3 _tools/fill.py --apply を走らせると有効になる。
+     伏せ字のままだと下の判定で弾かれ、通信もCookieも発生しない。 -->
+<script>
+(function () {
+	var id = "{{GA4測定ID}}";
+	if (!/^G-[A-Z0-9]{6,}$/.test(id)) { return; }
+	var s = document.createElement("script");
+	s.async = true;
+	s.src = "https://www.googletagmanager.com/gtag/js?id=" + id;
+	document.head.appendChild(s);
+	window.dataLayer = window.dataLayer || [];
+	function gtag() { dataLayer.push(arguments); }
+	window.gtag = gtag;
+	gtag("js", new Date());
+	gtag("config", id);
+}());
+</script>
+<!-- ▲ここまで▲ -->
 <title>ページが見つかりません｜エステサロン【CALDINA】</title>
 <link rel="icon" href="./favicon.ico" sizes="any" />
 <link rel="icon" type="image/png" sizes="32x32" href="./favicon-32x32.png" />

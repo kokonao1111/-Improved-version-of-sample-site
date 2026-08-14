@@ -6,6 +6,26 @@
 <!-- ▼確認用サイトを検索に載せないための1行。**本番公開前に外す**▼ -->
 <meta name="robots" content="noindex,follow" />
 <!-- ▲ここまで▲ -->
+<!-- ▼アクセス解析（GA4）。測定IDが入るまでは**何も読み込まない**▼
+     _data/shop.json の {{GA4測定ID}} に G-XXXXXXXXXX を入れて
+     python3 _tools/fill.py --apply を走らせると有効になる。
+     伏せ字のままだと下の判定で弾かれ、通信もCookieも発生しない。 -->
+<script>
+(function () {
+	var id = "{{GA4測定ID}}";
+	if (!/^G-[A-Z0-9]{6,}$/.test(id)) { return; }
+	var s = document.createElement("script");
+	s.async = true;
+	s.src = "https://www.googletagmanager.com/gtag/js?id=" + id;
+	document.head.appendChild(s);
+	window.dataLayer = window.dataLayer || [];
+	function gtag() { dataLayer.push(arguments); }
+	window.gtag = gtag;
+	gtag("js", new Date());
+	gtag("config", id);
+}());
+</script>
+<!-- ▲ここまで▲ -->
 <meta http-equiv="Content-Style-Type" content="text/css" />
 <meta http-equiv="Content-Script-Type" content="text/javascript" />
 <meta name="generator" content="TieredWorks 1.4.1.3" />
@@ -338,7 +358,7 @@ pauseOnHover: true});
 <p><div class="c_box">
 <span class="lr-price"><span class="lr-price-l">通常　90分</span><span class="lr-price-v">￥00,000</span></span>
 <span class="lr-price trial"><span class="lr-price-l">初回トライアル　90分</span><span class="lr-price-v">￥0,000</span></span>
-<a aria-label="フェイシャルトリートメントコースの詳細" href="trial/index.html#A" target="_self"><img width="50" height="50" src="./assets/arrow.png"  style="position: absolute; bottom: 0; right: 0;"></a>
+<a aria-label="フェイシャルトリートメントコースの詳細" href="trial/index.html#A" target="_self"><img width="50" height="50" src="./assets/arrow.png"  style="position: absolute; bottom: 0; right: 0;" alt=""></a>
 </div></p>
 </li>
 <li class="SF-clearfix">
@@ -349,7 +369,7 @@ pauseOnHover: true});
 <p><div class="c_box">
 <span class="lr-price"><span class="lr-price-l">通常　90分</span><span class="lr-price-v">￥00,000</span></span>
 <span class="lr-price trial"><span class="lr-price-l">初回トライアル　90分</span><span class="lr-price-v">￥0,000</span></span>
-<a aria-label="シミ・美白ケアの詳細" href="trial/index.html#B" target="_self"><img width="50" height="50" src="./assets/arrow.png"  style="position: absolute; bottom: 0; right: 0;"></a>
+<a aria-label="シミ・美白ケアの詳細" href="trial/index.html#B" target="_self"><img width="50" height="50" src="./assets/arrow.png"  style="position: absolute; bottom: 0; right: 0;" alt=""></a>
 </div></p>
 </li>
 <li class="SF-clearfix">
@@ -360,7 +380,7 @@ pauseOnHover: true});
 <p><div class="c_box">
 <span class="lr-price"><span class="lr-price-l">通常　90分</span><span class="lr-price-v">￥00,000</span></span>
 <span class="lr-price trial"><span class="lr-price-l">初回トライアル　90分</span><span class="lr-price-v">￥00,000</span></span>
-<a aria-label="水素導入ケアコースの詳細" href="trial/index.html#C" target="_self"><img width="50" height="50" src="./assets/arrow.png"  style="position: absolute; bottom: 0; right: 0;"></a>
+<a aria-label="水素導入ケアコースの詳細" href="trial/index.html#C" target="_self"><img width="50" height="50" src="./assets/arrow.png"  style="position: absolute; bottom: 0; right: 0;" alt=""></a>
 </div></p>
 </li>
 <li class="SF-clearfix">
@@ -371,7 +391,7 @@ pauseOnHover: true});
 <p><div class="c_box">
 <span class="lr-price"><span class="lr-price-l">通常　90分</span><span class="lr-price-v">￥0,000</span></span>
 <span class="lr-price trial"><span class="lr-price-l">初回トライアル　90分</span><span class="lr-price-v">￥0,000</span></span>
-<a aria-label="ボディートリートメントコースの詳細" href="trial/index.html#D" target="_self"><img width="50" height="50" src="./assets/arrow.png"  style="position: absolute; bottom: 0; right: 0;"></a>
+<a aria-label="ボディートリートメントコースの詳細" href="trial/index.html#D" target="_self"><img width="50" height="50" src="./assets/arrow.png"  style="position: absolute; bottom: 0; right: 0;" alt=""></a>
 </div></p>
 </li>
 <li class="SF-clearfix">
@@ -382,7 +402,7 @@ pauseOnHover: true});
 <p><div class="c_box">
 <span class="lr-price"><span class="lr-price-l">通常　90分</span><span class="lr-price-v">￥00,000</span></span>
 <span class="lr-price trial"><span class="lr-price-l">初回トライアル　90分</span><span class="lr-price-v">￥0,000</span></span>
-<a aria-label="ポールシェリー　グラマラスボディの詳細" href="trial/index.html#E" target="_self"><img width="50" height="50" src="./assets/arrow.png"  style="position: absolute; bottom: 0; right: 0;"></a>
+<a aria-label="ポールシェリー　グラマラスボディの詳細" href="trial/index.html#E" target="_self"><img width="50" height="50" src="./assets/arrow.png"  style="position: absolute; bottom: 0; right: 0;" alt=""></a>
 </div></p>
 </li>
 <li class="SF-clearfix">
@@ -393,7 +413,7 @@ pauseOnHover: true});
 <p><div class="c_box">
 <span class="lr-price"><span class="lr-price-l">通常　90分</span><span class="lr-price-v">￥00,000</span></span>
 <span class="lr-price trial"><span class="lr-price-l">初回トライアル　90分</span><span class="lr-price-v">￥00,000</span></span>
-<a aria-label="ポールシェリー　モホロジーの詳細" href="trial/index.html#F" target="_self"><img width="50" height="50" src="./assets/arrow.png"  style="position: absolute; bottom: 0; right: 0;"></a>
+<a aria-label="ポールシェリー　モホロジーの詳細" href="trial/index.html#F" target="_self"><img width="50" height="50" src="./assets/arrow.png"  style="position: absolute; bottom: 0; right: 0;" alt=""></a>
 </div></p>
 </li>
 </ul>
