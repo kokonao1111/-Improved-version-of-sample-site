@@ -1001,6 +1001,104 @@ h4.newslistHeadlineStyle {
 #SF-contents h4.newslistHeadlineStyle * {
 	font-family: 'Noto Serif JP', "ヒラギノ明朝 ProN W3", "Hiragino Mincho ProN", "游明朝", YuMincho, serif;
 }
+/* ══════════════════════════════════════════════════════════════
+   記号を、外の書体に頼らず自分で描く
+   ──────────────────────────────────────────────────────────────
+   指摘：「横のマークが文字化けみたいになってる」が、こちらから何度
+   測っても再現しなかった。本番の画素でも正しく出ていたし、
+   Font Awesome 側も調べたが問題は無かった。
+
+     all.css の integrity  一致（sha384-fnmOCq… で照合）
+     fa-solid-900.woff2    200 / 74,348 bytes
+     fa-brands-400.woff2   200 / 72,112 bytes
+
+   つまり**こちらの環境では正常で、そちらでだけ出ない**。原因を
+   突き止められない以上、原因が起きても壊れない形にする。
+
+   ■ 何を使っていたか
+     fa-angle-double-right  60個   ≫
+     fa-angle-down          15個   ⌄
+     fa-caret-right          4個   ▸
+     Instagram / Facebook    4個   ロゴ
+
+   79個は線を2本引けば描ける形で、**外から書体を取ってくる必要が無い**。
+   このサイトは既に rotate(45deg) を持っている（携帯メニューの×印、
+   段の菱形）。同じ語彙で描けば、外の資源が1つ減り、
+   落ちても欠けても、もう化けない。
+
+   ■ HTMLは触らない
+   <i class="fas fa-angle-down"> はそのまま。content を空にして、
+   ::before の枠線で形を作る。Font Awesome が読めても読めなくても、
+   出る絵は同じになる。
+   ══════════════════════════════════════════════════════════════ */
+#SF-contents i.fas.fa-angle-down,
+#SF-contents i.fas.fa-angle-double-right,
+#SF-contents i.fas.fa-caret-right,
+.lr-nav3-t i.fas.fa-angle-double-right {
+	display: inline-block;
+	position: relative;
+	width: 1em;
+	height: 1em;
+	vertical-align: -.12em;
+	font-family: inherit;      /* 書体に依存しない */
+}
+/* 元の字は出さない。ここを空にしないと、書体が無いとき □ が残る */
+#SF-contents i.fas.fa-angle-down:before,
+#SF-contents i.fas.fa-angle-double-right:before,
+#SF-contents i.fas.fa-caret-right:before,
+.lr-nav3-t i.fas.fa-angle-double-right:before {
+	content: "";
+}
+
+/* ⌄ ― 45度に振った四角の、下と右だけを残す */
+#SF-contents i.fas.fa-angle-down:after {
+	content: "";
+	position: absolute;
+	left: 50%;
+	top: 42%;
+	width: .42em;
+	height: .42em;
+	margin: -.28em 0 0 -.21em;
+	border-right: 1px solid currentColor;
+	border-bottom: 1px solid currentColor;
+	-webkit-transform: rotate(45deg);
+	transform: rotate(45deg);
+}
+/* ≫ ― 同じ形を右向きにして2つ重ねる */
+#SF-contents i.fas.fa-angle-double-right:after,
+.lr-nav3-t i.fas.fa-angle-double-right:after,
+#SF-contents i.fas.fa-angle-double-right:before,
+.lr-nav3-t i.fas.fa-angle-double-right:before {
+	content: "";
+	position: absolute;
+	top: 50%;
+	width: .34em;
+	height: .34em;
+	margin-top: -.17em;
+	border-top: 1px solid currentColor;
+	border-right: 1px solid currentColor;
+	-webkit-transform: rotate(45deg);
+	transform: rotate(45deg);
+}
+#SF-contents i.fas.fa-angle-double-right:before,
+.lr-nav3-t i.fas.fa-angle-double-right:before {
+	left: .06em;
+}
+#SF-contents i.fas.fa-angle-double-right:after,
+.lr-nav3-t i.fas.fa-angle-double-right:after {
+	left: .34em;
+}
+/* ▸ ― 小さな塗りの三角 */
+#SF-contents i.fas.fa-caret-right:after {
+	content: "";
+	position: absolute;
+	left: 42%;
+	top: 50%;
+	margin-top: -.24em;
+	border: .24em solid transparent;
+	border-left: .3em solid currentColor;
+}
+
 /* ★ アイコンの書体まで置き換えて、字が出なくなった
    ------------------------------------------------------------------
    指摘：「横のマークが文字化けみたいになってる」
