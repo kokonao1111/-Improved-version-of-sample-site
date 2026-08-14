@@ -24,9 +24,11 @@
 
 ■ 判定
 
-  ・地色でない画素が横に85%以上並び、厚みが3px以下の行 ＝ 罫
-  ・その罫が、文字の幅の中を実際に通っていて（その区間で85%以上が非地色）、
+  ・「その場の地より暗い」画素が横に85%以上並び、厚みが3px以下の行 ＝ 罫
+  ・その罫が、文字の幅の中を実際に通っていて（その区間でも85%以上）、
     かつ「字面」の上端と下端の内側にあれば貫通
+
+    地色は白と決め打ちできない（→ line() の注釈）。
 
     3つとも要る。
       重なりの量では駄目：1pxの罫と行boxの重なりは1pxしかない
@@ -65,6 +67,12 @@ PAGES = [
 ]
 
 PROBE = '''<!doctype html><meta charset="utf-8"><body style="margin:0;background:#fff">
+<script>
+/* 幕（プリローダー）はセッションで最初の1ページだけ出る。
+   枠を作る**前に**「見た」印を置く。置かないと、撮った絵の全面が
+   幕（生成りの地＋紋章）になり、罫も文字も1つも写らない。 */
+try{sessionStorage.setItem('lr-pre','1');}catch(e){}
+</script>
 <iframe id="f" src="%(url)s" style="width:%(w)dpx;height:%(h)dpx;border:0;display:block"></iframe>
 <script>
 document.getElementById('f').onload=function(){setTimeout(function(){
@@ -102,13 +110,33 @@ document.getElementById('f').onload=function(){setTimeout(function(){
 </script></body>'''
 
 
-def bg(p):
-    return p[0] > 245 and p[1] > 245 and p[2] > 245
-
-
 def ink(p):
     """字面らしい濃さか"""
     return (p[0] + p[1] + p[2]) < 480
+
+
+def line(px, x, y, Hh):
+    """その画素が「地の上に引かれた線」か。
+
+    ■ 白決め打ちで2件誤検出した
+    もとは「R,G,B が全部245超なら地色」としていた。予約帯の地は
+    クリーム（実測 中央246・青は240台前半）なので、**帯の中の全画素が
+    「非地色」**になり、どの行も横に100%埋まっているように見えた。
+    そこへ文字の行box が重なると条件を全部通ってしまう
+    （campaign と reservation の 320px、「第１第３日曜日」。
+      切り出して目で確認済み。罫は無い）。
+
+    地色は場所によって違う（白・クリーム・写真）。決め打ちできない。
+    **上下5pxの明るい方をその場の地**とし、そこから3色の合計で75
+    （1色あたり25）以上暗ければ線とする。
+
+      ・本物の罫  … 上下は地なので、横一列ぜんぶが暗い → 見つかる
+      ・色地の帯  … 上下も同じ色なので差が出ない → 数えない
+      ・文字の行  … 暗いのは字のある列だけ。横85%は埋まらない → 数えない
+    """
+    a = px[x, max(0, y - 5)]
+    b = px[x, min(Hh - 1, y + 5)]
+    return sum(px[x, y]) < max(sum(a), sum(b)) - 75
 
 
 def darker(px, xs, y, y2, Hh):
@@ -154,12 +182,12 @@ def scan(shot, boxes):
     hits = []
     y = 0
     while y < Hh:
-        n = sum(1 for x in xs if not bg(px[x, y]))
+        n = sum(1 for x in xs if line(px, x, y, Hh))
         if n < len(xs) * 0.85:
             y += 1
             continue
         y2 = y
-        while y2 + 1 < Hh and sum(1 for x in xs if not bg(px[x, y2 + 1])) >= len(xs) * 0.85:
+        while y2 + 1 < Hh and sum(1 for x in xs if line(px, x, y2 + 1, Hh)) >= len(xs) * 0.85:
             y2 += 1
         if y2 - y + 1 <= 3 and darker(px, xs, y, y2, Hh):
             for L, T, R, B, tx in boxes:
@@ -173,7 +201,7 @@ def scan(shot, boxes):
                 # ① 罫が文字の幅の中を実際に通っているか。
                 #    .kome_line は罫が文字の左右にあるだけで高さは同じなので、
                 #    縦の範囲だけ見ると必ず誤検出になる。
-                if sum(1 for x in cols if not bg(px[x, y])) < len(cols) * 0.85:
+                if sum(1 for x in cols if line(px, x, y, Hh)) < len(cols) * 0.85:
                     continue
                 # ② 行boxではなく「字面」の中か。
                 #    beginner の「4.」は61pxの数字なので行boxが88pxあり、

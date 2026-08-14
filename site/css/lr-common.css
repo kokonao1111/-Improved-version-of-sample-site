@@ -3397,7 +3397,16 @@ table.trial td.t_r {
    段いっぱいの1本にすると、写真と本文の境目の下に浮いて
    どちらのものか分からなくなる（実測で写真の真下に来ていた）。
    flex では「2列目の2行目」を指定できないので、この幅だけ格子にする。
-   901px 以上＝器861px以上で、写真400 ＋ 間30 ＋ 本文360 が必ず入る。 */
+   901px 以上＝器861px以上で、写真400 ＋ 間30 ＋ 本文360 が必ず入る。
+
+   ★ 写真は2行に跨がせる（campaign だけ）。
+     跨がせないと1行目の高さは背の高い方＝写真の250pxで決まるので、
+     本文の短い札では申し込みの枠が本文から**119px**離れてぽつんと浮く（実測）。
+     跨がせれば1行目は本文の高さで決まり、枠は本文のすぐ下（30px）に付く。
+     beginner の札は申し込みの枠を持たないので跨がせない。
+     跨がせると中身のない2行目ができ、札の下に30px余るだけになる。
+     置き換えは grid-column だけで書く。grid-area の一括指定で書くと
+     行の終わりが auto に戻り、跨ぎが解ける。 */
 @media screen and (min-width: 901px) {
 	#SF-contents :is(#B000000045,#B000000163) ul.thumbnailList li {
 		display: -ms-grid;
@@ -3407,14 +3416,15 @@ table.trial td.t_r {
 		row-gap: 30px;
 		align-items: start;
 	}
-	#SF-contents :is(#B000000045,#B000000163) ul.thumbnailList li .thumbnail { grid-area: 1 / 1; }
-	#SF-contents :is(#B000000045,#B000000163) ul.thumbnailList li .newslistdata { grid-area: 1 / 2; }
-	#SF-contents #B000000163 ul.thumbnailList li .lr-apply { grid-area: 2 / 2; text-align: left; }
+	#SF-contents :is(#B000000045,#B000000163) ul.thumbnailList li .thumbnail { grid-column: 1; grid-row: 1; }
+	#SF-contents :is(#B000000045,#B000000163) ul.thumbnailList li .newslistdata { grid-column: 2; grid-row: 1; }
+	#SF-contents #B000000163 ul.thumbnailList li .thumbnail { grid-row: 1 / span 2; }
+	#SF-contents #B000000163 ul.thumbnailList li .lr-apply { grid-column: 2; grid-row: 2; text-align: left; }
 
 	/* articleEvenOdd() が写真に csArticleRight を付けた札は左右を入れ替える */
-	#SF-contents :is(#B000000045,#B000000163) ul.thumbnailList li:has(.thumbnail.csArticleRight) .thumbnail { grid-area: 1 / 2; }
-	#SF-contents :is(#B000000045,#B000000163) ul.thumbnailList li:has(.thumbnail.csArticleRight) .newslistdata { grid-area: 1 / 1; }
-	#SF-contents #B000000163 ul.thumbnailList li:has(.thumbnail.csArticleRight) .lr-apply { grid-area: 2 / 1; }
+	#SF-contents :is(#B000000045,#B000000163) ul.thumbnailList li:has(.thumbnail.csArticleRight) .thumbnail { grid-column: 2; }
+	#SF-contents :is(#B000000045,#B000000163) ul.thumbnailList li:has(.thumbnail.csArticleRight) .newslistdata { grid-column: 1; }
+	#SF-contents #B000000163 ul.thumbnailList li:has(.thumbnail.csArticleRight) .lr-apply { grid-column: 1; }
 }
 
 /* 上下に積む幅では、写真を必ず先に出す。
@@ -3840,9 +3850,14 @@ body {
    下の飾りが落ちていた。クライアント様の意向で全体を使う。
 
      元データ  1000×935（余白を詰めた実寸）
-     新 logo.png  700×654  縦横比 1.070  65KB
+     この時の logo.png  700×654  縦横比 1.070  65KB
        ※128色に減色。280px幅と160px幅で原寸と見分けが付かないことを
          目で確かめたうえで採用（そのままだと305KB、単色化は文字が痩せる）。
+
+   ★ その後、絵の外に散っていた**見えない画素**（不透明度17〜19の孤立点）を
+     落としたので、**いまの実ファイルは 700×573／縦横比 1.2216／78KB**。
+     下の実測はこの切り詰めより前のもので、当時の 1.070 で計算されている。
+     幕（.lr-pre-mark）の 200×164 と 150×123 は 1.2216 から出した数。
 
    縦横比が 2.79 → 1.070 に変わるので、置いてある全ての場所で寸法が変わる。
    実測（変更前）：1440pxで ロゴ280×262 に対しヘッダーの器が145px しかなく、
@@ -4916,6 +4931,15 @@ body {
 		-ms-flex-item-align: stretch;
 		align-self: stretch;
 	}
+	#SF-contents :is(#B000000045,#B000000163) ul.thumbnailList li > .newslistdata,
+	#SF-contents :is(#B000000045,#B000000163) ul.thumbnailList li > .lr-apply {
+		/* ★ 写真の器と同じ罠。本文の器は横並び用に flex: 1 1 360px を持っていて、
+		   縦並びでは 360px が「高さ」になる。中身は283pxしかないので
+		   **77pxの空白**が器の中に残り、申し込みボタンとの間が開いていた（実測）。 */
+		-ms-flex: 0 0 auto;
+		flex: 0 0 auto;
+		height: auto;
+	}
 	#SF-contents :is(#B000000045,#B000000163) ul.thumbnailList li > .newslistdata {
 		-ms-flex-order: 3;
 		order: 3;
@@ -4923,8 +4947,15 @@ body {
 		align-self: stretch;
 		text-align: left;
 	}
+	/* 文字だけ左右に16px逃がす。
+	   本文が枠の罫にぴったり付いていた（実測：枠の内側も文字の左端も x17）。
+	   写真には掛けない。携帯の写真は一度「小さい」と指摘を受けて
+	   いまの寸法に決めたので、そこは動かさない。 */
+	#SF-contents :is(#B000000045,#B000000163) ul.thumbnailList li > .newslistHeadlineStyle,
 	#SF-contents :is(#B000000045,#B000000163) ul.thumbnailList li > .newslistdata {
-		text-align: left;
+		box-sizing: border-box;
+		padding-left: 16px;
+		padding-right: 16px;
 	}
 	#SF-contents :is(#B000000179) ul.thumbnailList li .thumbnail img {
 		display: block;
@@ -5164,28 +5195,64 @@ body {
 /* ══════════════════════════════════════════════════════════════
    表示前の幕（プリローダー）
    ──────────────────────────────────────────────────────────────
-   回るアイコンは使わない。この店の道具だけで組む。
-     地   … #F5F1E7（札で使っている生成り）
-     紋章 … assets/logo.png を150pxで一度だけ
-     罫   … 金1px。中央から左右へ引かれる。既にある「線は引かれる」の曲線
-            （--lr-t-draw / --lr-e-draw）をそのまま使う。新しい演出を足さない
+   出るのは**そのセッションで最初の1ページだけ**。
+   head のインライン1行が sessionStorage を見て html.lr-pre-on を付ける／
+   付けない を決める。2ページ目からは幕そのものが display:none。
+   （「最初サイトに入った時だけでいい」という指示。1回しか見ないので
+     2.6秒かけてよい。毎ページ出すなら絶対にこの長さにはしない）
 
-   ■ 閉じ込めない作り
-     ・幕が出るのは html.lr-js のときだけ。JSが無い環境では出ない
-     ・head のインライン1行が 3200ms で必ず lr-pre-done を付ける
-     ・js/lr-pre.js は読み込み完了で早めに上げるだけ（最短1100msは見せる。
-       罫は120ms待って500msで引き終わるので、それより短いと線が途中で消える）
-     ・上がった幕は visibility:hidden で操作の邪魔にならない
+   ■ 動きの語彙を増やさない ― ここが一番の決まりごと
+   このサイトの運動は2つしかない。**線が引かれる（scaleX）／面が満ちる（opacity）**。
+   全5,200行のうち transform は scaleX と rotate(45deg) だけ、
+   translate は0件、filter も0件。例外ゼロで守られている。
+   だから幕でも、@keyframes は既にある lr-fill と lr-draw の2本しか呼ばない。
+   **幕のためだけの3本目（旧 lr-pre-draw：幅0→180px）は捨てた。**
+
+     ・紋章がぼける→澄む（blur）は却下。ぼけは被写界深度＝奥行きで、
+       影も角丸も持たないこの版面の宣言に正面から当たる
+     ・文字がふわっと上がる（translateY）も却下。lr-reveal.js が
+       「現在のwebで最も配備された効果なので使わない」と名指ししている
+     ・字間が締まる（letter-spacing）も却下。3つ目の運動になる
+   「研ぎ澄ます」は動詞で言う ― 線が引かれる、面が満ちる。それだけで足りる。
+
+   ■ 時間は 200（--lr-t）と 500（--lr-t-draw）の和だけでできている
+
+       0ms  紋章が満ちる（500）
+     700ms  上句「輝きを研ぎ澄ます、」が満ちる（500） … 0+500+200
+    1400ms  下句「志摩の隠れ家」が満ちる（500）     … 700+500+200 ★読点
+    1900ms  金の1px罫が句の左右から外へ引かれる（500）
+    2400ms  版面が完成。200 静止
+    2600ms  幕が上がる（opacity 600）
+    3200ms  消え終わる
+
+   ★1400 が要点。上句と下句を 200ms ずらしただけの版で撮って確かめたら、
+     上句がまだ4割の濃さのうちに下句が動き出し、**読点の「間」が
+     見えなかった**（500のうち300が重なる＝ただの staggered fade）。
+     上句が満ち切ってから 200 空ける。読点を、字ではなく時間で打つ。
+
+   ■ 罫は「余りを分け合う」flex ― .kome_line / .lr-book-h と同じ建具
+   固定幅にすると器が狭いとき文字に乗る。この形なら乗りようがない。
+   ただし**携帯では左右に置かない**。320px では片側30pxしか残らず、
+   2行の文字塊の縦中央に短い毛が2本刺さって「点」に見える（撮って確認）。
+   ≤640px では句の下に1本だけ引く。1px＝仕切る、は保たれる。
+
+   ■ 閉じ込めない作り（3段）
+     1. 幕が出るのは html.lr-pre-on のときだけ。JSが死ねば**出ない**
+     2. head のインラインが 4200ms で必ず lr-pre-done を付ける
+     3. js/lr-pre.js は読み込み完了で上げる（最短 2600ms は見せる）
+   幕が上がり始めた瞬間から pointer-events:none。
+   消えるまでの600msのあいだ、後ろの本文の操作を邪魔しない。
 
    ■ prefers-reduced-motion
-     罫を引く動きは止める。幕は出して、すぐ消えるだけにする。
+   最終状態を静止で見せる。JS側も最短を 1100ms に落とす（既存の数）。
    ══════════════════════════════════════════════════════════════ */
 .lr-pre { display: none; }
-html.lr-js .lr-pre {
+html.lr-pre-on .lr-pre {
 	display: -webkit-box;
 	display: -ms-flexbox;
 	display: flex;
 	-webkit-box-orient: vertical;
+	-webkit-box-direction: normal;
 	-ms-flex-direction: column;
 	flex-direction: column;
 	-webkit-box-pack: center;
@@ -5209,33 +5276,121 @@ html.lr-js .lr-pre {
 html.lr-pre-done .lr-pre {
 	opacity: 0;
 	visibility: hidden;
+	/* 消え終わるのを待たずに、後ろを触れるようにする */
+	pointer-events: none;
 }
+
+/* 紋章 ― 満ちるだけ。位置も大きさも変えない */
 .lr-pre-mark {
-	width: 150px;
-	height: 123px;
+	width: 200px;
+	height: 164px;
 	background-image: url("/assets/logo.png");
 	background-repeat: no-repeat;
 	background-position: center center;
 	background-size: contain;
+	-webkit-animation: lr-fill var(--lr-t-draw) var(--lr-e) both;
+	animation: lr-fill var(--lr-t-draw) var(--lr-e) both;
 }
-/* 罫は中央から左右へ。幅だけを動かすので、版面は1pxも動かない */
-.lr-pre-rule {
-	width: 0;
+
+/* 句と、それを挟む罫 */
+.lr-pre-h {
+	display: -webkit-box;
+	display: -ms-flexbox;
+	display: flex;
+	-webkit-box-align: center;
+	-ms-flex-align: center;
+	align-items: center;
+	-webkit-box-pack: center;
+	-ms-flex-pack: center;
+	justify-content: center;
+	width: min(560px, 82%);
+	margin: 40px 0 0;
+	font-family: 'Noto Serif JP', serif;
+	font-size: 20px;
+	line-height: 1.7;
+	color: #614E3B;
+}
+.lr-pre-h:before,
+.lr-pre-h:after {
+	content: '';
+	display: block;
+	-ms-flex: 1 1 auto;
+	flex: 1 1 auto;
 	height: 1px;
-	margin-top: 24px;
 	background-color: #A4896A;
-	-webkit-animation: lr-pre-draw var(--lr-t-draw) var(--lr-e-draw) 120ms forwards;
-	animation: lr-pre-draw var(--lr-t-draw) var(--lr-e-draw) 120ms forwards;
+	-webkit-animation: lr-draw var(--lr-t-draw) var(--lr-e-draw) 1900ms both;
+	animation: lr-draw var(--lr-t-draw) var(--lr-e-draw) 1900ms both;
 }
-@-webkit-keyframes lr-pre-draw { to { width: 180px; } }
-@keyframes lr-pre-draw { to { width: 180px; } }
+.lr-pre-h:before {
+	-webkit-transform-origin: right center;
+	transform-origin: right center;
+}
+.lr-pre-h:after {
+	-webkit-transform-origin: left center;
+	transform-origin: left center;
+}
+.lr-pre-t {
+	-ms-flex: 0 1 auto;
+	flex: 0 1 auto;
+	padding: 0 30px;
+	text-align: center;
+}
+/* 語の途中では絶対に折れない。句ごとの器に入れてあるので、
+   折れる場所は読点のうしろ1箇所しか存在しない。 */
+.lr-pre-c1,
+.lr-pre-c2 {
+	-webkit-animation: lr-fill var(--lr-t-draw) var(--lr-e) both;
+	animation: lr-fill var(--lr-t-draw) var(--lr-e) both;
+}
+.lr-pre-c1 {
+	-webkit-animation-delay: 700ms;
+	animation-delay: 700ms;
+}
+.lr-pre-c2 {
+	-webkit-animation-delay: 1400ms;
+	animation-delay: 1400ms;
+}
+
+/* 携帯 ― 句は2行。罫は左右をやめ、句の下に1本だけ中央から引く */
+@media screen and (max-width: 640px) {
+	.lr-pre-mark {
+		width: 150px;
+		height: 123px;
+	}
+	.lr-pre-h {
+		-webkit-box-orient: vertical;
+		-webkit-box-direction: normal;
+		-ms-flex-direction: column;
+		flex-direction: column;
+		margin-top: 30px;
+		font-size: 18px;
+	}
+	.lr-pre-h:before { display: none; }
+	.lr-pre-h:after {
+		-ms-flex: 0 0 auto;
+		flex: 0 0 auto;
+		width: 150px;
+		margin-top: 30px;
+		-webkit-transform-origin: center center;
+		transform-origin: center center;
+	}
+	.lr-pre-t {
+		padding: 0 20px;
+	}
+	.lr-pre-c1,
+	.lr-pre-c2 { display: block; }
+}
+
 @media (prefers-reduced-motion: reduce) {
-	.lr-pre-rule {
-		width: 180px;
+	.lr-pre-mark,
+	.lr-pre-c1,
+	.lr-pre-c2,
+	.lr-pre-h:before,
+	.lr-pre-h:after {
 		-webkit-animation: none;
 		animation: none;
 	}
-	html.lr-js .lr-pre {
+	html.lr-pre-on .lr-pre {
 		-webkit-transition: none;
 		transition: none;
 	}

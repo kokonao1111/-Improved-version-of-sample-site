@@ -200,6 +200,13 @@ function CHECK(d,W,out){
  if(oc)out.inner=Math.round(oc.getBoundingClientRect().width-40);
 }
 
+/* 幕（プリローダー）はセッションで最初の1ページだけ出る。
+   検査は同じ窓に何枚も枠を並べて測るので、**先に「見た」印を置いてから**
+   枠を作る。こうしないと、たまたま最初に読み込まれた1枚だけが
+   幕に覆われたまま測られ、その幅だけ結果が丸ごと狂う。
+   同じ origin なので sessionStorage は親と枠で共有される。 */
+try{sessionStorage.setItem('lr-pre','1');}catch(e){}
+
 WS.forEach(function(W){
  var f=document.createElement('iframe');
  f.style.cssText='width:'+W+'px;height:16000px;border:0;display:block';
