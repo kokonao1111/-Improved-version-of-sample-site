@@ -1,0 +1,42 @@
+<!doctype html><meta charset="utf-8"><body style="margin:0;background:#fff">
+<script>
+/* 幕（プリローダー）はセッションで最初の1ページだけ出る。
+   枠を作る**前に**「見た」印を置く。置かないと、撮った絵の全面が
+   幕（生成りの地＋紋章）になり、罫も文字も1つも写らない。 */
+try{sessionStorage.setItem('lr-pre','1');}catch(e){}
+</script>
+<iframe id="f" src="http://127.0.0.1:8899/beginner/index.html" style="width:320px;height:6000px;border:0;display:block"></iframe>
+<script>
+document.getElementById('f').onload=function(){setTimeout(function(){
+ var d=f.contentDocument,out=[];
+ function hidden(r,e){
+  for(var n=e;n&&n.nodeType===1;n=n.parentNode){
+   var c=getComputedStyle(n),nr=n.getBoundingClientRect();
+   if(parseFloat(c.opacity)<0.1||c.visibility==='hidden')return true;
+   /* position:fixed は本文の上に浮くもの（メニューのボタン、下端の帯）。
+      この検査は6000pxの窓に流し込んで撮っているので、浮きものは
+      「窓の下端から72px」＝ y5928 に描かれ、そこにたまたま来た本文の罫と
+      重なる。実機では指で送った位置に浮くだけで、罫が字を貫くわけではない。
+      ボタンは地色を持っているので、その地色自体も「横に長い非地色」として
+      罫に見えてしまう。浮きものの中の字は数えない。 */
+   if(c.position==='fixed')return true;
+   if(n===e&&(nr.width<=1||nr.height<=1))return true;
+   if(c.overflow!=='visible'&&c.overflow!==''){
+    var iw=Math.max(0,Math.min(nr.right,r.right)-Math.max(nr.left,r.left));
+    var ih=Math.max(0,Math.min(nr.bottom,r.bottom)-Math.max(nr.top,r.top));
+    if(iw*ih<r.width*r.height*0.5)return true;}}
+  return false;}
+ var w=d.createTreeWalker(d.body,NodeFilter.SHOW_TEXT,null),n;
+ while(n=w.nextNode()){
+  if(!n.nodeValue.replace(/\s/g,''))continue;
+  var pe=n.parentNode; if(!pe||getComputedStyle(pe).display==='none')continue;
+  var rg=d.createRange(); rg.selectNodeContents(n);
+  var tx=n.nodeValue.replace(/\s+/g,' ').trim().slice(0,22);
+  [].forEach.call(rg.getClientRects(),function(r){
+   if(r.width>1&&r.height>1&&!hidden(r,pe))
+    out.push([Math.round(r.left),Math.round(r.top),Math.round(r.right),Math.round(r.bottom),tx]);});}
+ var p=document.createElement('pre');p.id='R';
+ p.style.cssText='position:absolute;left:-99999px;top:0';
+ p.textContent=JSON.stringify(out);document.body.appendChild(p);
+},2600);};
+</script></body>

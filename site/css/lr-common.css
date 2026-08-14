@@ -799,7 +799,16 @@ img[width][height] {
    どの幅でも語の途中で割れていた（実測）。
    宣言ではなく語の側に印を付けるのは、この3つが**例外**だから。
    幅320pxでも一番長い「お手伝いいたします。」で130px、段は290pxある。 */
-.lr-nb { white-space: nowrap; }
+/* ★ この印は「ここでは折らない」だけを意味する。見た目には一切触らない。
+   font を継がせていなかったので、明朝の見出しの中でここだけゴシックになっていた
+   （実測：.mincho は Noto Serif JP、その中の .lr-nb は Noto Sans JP）。
+   「お仕事を頑張っている女性、／子育て中のママ、／…」が
+   一句おきに明朝とゴシックで交互になっていた。
+   font: inherit なら書体も級数も太さも行送りも親のまま＝印が透明になる。 */
+.lr-nb {
+	white-space: nowrap;
+	font: inherit;
+}
 
 /* 携帯では3列を保てない。価格の列に
    「(二の腕 …円 / お腹・ウエスト …円 …」のような一続きの字が入っていて、
@@ -3113,7 +3122,6 @@ a.button-rink2:focus {
    後勝ちで上の指定を無効にしていた。 */
 
 
-
 /* ── 読めない文字を3つ直す ────────────────────────────────────────
    配色を入れ替えたときにコントラストを全数で測って見つけたもの。
    いずれも旧配色でも足りていなかった（むしろ旧のほうが低かった）。
@@ -5135,12 +5143,19 @@ body {
      .lr-lead が「読む段700px」の中央寄せを持っているため、
      左20pxから始まる節の見出しと頭が揃わない。左端を揃える。
    ══════════════════════════════════════════════════════════════ */
+/* ★ 段落の間が空きすぎていた（指摘を受けた）。実測：
+     級数13px ／ 行送り **2**（＝26px）／ 段落の間 **20px**。
+     行の中は26px、段落をまたぐと 26+20＝46px。**1.77倍の段差**で、
+     文が3つ並ぶと1文ずつ孤立して見えていた。
+   行送り 2 はこの店の表（1.7）に無い数で、ここだけ例外になっていた。
+   両方とも表にある数へ戻す ― 行送り1.7（22px）／段落の間10px。
+   またぐと32pxで 1.45倍。段落の切れ目は分かるが、塊としては続いて読める。 */
 #SF-contents :is(#B000000045,#B000000047,#B000000049,#B000000051,#B000000053,#B000000163,#B000000179) ul.thumbnailList li .newslistdata,
 #SF-contents :is(#B000000045,#B000000047,#B000000049,#B000000051,#B000000053,#B000000163,#B000000179) ul.thumbnailList li .newslistdata p {
-	line-height: 2;
+	line-height: 1.7;
 }
 #SF-contents :is(#B000000045,#B000000047,#B000000049,#B000000051,#B000000053,#B000000163,#B000000179) ul.thumbnailList li .newslistdata p {
-	margin-bottom: 20px;
+	margin-bottom: 10px;
 }
 #SF-contents :is(#B000000045,#B000000047,#B000000049,#B000000051,#B000000053,#B000000163,#B000000179) ul.thumbnailList li .newslistdata p:last-child {
 	margin-bottom: 0;
@@ -5194,12 +5209,18 @@ body {
 }
 
 /* ══════════════════════════════════════════════════════════════
-   節の区切り ― 1ページ＝1種類、9ページとも別の絵
+   節の区切り ― 9ページとも同じ絵（orn-d.png）
    ──────────────────────────────────────────────────────────────
-   最初は15箇所に4種類を混ぜて配ったが、それだと
-   **1ページの中で絵が変わり、ページ間では同じ絵が出る**という逆になる。
-   飾りが毎回変わると「素材集から貼った」ように見える。
-   そのページの印を1つ決め、ページが変わると印も変わる形にした。
+   ここは3回変えている。
+     ① 15箇所に4種類を混ぜて配った → 1ページの中で絵が変わり、
+        ページ間では同じ絵が出るという逆になった
+     ② 1ページ＝1種類、9ページとも別の絵にした
+     ③ **9ページとも同じ絵に統一した（いま）**
+        「大きめの装飾だとバランスが悪い」という指摘。唐草（orn-a/b/c）は
+        描き込みが濃く、幅も高さも大きいので、節の区切りとしては
+        主張が強すぎた。いちばん細い左右対称のもの1つに絞った。
+   使っていない素材（orn-a/b/c・orn-1〜5.svg）は消していない。
+   参照が無いので配信もされない。戻したくなったときのために置いてある。
 
    ■ 素材
      orn-a〜d … PNG（唐草・流線）。40／16／59／7KB
@@ -5230,41 +5251,43 @@ body {
 }
 
 
-/* index ― 左右対称の唐草 */
-#SF-contents #B000000081 { margin-top: 110px; }
-#SF-contents #B000000081::before { width: min(380px, 80%); height: 89px; top: -69px; background-image: url("../assets/orn-a.png"); }
+/* ★ 9ページとも**同じ絵**にした。
+   最初は1ページ1種類（唐草4種＋細罫5種）で配っていたが、
+   「大きめの装飾だとバランスが悪い」という指摘を受けて、
+   いちばん細い左右対称のもの（orn-d.png）に統一した。
+   唐草（orn-a/b/c）は描き込みが濃く、幅も高さも大きいので、
+   節の区切りとしては主張が強すぎた。
 
-/* 初めての方へ ― 描き込みの濃い唐草 */
-#SF-contents #B000000079 { margin-top: 120px; }
-#SF-contents #B000000079::before { width: min(320px, 80%); height: 93px; top: -84px; background-image: url("../assets/orn-c.png"); }
+   ■ 絵が同じなので、寸法もここに1回書く
+   幅 min(420px, 80%) ／ 高さ 39px ／ 器の上端から -19px。
+   変えるのは **margin-top（上の要素との間合い）だけ**。
+   これはページごとに上に来るものが違うので、そのまま残す。 */
+#SF-contents #B000000081::before,
+#SF-contents #B000000079::before,
+#SF-contents #B000000072::before,
+#SF-contents #B000000125::before,
+#SF-contents #B000000142::before,
+#SF-contents #B000000149::before,
+#SF-contents #B000000159::before,
+#SF-contents #B000000169::before,
+#SF-contents #B000000188::before {
+	width: min(420px, 80%);
+	height: 39px;
+	top: -19px;
+	background-image: url("../assets/orn-d.png");
+}
 
-/* トライアル ― 長い流線＋葉 */
-#SF-contents #B000000072 { margin-top: 65px; }
-#SF-contents #B000000072::before { width: min(460px, 80%); height: 60px; top: -40px; background-image: url("../assets/orn-b.png"); }
+/* 上との間合いだけページごとに持つ */
+#SF-contents #B000000081 { margin-top: 110px; }   /* index */
+#SF-contents #B000000079 { margin-top: 120px; }   /* 初めての方へ */
+#SF-contents #B000000072 { margin-top: 65px; }    /* トライアル */
+#SF-contents #B000000125 { margin-top: 60px; }    /* コース・プラン */
+#SF-contents #B000000142 { margin-top: 65px; }    /* 選び方 */
+#SF-contents #B000000149 { margin-top: 65px; }    /* よくある質問 */
+#SF-contents #B000000159 { margin-top: 65px; }    /* キャンペーン */
+#SF-contents #B000000169 { margin-top: 65px; }    /* 店舗のご案内 */
+#SF-contents #B000000188 { margin-top: 45px; }    /* ご予約 */
 
-/* コース・プラン ― 細い線の区切り */
-#SF-contents #B000000125 { margin-top: 60px; }
-#SF-contents #B000000125::before { width: min(420px, 80%); height: 39px; top: -19px; background-image: url("../assets/orn-d.png"); }
-
-/* 選び方 ― 菱形と雫 */
-#SF-contents #B000000142 { margin-top: 65px; }
-#SF-contents #B000000142::before { width: min(560px, 80%); height: 45px; top: -25px; background-image: url("../assets/orn-1.svg"); }
-
-/* よくある質問 ― 羽根のような両端 */
-#SF-contents #B000000149 { margin-top: 65px; }
-#SF-contents #B000000149::before { width: min(560px, 80%); height: 54px; top: -34px; background-image: url("../assets/orn-2.svg"); }
-
-/* キャンペーン ― 一度だけうねる波 */
-#SF-contents #B000000159 { margin-top: 65px; }
-#SF-contents #B000000159::before { width: min(560px, 80%); height: 44px; top: -24px; background-image: url("../assets/orn-3.svg"); }
-
-/* 店舗のご案内 ― 中央に一輪 */
-#SF-contents #B000000169 { margin-top: 65px; }
-#SF-contents #B000000169::before { width: min(560px, 80%); height: 47px; top: -27px; background-image: url("../assets/orn-4.svg"); }
-
-/* ご予約 ― 左右に小さな渦 */
-#SF-contents #B000000188 { margin-top: 45px; }
-#SF-contents #B000000188::before { width: min(560px, 80%); height: 45px; top: -25px; background-image: url("../assets/orn-5.svg"); }
 
 /* ══════════════════════════════════════════════════════════════
    予約の帯を、角飾りで囲む（1440px以上だけ）
