@@ -2877,8 +2877,19 @@ body {
 		-o-object-position: center;
 		object-position: center;
 	}
+	/* ★ 下層は7ページではなく14ページあった
+	   ここに並べたのは beginner / trial / course_plan / how_to_choose /
+	   faq / campaign / shopinfo の7つだけで、**スタッフ6ページと
+	   予約ページの計7つが抜けていた**。抜けた側は素材そのままの
+	   1600×400 が幅なりに潰れ、幅390pxの画面で **360×90px** に
+	   なっていた（他の下層は260px）。下に続く余白125pxの方が
+	   大きく、扉ではなく細い帯に見える。
+	   ページを足したときに、この一覧を更新するのを忘れていた。 */
 	#B000000035 img, #B000000056 img, #B000000120 img, #B000000137 img,
-	#B000000145 img, #B000000155 img, #B000000165 img {
+	#B000000145 img, #B000000155 img, #B000000165 img,
+	#B000000183 img,                                     /* 予約 */
+	#B000000262 img, #B000000271 img, #B000000279 img,   /* スタッフ1・2・3 */
+	#B000000287 img, #B000000295 img, #B000000303 img {  /* スタッフ4・5・6 */
 		min-height: 260px;
 		-o-object-fit: cover;
 		object-fit: cover;
