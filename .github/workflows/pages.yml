@@ -1,0 +1,65 @@
+# =====================================================================
+# GitHub Pages へ公開する
+# ---------------------------------------------------------------------
+# 公開されるのは site/ の中身だけ。_tools/ と _data/ は出さない
+# （検査の道具と、原稿の一元管理。客に見せるものではない）。
+#
+# ■ なぜ Actions なのか
+# Pages の「Deploy from a branch」は公開元に **/ か /docs しか選べない**。
+# このサイトは site/ にあるので、そのままでは選べない。
+# ファイルを動かすと Vercel の Root Directory 設定と食い違うので、
+# 動かさずに Actions で site/ だけを取り出して渡す。
+#
+# ■ 公開URL
+#   https://<ユーザー名>.github.io/<リポジトリ名>/
+# ＝ **サブパス**配信になる。だからサイト側の参照は全部相対にしてある
+# （絶対パス175箇所を相対に直した。/favicon.ico など）。
+#
+# ■ 使い方
+#   GitHub の Settings → Pages → Source を「GitHub Actions」にする。
+#   あとは main に push するたびに公開される。
+# =====================================================================
+name: Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: 公開するものだけを取り出す
+        run: |
+          mkdir -p _site
+          rsync -a --exclude '_tools/' --exclude '_data/' site/ _site/
+          # Jekyll を通さない。通すと _ で始まる名前が落ちる
+          touch _site/.nojekyll
+          echo "── 公開するファイル数 ──"
+          find _site -type f | wc -l
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

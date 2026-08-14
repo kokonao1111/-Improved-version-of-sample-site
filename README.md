@@ -15,6 +15,24 @@
 
 ## ⚠️ 公開前に必ず読むこと
 
+### 0. 全15ページに検索避け（noindex）が入っています ― **本番公開前に外す**
+
+確認用に GitHub Pages で公開するため、15ページの `<head>` に1行入れてあります。
+
+```html
+<!-- ▼確認用サイトを検索に載せないための1行。**本番公開前に外す**▼ -->
+<meta name="robots" content="noindex,follow" />
+<!-- ▲ここまで▲ -->
+```
+
+**外し忘れると、本番のサイトが永久に検索に出ません。** 探し方:
+
+```sh
+grep -rn "確認用サイトを検索に載せない" site/
+```
+
+（404.html と退役した `sp/` にも noindex がありますが、そちらは意図どおりなので残します）
+
 ### 1. 予約フォームに受け口がありません
 
 ```html
@@ -67,6 +85,58 @@ python3 -m http.server 8899
 
 ---
 
+## GitHub Pages で公開する（確認用）
+
+`.github/workflows/pages.yml` が `site/` の中身だけを公開します。
+`_tools/`（検査の道具）と `_data/`（原稿の一元管理）は出しません。
+
+**GitHub の Settings → Pages → Source を「GitHub Actions」にしてください。**
+あとは `main` に push するたびに公開されます。
+
+### なぜ Actions なのか
+
+Pages の「Deploy from a branch」は公開元に **`/` か `/docs` しか選べません**。
+このサイトは `site/` にあるので、そのままでは選べません。
+ファイルを動かすと Vercel の Root Directory 設定（`site`）と食い違うので、
+**動かさずに** Actions で `site/` だけを取り出して渡しています。
+
+### ★ サブパス配信になるので、絶対パスは全部外れる
+
+公開URLは `https://<ユーザー名>.github.io/<リポジトリ名>/` です。
+**`/` がサイトの根ではありません。** `/favicon.ico` は
+`https://<ユーザー名>.github.io/favicon.ico` を指してしまい、404になります。
+
+**絶対パス175箇所を相対に直しました。**
+
+| 直したもの | 数 | 直し方 |
+| --- | --- | --- |
+| `<head>` の favicon / manifest / apple-touch-icon | 155 | ページの階層ぶんの `./` `../` `../../` |
+| `css/lr-common.css` の `url("/assets/…")` | 15 | `url("../assets/…")` |
+| 404.html の `/index.html` などのリンク | 4 | 同上 |
+| `site.webmanifest` の `/icon-192.png` | 2 | `icon-192.png`（manifest からの相対） |
+
+相対にしたので、**Vercel（`site/` が根）でも同じように動きます。**
+
+### 確かめ方
+
+公開URLと同じ形で配信して、参照が解決するかを実測します。
+
+```sh
+rsync -a --exclude '_tools/' --exclude '_data/' site/ /tmp/pagesroot/<リポジトリ名>/
+cd /tmp/pagesroot && python3 -m http.server 8898
+# → http://127.0.0.1:8898/<リポジトリ名>/index.html
+```
+
+219本の参照を照合して、解決しなかったのは **6本**。
+6本とも**元から欠けていたもの**で、今回の変更が原因ではありません
+（同じ6本はルート配信でも404になります）。
+
+| 参照 | 中身 |
+| --- | --- |
+| `assets/bg_top.jpg` ／ `assets/pagetoplink.png` | **ファイルが存在しない。** `cgiFolder/corestyle.css` が参照しているが、その部分は `lr-common.css` が上書きしているので画面には出ない |
+| `@[cbtnBGImg]@` ／ `@[System:AssetPath]@` | CMSが置換し忘れたトークン（生成CSSの中） |
+| `sp/` の `icon_light_*.png` 2本 | 退役した携帯版の中。PC版へ転送されるので誰も踏まない |
+
 ## 構成
 
 現役は **PC版15ページのみ**です。レスポンシブ1本で全ての幅に対応します。
@@ -110,6 +180,8 @@ site/
 ├── _tools/reveal.py      ★ CDPで実物を送り「読めるか」を測る（枠＋仮想時間では測れない）
 ├── cgiFolder/            生成JS・corestyle.css ― 編集しない（**除外もしない**。上記⚠️2）
 └── sp/                   退役済み。PC版へ転送するだけ（noindex）
+
+.github/workflows/pages.yml  ★ GitHub Pages へ site/ だけを公開する
 
 `_data/` `_tools/` は `.vercelignore` で配信から外しています。
 ```
