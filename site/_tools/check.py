@@ -40,6 +40,17 @@ FORBIDDEN = [
     # 「にしざき　しょうこ」「よしだ　さつき」を取り逃がしていた。
     # 下の名前（しょうこ・さつき）は入れない。「かさつき」に当たる。
     'にしざき', 'よしだ', 'みやもと', 'いけだ',
+    # ★ 異体字。shopinfo の代表者は「西﨑」（﨑 = U+FA11）で、
+    #   上の「西崎」（崎 = U+5D0E）には当たらなかった。**別の字**。
+    #   人名は異体字で書かれるものだと思って、両方載せる。
+    '西﨑', '髙', '𠮷',
+    # ★ 他店の電話は1本ではない。店舗 073-482-3765 のほかに
+    #   運営元 073-494-3227 があり、shopinfo の tel: に残っていた。
+    #   画面には松阪の番号を出しながら、押すと和歌山に掛かる状態だった。
+    '073-494-3227', '0734943227',
+    # 他店の運営元。こちらは「有限会社エターナル」なので、
+    #   「株式会社」が付いた形は必ず他店由来。
+    '株式会社　エターナル', '株式会社エターナル',
     '642-0002', '日方', 'グランドハイツ', 'wakayama',
     'x60074ea66a647f59', '8e55cb6ed0f9d602', '44Or44Kk44O844K644Os44O044Kn',
     'ana.exec', 'D000000500',
@@ -71,8 +82,15 @@ def targets(with_cgi=False):
 
 def b64_decoded_chunks(text):
     """value="…" に入っている base64 らしい塊を復号して返す。
-       文字列検索をすり抜ける埋め込みを捕まえるため。"""
-    for m in re.finditer(r'value="([A-Za-z0-9+/=]{24,})"', text):
+       文字列検索をすり抜ける埋め込みを捕まえるため。
+
+       ★ 下限を 24文字にしていたせいで、予約フォームの
+            <input type="hidden" name="site_name" value="TG91aXNlIFJldmVy">
+          を検査対象にすら入れていなかった。16文字。復号すると
+          「Louise Rever」で、送信先が決まればお客様への自動返信に
+          他店名が載るところだった。**短いほど危ないのに、短いものを
+          外していた。** 8文字（＝6文字ぶん）まで下げる。"""
+    for m in re.finditer(r'value="([A-Za-z0-9+/=]{8,})"', text):
         v = m.group(1)
         try:
             yield base64.b64decode(v + '=' * (-len(v) % 4)).decode('utf-8')
@@ -231,6 +249,34 @@ def main():
         print('   → 残っています。この状態で公開してはいけません。')
     else:
         print('   ✓ 0件')
+    print()
+
+    # ★ 「画面の番号」と「押すとかかる番号」の食い違い
+    #   shopinfo に href="tel:0734943227" で表示は 0598-22-2229 という
+    #   組が残っていた。文字列としての 0598-22-2229 は正しいので、
+    #   禁止語をいくら増やしても捕まらない。**対で見るしかない。**
+    tel_bad = []
+    for p in scan:
+        if not p.endswith(('.html', '.htm')):
+            continue
+        t = open(p, encoding='utf-8', errors='replace').read()
+        for m in re.finditer(r'href="tel:([^"]+)"[^>]*>([^<]{0,40})<', t):
+            raw, shown = m.group(1), m.group(2)
+            a = re.sub(r'[^0-9]', '', raw)
+            b = re.sub(r'[^0-9]', '', shown)
+            if not a or not b:          # 伏せ字はまだ数字が入っていない
+                continue
+            if a.startswith('81'):      # +81-… は先頭の 0 が落ちている
+                a = '0' + a[2:]
+            if a != b:
+                tel_bad.append((p, raw, shown))
+    print('■ 電話：押すとかかる先と、画面の表示が合っているか')
+    if tel_bad:
+        for p, raw, shown in tel_bad:
+            print('   ✗ %-34s 表示 %-16s → 実際は %s' % (p, shown, raw))
+        print('   → 別の相手に掛かります。公開してはいけません。')
+    else:
+        print('   ✓ 食い違い 0件')
     print()
 
     print('■ 未確定の項目（伏せ字）: %d種' % len(tokens))
