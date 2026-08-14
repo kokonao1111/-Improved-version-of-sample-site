@@ -4662,14 +4662,37 @@ body {
    640pxで切ると 768px で「アフターカウン／セリング」と割れた（実測）。
    36pxの「アフターカウンセリング」は1行に392px要るのに、
    768pxのときの段は249pxしかない。 */
-@media screen and (max-width: 900px) {
-	/* 生成CSS（module_B000000053.css など）の
-	     #B000000053 ul.thumbnailList li .newslistHeadlineStyle { font-size:36px }
-	   が (1,2,2)。ul と li を足して (1,3,3) にしないと勝てない。 */
-	#SF-contents ul.thumbnailList li h4.newslistHeadlineStyle:has(.number),
-	#SF-contents ul.thumbnailList li h3.newslistHeadlineStyle:has(.number) { font-size: 24px; }
-	#SF-contents .number { font-size: 40px; }
+/* ★ 幅で切るのをやめ、全幅で同じにした ― 階層が逆転していたため
+   ------------------------------------------------------------------
+   もとは 900px 以下でだけ 24px に縮めていた（36pxだと 768px で
+   「アフターカウン／セリング」と割れるため）。しかし広い画面では
+   36px のまま残り、このページの見出しはこうなっていた。
+
+     節見出し「ご予約からお帰りまでの流れ」   28px / 太400
+     段の見出し「1. 予約・受付」              **36px / 太700**   ← 逆転
+
+   段は節の中にある。中のものが外のものより大きく太いのは、
+   #Header-title（9px bold）と h2.headlineStyle（18px/700）で
+   二度直したのと同じ「階層の逆転」。三度目。
+
+   ■ 数字も一緒に下げる
+   .number は 1.7em。見出しを24pxにすると 40px で、本文の2.9倍になる。
+   「数字が主役になっている」という指摘はここ。1.25em にして、
+   数字が題に**付き添う**大きさにする。斜体と金（#A4896A）は残す。
+   このページだけの飾りで、他に代わりが無いため。
+
+   幅で分けないので、768px の割れも起きない（24pxなら1行に入る）。
+
+   生成CSS（module_B000000053.css など）の
+     #B000000053 ul.thumbnailList li .newslistHeadlineStyle { font-size:36px }
+   は (1,1,2)。ul と li と h4 を足して (1,2,3) にして越える。
+   ------------------------------------------------------------------ */
+#SF-contents ul.thumbnailList li h4.newslistHeadlineStyle:has(.number),
+#SF-contents ul.thumbnailList li h3.newslistHeadlineStyle:has(.number) {
+	font-size: 24px;
+	font-weight: 400;
 }
+#SF-contents .number { font-size: 1.25em; }
 
 /* ══════════════════════════════════════════════════════════════
    幅320px級（iPhone SE ほか）の見出し
