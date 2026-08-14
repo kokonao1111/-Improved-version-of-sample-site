@@ -36,19 +36,34 @@ FORBIDDEN = [
     '和歌山', '海南', '073-482-3765', '0734823765', 'pnb6242x',
     'LIANGE', '34.1566', '135.211', '135.212',
     '後垣内', '西崎', '吉田', '宮本', '池田',
+    # 漢字だけ並べていたせいで、staff_3.html に残っていた読み仮名
+    # 「にしざき　しょうこ」「よしだ　さつき」を取り逃がしていた。
+    # 下の名前（しょうこ・さつき）は入れない。「かさつき」に当たる。
+    'にしざき', 'よしだ', 'みやもと', 'いけだ',
     '642-0002', '日方', 'グランドハイツ', 'wakayama',
     'x60074ea66a647f59', '8e55cb6ed0f9d602', '44Or44Kk44O844K644Os44O044Kn',
     'ana.exec', 'D000000500',
 ]
 
-TEXT_EXT = ('.html', '.css', '.js', '.xml', '.txt', '.json', '.webmanifest')
+TEXT_EXT = ('.html', '.htm', '.css', '.js', '.xml', '.txt', '.json',
+            '.webmanifest', '.php')
 
 
-def targets():
+def targets(with_cgi=False):
+    """検査するテキストファイルを列挙する。
+
+       cgiFolder はテンプレート付属の部品置き場で、伏せ字や料金の
+       数え上げには関係しない。ただし他店データの検査からも外して
+       いたせいで、cgiFolder/core_rss_feed.html に他店のブログ全文
+       （電話番号・料金・ブログ画像のURL）が丸ごと残っているのを
+       長く見落としていた。他店データの検査だけは with_cgi=True で
+       cgiFolder も必ず通す。"""
     for p in glob.glob('**/*', recursive=True):
         if not os.path.isfile(p):
             continue
-        if p.startswith(('cgiFolder' + os.sep, '_tools' + os.sep, '_data' + os.sep)):
+        if p.startswith(('_tools' + os.sep, '_data' + os.sep)):
+            continue
+        if p.startswith('cgiFolder' + os.sep) and not with_cgi:
             continue
         if p.endswith(TEXT_EXT):
             yield p
@@ -136,13 +151,52 @@ def css_comments(path):
     return out
 
 
+# この店のために作った絵。写真ではないので数え上げから外す。
+OWN_ART = {
+    'logo.png', 'logo2.png', 'logo2_gold.png', 'ogp.jpg', 'map.jpg',
+    'orn-light.jpg', 'sns_line_qr.png', 'sns_insta_photo.jpg',
+}
+
+
+def photo_like(placeholders):
+    """テンプレート付属の写真が、まだ写真のまま残っているものを挙げる。
+
+       仮画像は平らな地に細い枠と文字だけなので、縮めても色数が増えず
+       ばらつきも小さい。写真はその逆。60×60 まで縮めてから見るので
+       JPEG の粗さや細かい模様には引っかからない。"""
+    try:
+        import warnings
+        warnings.filterwarnings('ignore')   # 透明パレットの助言は要らない
+        from PIL import Image, ImageStat
+    except ImportError:
+        return []
+    known = set(placeholders) | OWN_ART
+    out = []
+    for p in sorted(glob.glob('assets/*') + glob.glob('sp/**/*', recursive=True)):
+        n = os.path.basename(p)
+        if not os.path.isfile(p) or n in known:
+            continue
+        try:
+            im = Image.open(p).convert('RGB')
+        except Exception:
+            continue
+        if min(im.size) < 64:          # 飾りや目印は対象外
+            continue
+        sm = im.resize((60, 60), Image.LANCZOS)
+        if len(set(sm.getdata())) > 1500 and sum(ImageStat.Stat(sm).stddev) / 3 > 18:
+            out.append(p)
+    return out
+
+
 def main():
     hits = []          # 他店データ
     tokens = {}        # 伏せ字
     prices = 0         # 仮の料金
     files = list(targets())
+    scan = list(targets(with_cgi=True))   # 他店データだけは cgiFolder も見る
+    narrow = set(files)
 
-    for p in files:
+    for p in scan:
         try:
             t = open(p, encoding='utf-8', errors='replace').read()
         except Exception:
@@ -161,11 +215,13 @@ def main():
                 nd = d.count(k)
                 if nd:
                     hits.append((p, k, nd, 'URLエンコードの中'))
+        if p not in narrow:
+            continue
         for m in re.finditer(r'\{\{([^}]{1,40})\}\}', t):
             tokens.setdefault(m.group(1), []).append(p)
         prices += len(re.findall(r'0,000', t))
 
-    print('検査したファイル: %d' % len(files))
+    print('検査したファイル: %d（うち他店データの検査は %d）' % (len(files), len(scan)))
     print()
 
     print('■ 他店（Louise Rever）を特定できる文字列')
@@ -218,6 +274,19 @@ def main():
         ph = [x.strip() for x in open(lst, encoding='utf-8') if x.strip()
               and os.path.exists(os.path.join('assets', x.strip()))]
     print('■ 仮の画像: %d枚（一覧は %s）' % (len(ph), lst))
+
+    # 文字列の検査は画像の中まで届かない。実際 sp_slide_001.jpg には
+    # 他店の看板が、head_bg.png には他店の電話番号が写っていたのに、
+    # 公開後まで誰も気づかなかった。せめて「これはテンプレート付属の
+    # 写真のままだ」と機械が言えるようにしておく。
+    # 仮画像は平らな地に枠と文字だけなので、色数とばらつきで見分く。
+    rest = photo_like(ph)
+    print('   写真のまま残っているもの: %d枚' % len(rest))
+    for n in rest:
+        print('      ・%s' % n)
+    if rest:
+        print('   → 他店の看板・ロゴ・人物が写っていないか、'
+              '公開前に必ず目で確かめること。')
     print()
 
     css_bad = []

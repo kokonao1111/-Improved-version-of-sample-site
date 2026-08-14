@@ -13,6 +13,7 @@ course_gaz2.jpg
 course_gaz3.jpg
 course_plan_image.jpg
 garage_gaz.jpg
+head_bg.png
 map.jpg
 ogp.jpg
 qa_img.jpg
@@ -24,9 +25,14 @@ shop_ga05.jpg
 shopinfo_image.jpg
 sns_insta_photo.jpg
 sns_line_qr.png
+sp_img_bottom.jpg
+sp_slide_001.jpg
+sp_slide_002.jpg
+sp_slide_003.jpg
 staff_1.jpg
 staff_1_1.jpg
 staff_2.jpg
+staff_3._2jpg
 staff_3.jpg
 staff_3_1.jpg
 staff_4.jpg
@@ -46,4 +52,6 @@ top_imagi03.jpg
 top_insta.jpg
 top_line_at.jpg
 top_link_01.jpg
+trial_gaz2.jpg
+trial_gaz3.jpg
 trial_image.jpg
