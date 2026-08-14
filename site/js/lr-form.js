@@ -50,11 +50,150 @@
 			function (el) { el.textContent = '例）' + s; });
 	}
 
+	/* 希望日を「打った形のまま受け取って、こちらで揃える」
+	   ------------------------------------------------------------------
+	   検証の型が "none"（空欄かどうかだけ）なので、`1222222222` でも
+	   `あとで連絡します` でも通っていた。完全予約制の店で、日付が
+	   読み取れないまま届くと、折り返して聞き直す手間が必ず出る。
+
+	   ■ 書式を1つに決めさせない
+	   「2026/08/22 と 20260822 のどちらで受けるか」を決めてもらう案も
+	   あったが、**決めても人はその通りには打たない。** 案内に
+	   「例）2026/08/22」と出ていても、8/22 と打つ人、8月22日と打つ人、
+	   2026-8-22 と打つ人が必ず出る。書式を1つに絞ると、
+	   正しい日付を打った人まではじくことになる。
+
+	   受け取る側を広くして、出す側を1つにする。
+	     2026/08/22  2026-8-22  2026.8.22  20260822
+	     8/22  8月22日  2026年8月22日        → すべて 2026/08/22 に直す
+
+	   ■ 年が無いときは「これから来る方」に寄せる
+	   8/22 とだけ打たれたら、今日より後になる年を選ぶ。予約なので
+	   過去の日付は意図されていない。
+
+	   ■ 読み取れないものだけ止める
+	   カレンダーに無い日（2026/02/30）と、過去の日付も止める。
+	   知らせは欄の下の一行（.lr-hint-date）に出す。**新しい部品を
+	   足さない**ので、Spry の検証表示と喧嘩しない。
+	   ------------------------------------------------------------------ */
+	var DATE_IDS = ['value_text_18', 'value_text_30'];
+
+	function parseDate(raw) {
+		var s = String(raw)
+			.replace(/[０-９]/g, function (c) {          // 全角の数字
+				return String.fromCharCode(c.charCodeAt(0) - 0xFEE0);
+			})
+			.replace(/\s+/g, '')
+			.replace(/[年月]/g, '/')
+			.replace(/日$/, '')
+			.replace(/[.\-]/g, '/');
+		var y, mo, d, m;
+
+		if ((m = /^(\d{4})\/(\d{1,2})\/(\d{1,2})\/?$/.exec(s))) {
+			y = +m[1]; mo = +m[2]; d = +m[3];
+		} else if ((m = /^(\d{4})(\d{2})(\d{2})$/.exec(s))) {
+			y = +m[1]; mo = +m[2]; d = +m[3];
+		} else if ((m = /^(\d{1,2})\/(\d{1,2})\/?$/.exec(s))) {
+			mo = +m[1]; d = +m[2];
+			var now = new Date();
+			y = now.getFullYear();
+			/* 今日より前になるなら来年 */
+			if (new Date(y, mo - 1, d) < new Date(now.getFullYear(), now.getMonth(), now.getDate())) {
+				y += 1;
+			}
+		} else {
+			return null;
+		}
+
+		var dt = new Date(y, mo - 1, d);
+		/* 2026/02/30 のようにカレンダーに無い日は、繰り上がって別の日になる */
+		if (dt.getFullYear() !== y || dt.getMonth() !== mo - 1 || dt.getDate() !== d) {
+			return null;
+		}
+		return dt;
+	}
+
+	function fmt(dt) {
+		return dt.getFullYear() + '/' +
+			('0' + (dt.getMonth() + 1)).slice(-2) + '/' +
+			('0' + dt.getDate()).slice(-2);
+	}
+
+	function dateFields() {
+		var form = document.getElementById('SF-contact');
+		if (!form) { return; }
+
+		DATE_IDS.forEach(function (id) {
+			var el = document.getElementById(id);
+			if (!el) { return; }
+			var hint = el.closest ? el.closest('fieldset') : null;
+			hint = hint ? hint.querySelector('.lr-hint-date') : null;
+			var base = hint ? hint.textContent : '';
+
+			function say(msg) {
+				if (!hint) { return; }
+				hint.textContent = msg || base;
+				hint.setAttribute('data-lr-bad', msg ? '1' : '');
+			}
+
+			function check(quiet) {
+				var v = el.value.replace(/^\s+|\s+$/g, '');
+				if (!v) { say(''); return true; }
+				var dt = parseDate(v);
+				if (!dt) {
+					if (!quiet) { say('日付として読み取れません。例）' + fmt(plusDays(7))); }
+					return false;
+				}
+				var today = new Date();
+				today.setHours(0, 0, 0, 0);
+				if (dt < today) {
+					if (!quiet) { say('過ぎた日付です。例）' + fmt(plusDays(7))); }
+					return false;
+				}
+				el.value = fmt(dt);      // ここで1つの形に揃える
+				say('');
+				return true;
+			}
+
+			el.addEventListener('blur', function () { check(false); });
+			el.addEventListener('input', function () { if (hint) { say(''); } });
+			el.setAttribute('data-lr-date', '1');
+		});
+
+		/* 送るときにも見る。読み取れなければ、その欄まで画面を送って止める。 */
+		form.addEventListener('submit', function (e) {
+			for (var i = 0; i < DATE_IDS.length; i++) {
+				var el = document.getElementById(DATE_IDS[i]);
+				if (!el || !el.getAttribute('data-lr-date')) { continue; }
+				var v = el.value.replace(/^\s+|\s+$/g, '');
+				if (!v) { continue; }
+				var dt = parseDate(v);
+				var today = new Date(); today.setHours(0, 0, 0, 0);
+				if (!dt || dt < today) {
+					e.preventDefault();
+					e.stopImmediatePropagation();
+					el.scrollIntoView({ block: 'center' });
+					el.focus();
+					el.dispatchEvent(new Event('blur'));
+					return;
+				}
+				el.value = fmt(dt);
+			}
+		}, true);
+	}
+
+	function plusDays(n) {
+		var d = new Date();
+		d.setDate(d.getDate() + n);
+		return d;
+	}
+
 	function run() {
 		var form = document.getElementById('SF-contact');
 		if (!form) { return; }
 
 		hintDates();
+		dateFields();
 
 		var menu = param('menu');
 		var note = param('note');
