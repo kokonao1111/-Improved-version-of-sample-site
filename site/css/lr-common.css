@@ -5694,3 +5694,41 @@ html.lr-pre-done .lr-pre {
 		min-height: 50px;
 	}
 }
+
+
+/* ══════════════════════════════════════════════════════════════
+   ヘッダーの「ご予約はこちら」― 素材の上端が切れている
+   ──────────────────────────────────────────────────────────────
+   指摘：「上にキレてるのはわざと？」
+   わざとではない。**素材そのものが切れている。**
+
+   assets/top_reserve_btn.png（200x38）を画素で読むと、
+     左  x0 金 / x1 透 / x2 金      ← 二重線
+     右  x197 金 / x198 透 / x199 金 ← 二重線
+     下  y35 金 / y36 透 / y37 金   ← 二重線
+     **上  y0〜y3 すべて地色。線が1本も無い**
+   四辺のうち上だけが、素材を切り出すときに落ちている。
+
+   ■ 画像は作り直さない
+   高さを増やすと <img width="200" height="38"> と食い違い、
+   中の字も動く。**欠けた線だけを重ねる**。
+   3pxの箱に border-top と border-bottom を1pxずつ ＝ 金・透・金 で、
+   左右・下と同じ並びになる。金は素材から採った #D9C79E。
+   版面は1pxも動かない（position:absolute の重ねものなので）。
+
+   :has() が無い環境では線が出ないだけで、いまと同じ見え方に戻る。
+   ══════════════════════════════════════════════════════════════ */
+#SF-header p.header-discription-type2 > a:has(> img[src*="top_reserve_btn"]) {
+	position: relative;
+}
+#SF-header p.header-discription-type2 > a:has(> img[src*="top_reserve_btn"]):before {
+	content: "";
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	height: 3px;
+	border-top: 1px solid #D9C79E;
+	border-bottom: 1px solid #D9C79E;
+	pointer-events: none;
+}
