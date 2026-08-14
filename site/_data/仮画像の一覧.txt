@@ -55,3 +55,4 @@ top_link_01.jpg
 trial_gaz2.jpg
 trial_gaz3.jpg
 trial_image.jpg
+trial_step2.jpg
