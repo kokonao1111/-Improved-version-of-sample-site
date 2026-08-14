@@ -1038,13 +1038,16 @@ h4.newslistHeadlineStyle {
 	   最初は現れるのにも 500ms を使っていた。「ささっと出ていて速い」と
 	   指摘を受けた。返事は速いほうが正しいが、現れるのは違う。 */
 	--lr-t-in: 1000ms;
-	/* 札の名前が書かれる長さ。500+200。
+	/* 札の名前が書かれる長さの**既定値**。
+	   実際の長さは js/lr-reveal.js が題の幅から1つずつ決めて
+	   --lr-t-name を要素に書く（筆の速さをそろえるため）。
+	   ここはJSが書けなかったときの値。
 	   calc(var(--lr-t-draw) + var(--lr-t)) で組んでいたが、
 	   どちらか片方が解けないと calc ごと壊れて animation が無効になる。
 	   一括指定が無効になると animation-name が none に落ち、
 	   **伏せる指定（clip-path: inset(0 100% 0 0)）だけが永久に残る**。
 	   1つの変数にして、下の一括指定にも既定値を書いておく。 */
-	--lr-t-name: 700ms;
+	--lr-t-name: 1000ms;
 
 	/* ■ 曲線は2本。分け方は「面／線」ではなく **「返事」／「運筆」**。
 	   最初は「面は --lr-e、線は --lr-e-draw」と書いていた。
@@ -1428,8 +1431,8 @@ html.lr-io [data-lr="name"][data-lr-in] {
 	/* 700ms（500+200）。紙が満ちる 1000ms より短くして、
 	   紙が落ち着くのと名前が書き終わるのがほぼ揃うようにする
 	   （200 待って 700 かけるので 900ms）。 */
-	-webkit-animation: lr-write var(--lr-t-name, 700ms) var(--lr-e-draw, ease-out) var(--lr-t, 200ms) both;
-	animation: lr-write var(--lr-t-name, 700ms) var(--lr-e-draw, ease-out) var(--lr-t, 200ms) both;
+	-webkit-animation: lr-write var(--lr-t-name, 1000ms) var(--lr-e-draw, ease-out) var(--lr-t, 200ms) both;
+	animation: lr-write var(--lr-t-name, 1000ms) var(--lr-e-draw, ease-out) var(--lr-t, 200ms) both;
 }
 
 /* 装飾 ― いちばん遅く、いちばん静かに。

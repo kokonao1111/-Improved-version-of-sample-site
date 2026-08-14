@@ -308,13 +308,35 @@
 
 	   携帯では間を作らない。画面に1〜2枚しか入らないので、
 	   順番は「律動」ではなく「待たされ」になる。 */
+	/* ★ 字が書かれる速さは、長さではなく**筆の速さ**で決める。
+	   題の器の幅は 135〜1000px とばらばら（78個を実測。中央 313px）。
+	   長さを1つに決めると、幅の広い題ほど速く見える ―
+	   700ms のとき 313px は 0.45px/ms、1000px は **1.43px/ms**。
+	   幕の一句は 298px を 500ms ＝ 0.60px/ms なので、その2.4倍だった。
+	   「文字が出る速さが速い」という指摘はここ。
+
+	   幅 ÷ 0.30px/ms を長さにして、1000〜1800ms に収める（100ms刻み）。
+	   結果の筆速は 0.31〜0.56px/ms で、どの題もほぼ同じ速さで書かれる。 */
+	var PEN = 0.30, T_MIN = 1000, T_MAX = 1800;
+
 	function mark(els, kind) {
 		els.forEach(function (el) {
 			el.setAttribute('data-lr', kind);
-			if (SP || kind !== 'sheet') { return; }
-			var n = 0;
-			for (var s = el.previousElementSibling; s; s = s.previousElementSibling) { n++; }
-			el.style.setProperty('--lr-d', (n < 5 ? n : 5) * 100 + 'ms');
+			if (SP) { return; }
+			if (kind === 'sheet') {
+				var n = 0;
+				for (var s = el.previousElementSibling; s; s = s.previousElementSibling) { n++; }
+				el.style.setProperty('--lr-d', (n < 5 ? n : 5) * 100 + 'ms');
+				return;
+			}
+			if (kind === 'name') {
+				var w = 0;
+				try { w = el.getBoundingClientRect().width; } catch (e) { w = 0; }
+				var d = Math.round(w / PEN / 100) * 100;
+				if (d < T_MIN) { d = T_MIN; }
+				if (d > T_MAX) { d = T_MAX; }
+				el.style.setProperty('--lr-t-name', d + 'ms');
+			}
 		});
 	}
 
