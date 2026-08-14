@@ -915,6 +915,51 @@ h4.newslistHeadlineStyle {
 	font-family: 'Noto Serif JP', "ヒラギノ明朝 ProN W3", "Hiragino Mincho ProN", "游明朝", YuMincho, serif;
 }
 
+/* ★ 上の指定は、半分の見出しに届いていなかった
+   ------------------------------------------------------------------
+   指摘：「フォントを揃えたい。ゴシックじゃなくて明朝体？」
+   10ページを数えると **明朝65個 / ゴシック56個** で、ほぼ半々だった。
+
+   分かれ目は「中に <span class="mincho"> があるかどうか」。
+
+     <h4 class="newslistHeadlineStyle"><span class="mincho">初めてのお客様へ</span></h4>
+       → span に .mincho が効いて明朝
+     <h4 class="newslistHeadlineStyle">シミ・美白　ケア<br /><span class="box2">90分</span></h4>
+       → span が無いので h4 自身の書体で出る＝ゴシック
+
+   なぜ h4 自身が明朝にならないのか。生成CSS（module_B0000000xx.css）が
+
+     #B000000081 ul.thumbnailList li .newslistHeadlineStyle { font-family: inherit; }
+
+   と書いている。id 1 + class 2 + 要素 2 で、上の h4.newslistHeadlineStyle
+   （class 1 + 要素 1）より強い。**inherit なので親のゴシックを引き継ぐ。**
+   つまり上の指定は、書いた時から札の中の見出しには一度も届いていなかった。
+   ここも「書いたのに効いていない」型で、PAGE TOP と同じ。
+
+   ■ 越え方
+   器の中は `ul.thumbnailList li` を足して id 1 + class 2 + 要素 3 にする。
+   器の外（「ご利用の流れ」「プライバシーポリシー」など）は素の形で足りる。
+
+   ■ 英字の小見出しは触らない
+   Staff / Trial course / BODY CARE などは <span class="gothic"> を持って
+   いて、自分の書体を宣言している。**英字はゴシック**というこの店の決めを
+   そのまま残す（親が明朝でも span 側が勝つ）。
+   ------------------------------------------------------------------ */
+#SF-contents ul.thumbnailList li h2.headlineStyle,
+#SF-contents ul.thumbnailList li h3.headlineStyle,
+#SF-contents ul.thumbnailList li h4.headlineStyle,
+#SF-contents ul.thumbnailList li h2.newslistHeadlineStyle,
+#SF-contents ul.thumbnailList li h3.newslistHeadlineStyle,
+#SF-contents ul.thumbnailList li h4.newslistHeadlineStyle,
+#SF-contents h2.headlineStyle,
+#SF-contents h3.headlineStyle,
+#SF-contents h4.headlineStyle,
+#SF-contents h2.newslistHeadlineStyle,
+#SF-contents h3.newslistHeadlineStyle,
+#SF-contents h4.newslistHeadlineStyle {
+	font-family: 'Noto Serif JP', "ヒラギノ明朝 ProN W3", "Hiragino Mincho ProN", "游明朝", YuMincho, serif;
+}
+
 /* 存在しない書体名の是正。'Noto Sans Japanese' / 'Noto Serif Japanese' は
    Google Fonts に無い綴りで、指定は素通りしていた（extends_style.css:267,293,417
    / trial:153 / faq:109 の計5箇所）。正しい名前で後から当て直す。 */
