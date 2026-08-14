@@ -5154,8 +5154,14 @@ body {
 #SF-contents :is(#B000000045,#B000000047,#B000000049,#B000000051,#B000000053,#B000000163,#B000000179) ul.thumbnailList li .newslistdata p {
 	line-height: 1.7;
 }
+/* ★ 段落の余白は **0**。
+   このサイトの他の本文は <br> で改行していて、行送りぶんしか空かない。
+   この札だけ原稿が1文ごとに <p> で組まれていて、そこに余白が付いていた
+   （20px → 10px と詰めたが、まだ「改行の空白が読みにくい」と指摘を受けた）。
+   0 にすれば <br> の本文と**同じ見え方**になる。
+   3〜4文の説明なので、段落として切り離す理由もない。 */
 #SF-contents :is(#B000000045,#B000000047,#B000000049,#B000000051,#B000000053,#B000000163,#B000000179) ul.thumbnailList li .newslistdata p {
-	margin-bottom: 10px;
+	margin-bottom: 0;
 }
 #SF-contents :is(#B000000045,#B000000047,#B000000049,#B000000051,#B000000053,#B000000163,#B000000179) ul.thumbnailList li .newslistdata p:last-child {
 	margin-bottom: 0;
