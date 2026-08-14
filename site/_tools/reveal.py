@@ -1,313 +1,292 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""スクロール出現を、実際に送って測る。
+"""スクロール駆動の出現を、実際に送って測る（CDP 版）。
 
-  使い方:  python3 -m http.server 8899   （site/ で）
-           python3 _tools/reveal.py [ページ名の一部 ...]
-  戻り値:  1 なら「透明のまま残るもの」か「出現が働いていない」か「版面が動いた」
+  前提:  python3 -m http.server 8899   （site/ で）
+  使い方: python3 reveal2.py [ページ名の一部 ...]
+  戻り値: 0 なら合格。1 なら「読めないまま残るもの」か「出現が働いていない」
 
-■ なぜこの道具を作ったか
+■ なぜ枠（iframe）+ --dump-dom をやめたか ― 実測して判った
 
-出現をスクロール駆動にすると、事故の形が変わる。
-「はみ出す」でも「重なる」でもなく、**中身が透明のまま残る**。
-verify.py は描かれた矩形を測るので、透明でも矩形は在り、掛からない。
-rules.py は画素を見るが、上から6000pxを一度撮るだけなので送っていない。
+  _tools/reveal.py は  --headless --dump-dom --virtual-time-budget=120000  で
+  枠の中の頁を送っていた。この組合せは使えない：
 
-js/lr-reveal.js には、面（opacity）をスクロール駆動にしなかった理由として
-「検証手段が headless に無い（スクロール駆動の進行が計測できない）」と
-書いてあった。**それは誤りだった。**枠の中の頁は scrollTo で送れるし、
-getComputedStyle はいつでも読める。この道具はそれをする。
+    ・--virtual-time-budget を付けると、タイマだけが早送りされて
+      **描画の機会が作られない**。IntersectionObserver の観測手順も
+      requestAnimationFrame も、描画の機会に紐づいて走る。だから
+      「IO の通知が0回」に見える。IO は壊れていない。計り方が壊れていた。
+      （実測：同じ枠ページを --virtual-time-budget 付きで走らせると
+        結果を書き込む <pre> が空のまま返る。外すと --dump-dom が
+        いつまでも返らない。どちらでも測れない）
+    ・--dump-dom は「1回だけ DOM を吐く」ので、送りながら何度も読めない。
 
-■ この環境で測れること・測れないこと
-
-測れない：**アニメーションの進行**。この headless はフレームを作らないので、
-  始まった animation が進まない（playState=running のまま currentTime=0。
-  document.timeline は 4788ms 進んでいるのに、という状態を実測した）。
-  進行は CSS と描画エンジンの仕事で、こちらが書いた JS の責任ではない。
-測れる：**印が付くか**（掃き取りが働いたか）と、
-  **終端に送ったときに不透明になるか**（CSS の書き方が正しいか）と、
-  **伏せられているか**（画面外で）と、**版面が動かないか**。
-なので送りきったあと getAnimations().finish() で終端へ送ってから読む。
+  代わりに --remote-debugging-port で CDP を開き、Runtime.evaluate で
+  scrollTo と getComputedStyle を直に叩く。枠も要らない。
+  実測：IO の callback は 1→7 回、isIntersecting は 0→22 件と
+  scrollY にきちんと追従した（index.html / 1440x900）。
+  「枠は scrollTo で送れる」という仮説は正しい。ただし枠は要らなかった。
 
 ■ 測ること
 
-  A. 上から下まで送ったあと、**文字か画像を持つ要素**の実効不透明度が
-     すべて 0.99 以上。1つでも欠けたら失格
-       ・実効＝先祖の opacity を全部掛けた値。自分だけ見ても足りない
-       ・ただし**出現の対象だけ**を失格にする。扉写真の Previous / Next の
-         矢印のように、もともと CSS で伏せてあるものが在る（実測2件）。
-         対象かどうかは data-lr か、走っている animation-name で判定し、
-         対象外の伏せは「他」として数だけ出す（黙って捨てない）
-  B. 送る前に、画面の下にあるもののうち1つ以上が 0.99 未満
-       ＝出現が本当に働いている。全部 1 なら「掛かっていない」ので失格
-       （これが無いと、出現を丸ごと壊しても緑になる）
-  C. 送っている間に document の高さが変わらない（CLS）
-  D. 各要素の文書内 y 座標が、送る前と送った後で 1px も動かない
-       ＝出現がレイアウトに触っていない
-
-■ この headless の癖（重要）
-
-scrollTo で scrollY は動くが、**scroll イベントが発火しない**。
-IntersectionObserver の通知も届かない。どちらも「描画の機会」に紐づくため。
-なので検査の側から scroll を発火させる（→ fire()）。
-実機では発火するものを、同じ形で作って測っている。
-
-■ 幕（プリローダー）
-
-セッション最初の1ページだけ全面を覆うので、枠を作る前に「見た」印を置く。
-置かないと全面が生成りの地になり、何も測れない。
+  A. 読み込んで6秒待った時点で、**初回画面の中**に読めない印が無いか。
+     画面の外で伏せられているのは出現が働いている証拠なので、事故ではない
+     （前の版はそれも失格に数えていた。数え方が厳しすぎた）
+  B. 下まで送ったあと、印の付いた要素が1つも「読めないまま」でないか
+       ・読めない＝実効不透明度<0.5 か clip-path が inset(... 100% ...)
+       ・実効＝先祖の opacity を全部掛けた値
+  C. ★ data-lr-in は付いたのに読めないもの（＝ animation が走らなかった）
+     これは5段の逃げ道が全部素通しする種類の事故なので独立に数える
+  D. 送っている間、画面の中に在って読めない印の最大数
+  E. 送る前に画面の下で伏せられているものが1つ以上あるか（出現が働いている証拠）
+  F. 送っている間に版面の高さが変わらないか（CLS）
 """
-import html as H
-import json
-import os
-import re
-import subprocess
-import sys
-import tempfile
+import base64, json, os, re, socket, struct, subprocess, sys, tempfile, time
+import urllib.request
 
-ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 CHROME = '/Users/nsohiro/Desktop/Google Chrome.app/Contents/MacOS/Google Chrome'
 BASE = 'http://127.0.0.1:8899/'
+VIEWS = [(1440, 900), (390, 844)]
+PAGES = ['index.html', 'beginner/index.html', 'campaign/index.html',
+         'course_plan/index.html', 'faq/index.html', 'how_to_choose/index.html',
+         'shopinfo/index.html', 'trial/index.html',
+         'singlefolder/reservation.html', 'singlefolder/staff_1.html',
+         'singlefolder/staff_3.html', 'singlefolder/staff_3_1.html',
+         'singlefolder/staff_4.html', 'singlefolder/staff_5.html',
+         'singlefolder/staff_6.html', '404.html']
 
-# 実際の窓の大きさで測る。出現は「画面に入ったか」で決まるので、
-# 窓の高さを持たない測り方（16000pxの枠に流し込む）では意味が無い。
-VIEWS = [(390, 844), (1440, 900)]
-PAGES = [
-    'index.html', 'beginner/index.html', 'trial/index.html',
-    'course_plan/index.html', 'how_to_choose/index.html', 'faq/index.html',
-    'campaign/index.html', 'shopinfo/index.html',
-    'singlefolder/reservation.html', 'singlefolder/staff.html',
-    'singlefolder/staff_1.html', '404.html',
-]
 
-PROBE = '''<!doctype html><meta charset="utf-8"><body style="margin:0;background:#fff">
-<script>
-/* 幕はセッション最初の1ページだけ出る。枠を作る前に「見た」印を置く。 */
-try{sessionStorage.setItem('lr-pre','1');}catch(e){}
-</script>
-<iframe id="f" src="%(url)s" style="width:%(w)dpx;height:%(h)dpx;border:0;display:block"></iframe>
-<pre id="R" style="position:absolute;left:-99999px;top:0"></pre>
-<script>
-var f=document.getElementById('f'), out=document.getElementById('R');
-window.onerror=function(m){ out.textContent=JSON.stringify({err:String(m)}); };
-f.onload=function(){ setTimeout(function(){ try{ start(); }catch(e){ out.textContent=JSON.stringify({err:String(e)}); } }, %(wait)d); };
+# ── 最小の WebSocket / CDP（標準ライブラリだけ。pip 不要） ──────────────
+class WS(object):
+    def __init__(self, url):
+        m = re.match(r'ws://([^:/]+):(\d+)(/.*)', url)
+        host, port, path = m.group(1), int(m.group(2)), m.group(3)
+        self.s = socket.create_connection((host, port), timeout=60)
+        key = base64.b64encode(os.urandom(16)).decode()
+        self.s.sendall(('GET %s HTTP/1.1\r\nHost: %s:%d\r\nUpgrade: websocket\r\n'
+                        'Connection: Upgrade\r\nSec-WebSocket-Key: %s\r\n'
+                        'Sec-WebSocket-Version: 13\r\n\r\n'
+                        % (path, host, port, key)).encode())
+        buf = b''
+        while b'\r\n\r\n' not in buf:
+            buf += self.s.recv(4096)
+        self.buf = buf.split(b'\r\n\r\n', 1)[1]
+        self.i = 0
 
-function collect(d, win){
- /* 文字か画像を持つ要素だけを見る。器は見ない ―
-    器が透明でも中身が見えていれば読めるし、逆に器が不透明でも
-    中身が透明なら読めない。判定は「読むもの」の側に置く。 */
- var res=[], seen=0;
- var all=d.querySelectorAll('*');
- for(var i=0;i<all.length;i++){
-  var e=all[i];
-  var own=false;
-  for(var n=e.firstChild;n;n=n.nextSibling){
-   if(n.nodeType===3 && n.nodeValue.replace(/\\s/g,'')){own=true;break;}
+    def _r(self, n):
+        while len(self.buf) < n:
+            d = self.s.recv(65536)
+            if not d:
+                raise EOFError
+            self.buf += d
+        out, self.buf = self.buf[:n], self.buf[n:]
+        return out
+
+    def send(self, obj):
+        p = json.dumps(obj).encode()
+        n = len(p)
+        h = b'\x81'
+        if n < 126:
+            h += bytes([0x80 | n])
+        elif n < 65536:
+            h += bytes([0x80 | 126]) + struct.pack('>H', n)
+        else:
+            h += bytes([0x80 | 127]) + struct.pack('>Q', n)
+        k = os.urandom(4)
+        self.s.sendall(h + k + bytes(b ^ k[i % 4] for i, b in enumerate(p)))
+
+    def recv(self):
+        while True:
+            f, op = b'', 1
+            while True:
+                b0, b1 = self._r(2)
+                fin, op = b0 & 0x80, (b0 & 0x0f) or op
+                n = b1 & 0x7f
+                if n == 126:
+                    n = struct.unpack('>H', self._r(2))[0]
+                elif n == 127:
+                    n = struct.unpack('>Q', self._r(8))[0]
+                f += self._r(n)
+                if fin:
+                    break
+            if op in (1, 2):
+                return json.loads(f.decode('utf-8', 'replace'))
+            if op == 8:
+                raise EOFError
+
+
+class Chrome(object):
+    def __init__(self, w, h):
+        self.port = 9300 + (os.getpid() % 400)
+        self.dir = tempfile.mkdtemp(prefix='reveal2-')
+        self.p = subprocess.Popen(
+            [CHROME, '--headless=new', '--disable-gpu', '--no-sandbox',
+             '--no-first-run', '--hide-scrollbars', '--mute-audio',
+             '--remote-debugging-port=%d' % self.port,
+             '--user-data-dir=' + self.dir, '--window-size=%d,%d' % (w, h)],
+            stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        url = None
+        for _ in range(300):
+            try:
+                url = json.load(urllib.request.urlopen(
+                    'http://127.0.0.1:%d/json/version' % self.port,
+                    timeout=1))['webSocketDebuggerUrl']
+                break
+            except Exception:
+                time.sleep(0.1)
+        if not url:
+            raise RuntimeError('Chrome が起きない')
+        self.ws = WS(url)
+        t = self._raw('Target.createTarget', url='about:blank')['targetId']
+        self.sid = self._raw('Target.attachToTarget', targetId=t,
+                             flatten=True)['sessionId']
+        self.call('Page.enable')
+        self.call('Runtime.enable')
+        self.view(w, h)
+
+    def _raw(self, method, **params):
+        self.ws.i += 1
+        mid = self.ws.i
+        self.ws.send({'id': mid, 'method': method, 'params': params})
+        while True:
+            m = self.ws.recv()
+            if m.get('id') == mid:
+                return m.get('result', {})
+
+    def call(self, method, **params):
+        self.ws.i += 1
+        mid = self.ws.i
+        self.ws.send({'id': mid, 'method': method, 'params': params,
+                      'sessionId': self.sid})
+        while True:
+            m = self.ws.recv()
+            if m.get('id') == mid:
+                if 'error' in m:
+                    raise RuntimeError(method + ': ' + json.dumps(m['error']))
+                return m.get('result', {})
+
+    def view(self, w, h):
+        self.call('Emulation.setDeviceMetricsOverride', width=w, height=h,
+                  deviceScaleFactor=1, mobile=(w < 700))
+
+    def js(self, expr):
+        r = self.call('Runtime.evaluate', expression=expr, returnByValue=True)
+        if 'exceptionDetails' in r:
+            raise RuntimeError(json.dumps(r['exceptionDetails'])[:300])
+        return r['result'].get('value')
+
+    def goto(self, url, wait):
+        self.call('Page.navigate', url=url)
+        time.sleep(wait)
+
+    def close(self):
+        try:
+            self.p.terminate()
+            self.p.wait(timeout=10)
+        except Exception:
+            try:
+                self.p.kill()
+            except Exception:
+                pass
+
+
+# ── 枠の中で走らせる測り屋 ──────────────────────────────────────────
+# 「読めない」の定義を1箇所に置く。実効不透明度と clip-path の両方を見る。
+READ = r'''(function(){
+  function unread(e){
+    var op=1, clipped=false;
+    for(var p=e;p&&p.nodeType===1;p=p.parentNode){
+      var pc=getComputedStyle(p);
+      if(pc.display==='none'||pc.visibility==='hidden') return null;   /* 対象外 */
+      op*=parseFloat(pc.opacity);
+      if(/inset\([^)]*100%/.test(pc.clipPath||'')) clipped=true;
+    }
+    return (op<0.5||clipped) ? {op:Math.round(op*100)/100, clip:clipped} : false;
   }
-  if(!own && e.tagName!=='IMG') continue;
-  var r=e.getBoundingClientRect();
-  if(r.width<2||r.height<2) continue;
-  var c=win.getComputedStyle(e);
-  if(c.visibility==='hidden'||c.display==='none') continue;
-  /* 実効不透明度＝先祖の opacity を全部掛ける */
-  var op=1, hid=false, why='';
-  for(var p=e; p && p.nodeType===1; p=p.parentNode){
-   var pc=win.getComputedStyle(p);
-   if(pc.display==='none'||pc.visibility==='hidden'){hid=true;break;}
-   var po=parseFloat(pc.opacity);
-   if(po<0.99 && !why){ why=sig(p)+'(opacity '+po+' data-lr='+(p.getAttribute?p.getAttribute('data-lr'):'')
-     +' in='+(p.hasAttribute?p.hasAttribute('data-lr-in'):'')+' anim='+pc.animationName+')'; }
-   op *= po;
-  }
-  if(hid) continue;
-  /* 「出現の対象か」を持たせる。
-     もともと CSS で伏せてあるもの（扉写真の Previous / Next の矢印など）と、
-     出現が途中で止まって伏せられたままのものを区別するため。
-     この印が無ければ、意図して伏せてあるものを毎回誤検出する。 */
-  var mine=0, an='';
-  for(var q=e; q && q.nodeType===1; q=q.parentNode){
-   if(q.hasAttribute && q.hasAttribute('data-lr')){mine=1;break;}
-   var qc=win.getComputedStyle(q);
-   if(/lr-fill|lr-draw|lr-pre-write/.test(qc.animationName)){mine=1;an=qc.animationName;break;}
-  }
-  seen++;
-  res.push({s:sig(e), y:Math.round(r.top+win.scrollY), o:Math.round(op*1000)/1000, m:mine, w:why,
-            t:(e.textContent||e.getAttribute('src')||'').replace(/\\s+/g,' ').trim().slice(0,20)});
- }
- return res;
-}
-function sig(e){
- var s=e.tagName.toLowerCase();
- if(e.id) s+='#'+e.id;
- if(e.className && typeof e.className==='string')
-  s+='.'+e.className.trim().split(/\\s+/).slice(0,2).join('.');
- return s;
-}
-
-/* ★ この headless は scrollTo で scrollY を動かしても
-   **scroll イベントを一度も発火しない**（実測：枠が受けた scroll = 0）。
-   IntersectionObserver の通知も同じ理由で届かない（張り直しても callback 0回）。
-   どちらも「描画の機会」に紐づいて配られるものなので、
-   フレームを作らない環境では出て来ない。
-   実機では発火するので、**検査の側から発火させて**同じ状態を作る。
-   これで頁の側の listener（掃き取り）が実際に呼ばれ、
-   「送れば出る」ことを実測できる。 */
-function fire(win){
- try{ win.dispatchEvent(new win.Event('scroll')); }catch(e){
-  try{ var ev=win.document.createEvent('Event'); ev.initEvent('scroll',true,true); win.dispatchEvent(ev); }catch(e2){}
- }
-}
-
-function start(){
- var d=f.contentDocument, win=f.contentWindow;
- var log={h0:0,h1:0,before:[],after:[],lowest:{},marks:0};
- log.marks = d.querySelectorAll('[data-lr]').length;
- log.sweepable = d.querySelectorAll('[data-lr="sheet"],[data-lr="head"],[data-lr="name"],[data-lr="orn"]').length;
- log.h0 = d.documentElement.scrollHeight;
-
- var before = collect(d, win);
- log.before = before;
-
- var vh = win.innerHeight;
- var steps = Math.ceil(d.documentElement.scrollHeight / (vh*0.8)) + 2;
- var i = 0;
- (function step(){
-  if(i>steps){ finish(); return; }
-  win.scrollTo(0, Math.round(i*vh*0.8));
-  fire(win);
-  i++;
-  /* requestAnimationFrame は使わない。
-     --virtual-time-budget で早送りしている間、headless では描画の機会が
-     作られず rAF が呼ばれないことがある（実測：一度も返って来なかった）。
-     setTimeout なら仮想時間で必ず進む。 */
-  setTimeout(step, 120);
- })();
-
- function finish(){
-  win.scrollTo(0, d.documentElement.scrollHeight); fire(win);
-  setTimeout(function(){
-   win.scrollTo(0,0); fire(win);
-   setTimeout(function(){
-    log.inn = d.querySelectorAll('[data-lr-in]').length;
-    log.notin = d.querySelectorAll('[data-lr="sheet"]:not([data-lr-in]),'
-              + '[data-lr="head"]:not([data-lr-in]),'
-              + '[data-lr="name"]:not([data-lr-in]),[data-lr="orn"]:not([data-lr-in])').length;
-    /* ★ ここでアニメーションを終端まで送る。
-       この headless はフレームを作らないので、始まったアニメーションが
-       進まない（実測：playState=running のまま currentTime=0、
-       document.timeline は 4788ms 進んでいるのに）。
-       進行そのものは CSS の仕事で、こちらの書いた JS の責任ではない。
-       測るべきは「印が付いたか」と「終わったときに不透明になるか」。
-       finish() で終端に送ってから読む。 */
-    try{ d.getAnimations().forEach(function(a){ try{a.finish();}catch(e){} }); }catch(e){}
-    log.h1 = d.documentElement.scrollHeight;
-    log.after = collect(d, win);
-    out.textContent = JSON.stringify(log);
-   }, 600);
-  }, 600);
- }
-}
-</script></body>'''
+  var marks=[], chars={lost:0,all:0}, inview=0;
+  document.querySelectorAll('[data-lr]').forEach(function(e){
+    if(e.getAttribute('data-lr')==='rule') return;     /* 罫は CSS が持つ */
+    var u=unread(e), r=e.getBoundingClientRect();
+    marks.push({k:e.getAttribute('data-lr'), y:Math.round(r.top+scrollY),
+                h:Math.round(r.height), in_:e.hasAttribute('data-lr-in')?1:0,
+                bad:u?1:0, op:u?u.op:1, clip:u?(u.clip?1:0):0,
+                t:(e.textContent||'').replace(/\s+/g,' ').trim().slice(0,20)});
+    if(u && r.bottom>0 && r.top<innerHeight) inview++;
+  });
+  document.querySelectorAll('body *').forEach(function(e){
+    var s='';for(var n=e.firstChild;n;n=n.nextSibling) if(n.nodeType===3) s+=n.nodeValue;
+    s=s.replace(/\s+/g,''); if(!s) return;
+    var u=unread(e); if(u===null) return;
+    chars.all+=s.length; if(u) chars.lost+=s.length;
+  });
+  var below=marks.filter(function(m){return m.bad && m.y>innerHeight;}).length;
+  /* 初回画面の中に在って読めない印。**これは0でなければならない。**
+     画面の外で伏せられているのは出現が働いている証拠であって、事故ではない。 */
+  var infold=marks.filter(function(m){
+    return m.bad && (m.y+m.h)>0 && m.y<innerHeight;}).length;
+  return {marks:marks, chars:chars, inview:inview, below:below, infold:infold,
+          sy:scrollY, vh:innerHeight, docH:document.documentElement.scrollHeight};
+})()'''
 
 
-def probe(page, w, h, wait=2200):
-    cache = tempfile.mkdtemp(prefix='reveal-')
-    tmp = os.path.join(ROOT, '__reveal.html')
-    try:
-        with open(tmp, 'w', encoding='utf-8') as fh:
-            fh.write(PROBE % {'url': BASE + page, 'w': w, 'h': h, 'wait': wait})
-        r = subprocess.run(
-            [CHROME, '--headless', '--disable-gpu', '--no-sandbox',
-             '--disk-cache-dir=' + cache, '--hide-scrollbars',
-             '--virtual-time-budget=120000',
-             '--window-size=%d,%d' % (w, h + 40),
-             '--dump-dom', BASE + '__reveal.html'],
-            capture_output=True, text=True, timeout=300)
-        m = re.search(r'<pre id="R"[^>]*>(.*?)</pre>', r.stdout, re.S)
-        if not m or not m.group(1).strip():
-            return None
-        return json.loads(H.unescape(m.group(1)))
-    except Exception:
-        return None
-    finally:
-        os.path.exists(tmp) and os.remove(tmp)
-
-
-def judge(log, vh):
-    """(問題のリスト, 出現が働いた個数) を返す"""
-    bad = []
-    after = {e['s'] + '@' + str(e['y']): e for e in log['after']}
-
-    # A. 送ったあと、透明のまま残っているもの（出現の対象だけ）
-    others = 0
-    for e in log['after']:
-        if e['o'] >= 0.99:
-            continue
-        if not e.get('m'):
-            others += 1     # もともと CSS で伏せてあるもの。数えるが失格にしない
-            continue
-        bad.append('透明のまま残った %s "%s" y%d 不透明度%.2f%s'
-                   % (e['s'], e['t'], e['y'], e['o'],
-                      '  ← ' + e['w'] if e.get('w') else ''))
-
-    # A2. 送りきったのに印が付いていない対象が在るか
-    if log.get('notin'):
-        bad.append('送りきっても出ていない対象が %d 個（data-lr-in が付いていない）'
-                   % log['notin'])
-
-    # B. 送る前に、画面の下で伏せられているものが在るか
-    hidden_below = [e for e in log['before'] if e['o'] < 0.99 and e['y'] > vh]
-    # C. 版面の高さが変わっていないか
-    if log['h0'] != log['h1']:
-        bad.append('版面の高さが変わった %d → %d px' % (log['h0'], log['h1']))
-    # D. 位置が動いていないか
-    moved = 0
-    for e in log['before']:
-        k = e['s'] + '@' + str(e['y'])
-        if k not in after:
-            moved += 1
-    if moved:
-        bad.append('%d 個の要素の文書内の位置が動いた' % moved)
-
-    return bad, len(hidden_below), others
+def measure(c, page, w, h):
+    """1ページ1窓ぶん測る"""
+    c.js("try{sessionStorage.setItem('lr-pre','1')}catch(e){}")   # 幕は「見た」扱い
+    c.goto(BASE + page, wait=6.0)
+    a = c.js(READ)                                   # A：一度も送っていない
+    peak = a['inview']
+    y, vh = 0, a['vh']
+    while y < a['docH'] + vh:
+        c.js('scrollTo(0,%d)' % y)
+        time.sleep(0.30)
+        peak = max(peak, c.js(READ)['inview'])       # D：画面内で読めない最大
+        y += int(vh * 0.7)
+    c.js('scrollTo(0,0)')
+    time.sleep(1.5)
+    b = c.js(READ)                                   # B/C：送り終えた後
+    return a, b, peak
 
 
 def main():
     want = sys.argv[1:]
     pages = [p for p in PAGES if not want or any(x in p for x in want)]
-    total_bad = 0
-    total_hidden = 0
-    for page in pages:
-        marks = []
-        detail = []
-        for (w, h) in VIEWS:
-            log = probe(page, w, h)
-            if log is None:
-                marks.append('%d?' % w)
-                continue
-            bad, hidden, others = judge(log, h)
-            total_hidden += hidden
-            if bad:
-                total_bad += len(bad)
-                marks.append('\x1b[31m%dx%d(出%d/%d)\x1b[0m'
-                             % (w, h, log.get('inn', 0), log.get('sweepable', 0)))
-                for b in bad[:4]:
-                    detail.append('     %dx%d  %s' % (w, h, b))
-            else:
-                marks.append('%dx%d(伏せ%d 出%d/%d%s)' % (w, h, hidden,
-                             log.get('inn', 0), log.get('sweepable', 0),
-                             ' 他%d' % others if others else ''))
-        print('  %-30s %s' % (page, ' '.join(marks)))
-        for d in detail:
-            print(d)
+    ng = 0
+    for (w, h) in VIEWS:
+        print('── %dx%d ' % (w, h) + '─' * 52)
+        print('  %-30s %5s %6s %6s %6s %5s' %
+              ('ページ', '印', 'A画内', 'B残', 'C走らず', 'D途中'))
+        c = Chrome(w, h)
+        try:
+            for p in pages:
+                a, b, peak = measure(c, p, w, h)
+                n = len(b['marks'])
+                A = a['chars']['lost']
+                B = [x for x in b['marks'] if x['bad']]
+                C = [x for x in B if x['in_']]        # in は付いたのに読めない
+                ng += len(B) + (1 if b['docH'] != a['docH'] else 0)
+                ng += a['infold']       # 初回画面の中で読めないものは事故
+                # 伏せが0個でも、画面の外に印が無いなら正しい（伏せる相手が居ない）。
+                # ★ 携帯では版面が 1024x2217 になるので、短い頁は印が全部
+                #   初回画面に入る（campaign / staff_* / 404 が実際にそう）。
+                outside = len([m for m in a['marks'] if m['y'] > a['vh']])
+                if n and outside and not a['below']:
+                    ng += 1
+                print('  %-30s %5d %6d %6d %6d %5d%s' %
+                      (p, n, a['infold'], len(B), len(C), peak,
+                       '  ← 版面が動いた' if b['docH'] != a['docH'] else ''))
+                if a['infold']:
+                    print('        ← **初回画面の中**に読めない印が %d 個'
+                          '（画面の外で伏せているのは正しい動作）' % a['infold'])
+                for x in (C or B)[:4]:
+                    print('        %-5s y=%-6d op=%s clip=%d in=%d | %s'
+                          % (x['k'], x['y'], x['op'], x['clip'], x['in_'], x['t']))
+                if n and outside and not a['below']:
+                    print('        ← 画面の外に印が %d 個あるのに、伏せられていたのが0個'
+                          '（出現が働いていない／読み込み時に走り切っている）' % outside)
+        finally:
+            c.close()
     print()
-    print('%d ページ × %d 窓 ─ 問題 %d件 ／ 画面外で伏せられていた要素 のべ%d個'
-          % (len(pages), len(VIEWS), total_bad, total_hidden))
-    if total_hidden == 0:
-        print('※ 伏せが0個です。出現が1つも働いていないか、')
-        print('  すべて読み込み時に走り終えています（スクロール駆動になっていない）。')
-        return 1
-    return 1 if total_bad else 0
+    print('問題 %d 件' % ng)
+    return 1 if ng else 0
 
 
 if __name__ == '__main__':

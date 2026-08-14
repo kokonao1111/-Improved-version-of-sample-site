@@ -33,44 +33,54 @@
 
    ■ 動かさないと決めたもの（ここが設計の本体）
 
-     ・予約導線（.lr-book-row > a ＝ お電話／LINE／Web予約。9ページ×3＝27本）
+     ・予約導線（.lr-book-row > a ＝ お電話／LINE／Web予約。15ページ×3＝45本）
        **改修前はここに面の出現が掛かっていた。外した。**
        予約は目的地であって演出の対象ではない。常に在るべきもの。
+       実測：.lr-book に opacity:.3 を掛けると、CTAの文字のインク画素が
+       370→0 / 399→0、見出しが 1851→0。読めない濃さになる。
      ・扉写真（.flexslider）… 幕が上がった直後に在るもの。ここで待たせない。
-       加えて .slides > li は display:none で切り替わるので、
-       opacity を重ねると切り替えと喧嘩する（実測：3枚中2枚が display:none）
+       加えて .slides > li は flexslider が inline の opacity で入れ替えるので、
+       CSSアニメーションを重ねると **inline より上の origin** になって
+       退場側が最後まで不透明のまま display:none に落ちる＝切り替えがぶつ切りになる
+       （100ms刻みで実測）。3枚は同じ 1440x686 を占めるので間にも意味が無い。
      ・料金表・予約フォーム・「詳しく見る▼」の開閉（h2 > .csOpenClose）
        … 読むものと、状態を持つもの。伏せない
-     ・扉写真の矢印（.flex-prev / .flex-next）… もともと CSS で伏せてある。
-       出現とは別の話なので触らない（_tools/reveal.py もこれを対象外と数える）
+     ・扉写真の矢印（.flex-prev / .flex-next）… もともと CSS で伏せてある
      ・携帯の固定物（.lr-cta-fixed / .lr-navb）… 常に在る
 
-   ■ 閉じ込めない作り（5段）
+   ■ 閉じ込めない作り ― 「出した」ではなく「読めた」で数える
 
+     0. 伏せてよいかを**1個試してから**伏せる（usable()）。
+        animation の一括指定は var() が1つでも解けないと計算値時に無効になり、
+        animation-name が none に落ちる。そのとき素の指定
+        （opacity:0 / clip-path: inset(0 100% 0 0)）だけが永久に残る。
+        data-lr-in は正常に付くので、印を見る逃げ道は全部素通しする。
+        だから印ではなく**計算値**を見て、効くと確かめてから伏せる。
      1. reduced-motion なら何もしない
      2. IntersectionObserver が無ければ何もしない（印が付かない＝伏せない）
      3. 印を付ける・observe する・html.lr-io を付ける を**同じ同期処理**で行い、
-        途中で例外が出たら lr-io を外して帰る。伏せたまま観測していない、
-        という状態を作らない
-     4. ★ **幾何で見る掃き取りを併走させる。**
-        スクロールと寸法変更のたびに、まだ出ていないものの矩形を測り、
-        画面に入っていれば出す。IntersectionObserver に依存しない。
-        ─ なぜ要るか：IO の通知は「描画の機会」に紐づいて配られる。
-          headless で測ると**通知がほとんど届かなかった**
-          （観測を張り直しても callback が0回。実測）。
-          実機では届くが、届かない条件が在ることが分かった以上、
-          中身が消えたままになる経路を1本残すことになる。
-          矩形は読めばいつでも正しい。掃き取りが最後の担保。
-        ─ 副産物：スクロールで進むので _tools/reveal.py で実測できる。
-     5. 3秒たって1つも出ていなければ、全部出す（最後の砦）
+        途中で例外が出たら lr-io を外して帰る
+     4. **幾何で見る掃き取りを、行事ではなく時計で回す。**
+        scroll と resize に加えて 500ms ごとに矩形を測る。
+        ─ 行事に頼れない場面が実測で3つある：
+          (a) 畳んだ器（height:0 + overflow:hidden）の中は IO が見ない。
+              how_to_choose の「詳しく見る▼」の中に印が24個あり、
+              IO が返したのは12個だけ。残りは掃き取りだけが出している
+          (b) ピンチ拡大して指で送っても window の scroll も IO も動かない
+          (c) 一度もスクロールしない読み手（背面タブ・クローラ）
+        ─ 矩形は読めばいつでも正しい。時計で回せば行事に依存しない。
+     5. 出したあと **(遅れ＋長さ＋100ms) で読み返す。**
+        まだ読めなければ data-lr を**外す**（外せば伏せる規則が当たらない）。
+        ここだけが「読めたか」を見ている。上の4段はどれも
+        「印が付いたか」しか見ていないので、P3 のような事故を素通しする。
      加えて CSS 側で、印刷のときは伏せない（@media print）。
 
    ■ 検証
-   _tools/reveal.py が実際に枠を送って、
-   「送ったあと透明のまま残るものが無いか」「送る前に伏せられているものが在るか」
-   「版面の高さと位置が動かないか」を測る。
-   （前任の私は「検証手段が headless に無い」と書いて面の出現を諦めていた。
-     枠は scrollTo で送れる。誤りだった）
+   _tools/reveal.py が CDP で実際に送って測る。
+   （枠＋--dump-dom＋--virtual-time-budget では測れない。仮想時間は
+     タイマだけを早送りして**描画の機会を作らない**ので、IO も rAF も
+     scroll イベントも動かない。以前「headless では IO が発火しない」と
+     書いたのは誤りで、発火しないのは計り方のほうだった）
    ===================================================================== */
 (function () {
 	'use strict';
@@ -81,15 +91,16 @@
 	   スクロール位置で進む。進行が位置から一意に決まるので途中で止まらない。 ── */
 	var SEL_RULE = '.kome_line, .lr-book-h';
 
-	/* ── 札：1枚の紙として満ちるもの ── */
+	/* ── 札：1枚の紙として満ちるもの ──
+	   li.SF-simpleImg は shopinfo の店の写真6枚。棚卸しで
+	   「どの印にも入っていない唯一の写真の並び」と分かったので足した。 */
 	var SEL_SHEET = '#SF-contents .thumbnailList > li, .lr-nav3-list > li, ' +
-		'.lr-tiles > li, .lr-cal-wrap';
+		'.lr-tiles > li, .lr-cal-wrap, #SF-contents li.SF-simpleImg';
 
 	/* ── 節の見出し：満ちるもの ──
 	   .headlineStyle には「詳しく見る▼」の開閉（h2 > span.csOpenClose）も
 	   同じクラスで含まれる（how_to_choose に4個）。あれは押すものなので外す。
-	   節の見出しは札より上に在るので、順番は幾何が決める（先に画面へ入る）。
-	   遅れの数字は与えない。 */
+	   節の見出しは札より上に在るので、順番は幾何が決める（先に画面へ入る）。 */
 	var SEL_HEAD = '#SF-contents h2.headlineStyle';
 
 	/* ── 札の名前：字が書かれるもの。左寄せ・下罫つきの題（h3/h4） ── */
@@ -99,11 +110,62 @@
 	var SEL_ORN = '#B000000081, #B000000079, #B000000072, #B000000125, #B000000142, ' +
 		'#B000000149, #B000000159, #B000000169, #B000000188';
 
-	var SP = window.matchMedia && window.matchMedia('(max-width: 640px)').matches;
+	/* ★ 携帯かどうかを**版面の幅で判定してはいけない**。
+	   cgiFolder/js/csLibrary.js:21-34 が viewport meta を
+	   width=device-width, initial-scale=screen.width/1024 に書き換えるので、
+	   実機の携帯では版面が **1024x2217** になる（実測。screen.width=390 のとき
+	   initial-scale=0.38）。その結果 matchMedia('(max-width: 640px)') は
+	   携帯で **false**（900px も false）。
+	   指で触る画面かどうかで見る。こちらは版面幅に左右されない。 */
+	var SP = !!(window.matchMedia && (
+		window.matchMedia('(max-width: 640px)').matches ||
+		window.matchMedia('(hover: none) and (pointer: coarse)').matches));
 
 	function list(sel) {
 		try { return Array.prototype.slice.call(document.querySelectorAll(sel)); }
 		catch (e) { return []; }
+	}
+
+	function ms(v) {
+		var n = parseFloat(v);
+		if (!n) { return 0; }
+		return /ms/.test(v) ? n : n * 1000;
+	}
+
+	/* 伏せる権利を「効くことの証明」と引き換えにする。
+	   使い捨ての1個を画面の外に置いて、伏せる規則と出す規則が
+	   本当に計算値まで届いているかを読む。届いていなければ伏せない。 */
+	function usable(html) {
+		var ok = false;
+		var p = document.createElement('div');
+		p.setAttribute('data-lr', 'sheet');
+		p.style.cssText = 'position:absolute;left:-9999px;top:0;width:1px;height:1px';
+		try {
+			html.className += ' lr-io';
+			document.body.appendChild(p);
+			var hid = window.getComputedStyle(p).opacity;
+			p.setAttribute('data-lr-in', '');
+			var c = window.getComputedStyle(p);
+			ok = parseFloat(hid) < 0.5 &&
+				/lr-fill/.test(c.animationName) &&
+				ms(c.animationDuration) > 0;
+		} catch (e) { ok = false; }
+		if (p.parentNode) { p.parentNode.removeChild(p); }
+		if (!ok) { html.className = html.className.replace(/\s*lr-io/g, ''); }
+		return ok;
+	}
+
+	function readable(el) {
+		var c = window.getComputedStyle(el);
+		if (/100%/.test(c.clipPath || c.webkitClipPath || '')) { return false; }
+		var op = 1;
+		for (var p = el; p && p.nodeType === 1; p = p.parentNode) {
+			var pc = window.getComputedStyle(p);
+			/* 置き場所ごと隠れているなら、出現の話ではない。判定しない。 */
+			if (pc.display === 'none' || pc.visibility === 'hidden') { return true; }
+			op *= parseFloat(pc.opacity);
+		}
+		return op >= 0.5;
 	}
 
 	function run() {
@@ -124,14 +186,13 @@
 		html.className += ' lr-anim';
 		mark(rules, 'rule');
 
-		var io = null;
 		if (!window.IntersectionObserver) { return; }
+		if (!document.body) { return; }
+		if (!usable(html)) { return; }   /* 効かないなら伏せない */
 
+		var io = null;
 		var targets = [];
 		try {
-			/* 伏せる印を付けるのと、観測を始めるのを、同じ同期処理の中で終える。
-			   分けると「伏せたが観測していない」瞬間が生まれる。 */
-			html.className += ' lr-io';
 			mark(sheets, 'sheet');
 			mark(heads, 'head');
 			mark(names, 'name');
@@ -147,37 +208,61 @@
 			targets.forEach(function (el) { io.observe(el); });
 		} catch (e) {
 			html.className = html.className.replace(/\s*lr-io/g, '');
-			targets.forEach(reveal);
+			targets.forEach(function (el) { el.removeAttribute('data-lr'); });
 			return;
 		}
 
-		/* まだ出ていないもの。掃き取りが減らしていく。 */
 		var left = targets.slice();
+		var tick = null;
+
+		function seen(entries) {
+			entries.forEach(function (en) {
+				if (en.isIntersecting) { take(en.target); }
+			});
+		}
 
 		function take(el) {
 			if (el.hasAttribute('data-lr-in')) { return; }
-			reveal(el);
+			el.setAttribute('data-lr-in', '');
 			try { io.unobserve(el); } catch (e) {}
 			var i = left.indexOf(el);
 			if (i >= 0) { left.splice(i, 1); }
 			if (!left.length) { off(); }
+			check(el);
 		}
 
-		/* ── 幾何で見る掃き取り ──
-		   矩形を読むだけ。IO の通知が届かなくても、送れば必ず出る。
-		   下端から 8% 内側に入ってから出す（IO の rootMargin と同じ息）。 */
+		/* ★ 読み返し。出したと言い張らず、読めたかを見る。
+		   読めていなければ印を外す ＝ 伏せる規則が当たらなくなる。 */
+		function check(el) {
+			var c = window.getComputedStyle(el);
+			var t = ms(c.animationDelay) + ms(c.animationDuration) + 100;
+			window.setTimeout(function () {
+				if (!readable(el)) {
+					el.removeAttribute('data-lr');
+					el.removeAttribute('data-lr-in');
+				}
+			}, t > 100 ? t : 1600);
+		}
+
+		/* ── 幾何で見る掃き取り ── */
+		var firstSweep = true;
 		function sweep() {
 			var h = window.innerHeight || document.documentElement.clientHeight || 0;
 			if (!h) { return; }
-			var line = h * 0.92;
+			/* 送っている間は下端から8%内側で出す（画面のふちで出ると
+			   「出た瞬間」が見えてしまう）。
+			   ただし**最初の1回だけは画面いっぱい**まで見る。
+			   8%内側にすると、開いた時点で見えているのに伏せられたままの帯が
+			   下端に残る（実測：campaign 3個・faq 3個・shopinfo 1個）。
+			   一度も送らない読み手には、それが空白のまま見える。 */
+			var line = firstSweep ? h : h * 0.92;
+			firstSweep = false;
 			left.slice().forEach(function (el) {
 				var r = el.getBoundingClientRect();
 				if (r.bottom > 0 && r.top < line) { take(el); }
 			});
 		}
 
-		/* 間引きは時間で行う。requestAnimationFrame は使わない ―
-		   描画の機会が作られない環境では呼ばれないことがある（IO と同じ理由）。 */
 		var pending = false;
 		function onMove() {
 			if (pending) { return; }
@@ -187,6 +272,7 @@
 		function off() {
 			window.removeEventListener('scroll', onMove);
 			window.removeEventListener('resize', onMove);
+			if (tick) { window.clearInterval(tick); tick = null; }
 			try { io.disconnect(); } catch (e) {}
 		}
 		try {
@@ -195,41 +281,21 @@
 			window.addEventListener('scroll', onMove);
 		}
 		window.addEventListener('resize', onMove);
+		/* 行事ではなく時計で回す。畳んだ器の中・ピンチ拡大・
+		   一度も送らない読み手、どれも行事が来ない。 */
+		tick = window.setInterval(sweep, 500);
 		sweep();
-
-		/* 最後の砦：3秒たって1つも出ていなければ、全部出す。 */
-		window.setTimeout(function () {
-			if (left.length === targets.length) { targets.forEach(reveal); off(); }
-		}, 3000);
-
-		function seen(entries) {
-			entries.forEach(function (en) {
-				if (!en.isIntersecting) { return; }
-				take(en.target);
-			});
-		}
 	}
 
-	function reveal(el) { el.setAttribute('data-lr-in', ''); }
-
-	/* ★ 走り終えたら animation を外す。
+	/* 走り終えたら animation を外す。
 	   opacity のアニメーションが載っている間、その要素は自分の層に描かれる。
-	   終わった後も載せたままにすると、**1pxの罫が薄くなる**。
-	   実測（index の札の題の下罫。出現あり／打ち消しで画素を突き合わせ）:
-	       出現あり  (192,173,149)
-	       打ち消し  (174,150,122)
-	   このサイトの罫は署名なので、薄くなるのは許容できない。
-	   印を付けて、CSS 側で animation:none / opacity:1 / clip-path:none に戻す。
-	   opacity:1 を明示しても層は作られない（1未満のときだけ作られる）。
-
-	   ・animationend は ::before からも上がってくる（装飾がそれ）。
-	     その場合 target は要素本体で、pseudoElement に '::before' が入る。
-	   ・イベントが来ない環境では印が付かないだけ。見え方は出現後のままで、
-	     中身が消えることはない。 */
+	   終わった後も載せたままにすると **1pxの罫が薄くなる**。
+	   実測（札の題の下罫）: 載せたまま (192,173,149) ／ 打ち消し (174,150,122)。
+	   このサイトの罫は署名なので、薄くなるのは許容できない。 */
 	document.addEventListener('animationend', function (e) {
 		if (!/^lr-(fill|write)$/.test(e.animationName)) { return; }
 		var el = e.target;
-		if (el && el.nodeType === 1 && el.hasAttribute('data-lr')) {
+		if (el && el.nodeType === 1 && el.hasAttribute && el.hasAttribute('data-lr')) {
 			el.setAttribute('data-lr-done', '');
 		}
 	}, true);
@@ -243,23 +309,13 @@
 	   携帯では間を作らない。画面に1〜2枚しか入らないので、
 	   順番は「律動」ではなく「待たされ」になる。 */
 	function mark(els, kind) {
-		var seq = [];
 		els.forEach(function (el) {
 			el.setAttribute('data-lr', kind);
-			if (SP) { return; }
-			var p = el.parentNode;
-			var i = seq.indexOf(p);
-			if (i < 0) { seq.push(p); i = seq.length - 1; }
-			var n = el.getAttribute('data-lr-n');
-			n = n ? parseInt(n, 10) : indexIn(el);
-			el.style.setProperty('--lr-d', Math.min(n, 5) * 100 + 'ms');
+			if (SP || kind !== 'sheet') { return; }
+			var n = 0;
+			for (var s = el.previousElementSibling; s; s = s.previousElementSibling) { n++; }
+			el.style.setProperty('--lr-d', (n < 5 ? n : 5) * 100 + 'ms');
 		});
-	}
-
-	function indexIn(el) {
-		var n = 0;
-		for (var s = el.previousElementSibling; s; s = s.previousElementSibling) { n++; }
-		return n;
 	}
 
 	if (document.readyState === 'loading') {

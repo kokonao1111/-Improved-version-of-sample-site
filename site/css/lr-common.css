@@ -1034,11 +1034,32 @@ h4.newslistHeadlineStyle {
 	/* 罫を1本引くときだけ。0.35秒未満だと400pxの線が閃光に見え、
 	   0.6秒超だと見出しを読み始めた後まで動いている。その間を採る。 */
 	--lr-t-draw: 500ms;
-	/* 面と色。ホバーもフォーカスも「利用者が既に動き終わった後」の応答なので、
-	   CSS 既定 ease の起筆の溜めは原理的に誤り。触れた瞬間に立ち上げる。 */
+	/* ★ スクロールで**現れる**とき。500+500。
+	   最初は現れるのにも 500ms を使っていた。「ささっと出ていて速い」と
+	   指摘を受けた。返事は速いほうが正しいが、現れるのは違う。 */
+	--lr-t-in: 1000ms;
+	/* 札の名前が書かれる長さ。500+200。
+	   calc(var(--lr-t-draw) + var(--lr-t)) で組んでいたが、
+	   どちらか片方が解けないと calc ごと壊れて animation が無効になる。
+	   一括指定が無効になると animation-name が none に落ち、
+	   **伏せる指定（clip-path: inset(0 100% 0 0)）だけが永久に残る**。
+	   1つの変数にして、下の一括指定にも既定値を書いておく。 */
+	--lr-t-name: 700ms;
+
+	/* ■ 曲線は2本。分け方は「面／線」ではなく **「返事」／「運筆」**。
+	   最初は「面は --lr-e、線は --lr-e-draw」と書いていた。
+	   スクロール出現の面に --lr-e を当てたら「ささっと」出て速かった。
+	   分け方が間違っていた。--lr-e の理屈は
+	   「利用者が既に動き終わった後の応答だから溜めは誤り」であって、
+	   これは**操作への返事**の話。こちらから現れるときには当てはまらない。 */
+
+	/* 返事 ― ホバー・フォーカス・押下。触れた瞬間に立ち上げる。 */
 	--lr-e: cubic-bezier(.1, .45, .15, 1);
-	/* 線を引くときだけ。遅い立ち上がりが起筆、長い減速が収筆。面には使わない。
-	   曲線が2本なのは「面は満ちる／線は引かれる」に対応する。3本目は作らない。 */
+	/* 運筆 ― 線を引く／面が満ちる。遅い立ち上がりが起筆、長い減速が収筆。
+	   実測（経過に対する不透明度）:
+	     --lr-e      500ms … 100ms時点で **64%**（＝ほぼ出ている。速い）
+	     --lr-e-draw 500ms … 100ms時点で 22%
+	     --lr-e-draw 1000ms… 100ms時点で  4%、300ms で 52%、700ms で 95% */
 	--lr-e-draw: cubic-bezier(.35, .02, .1, 1);
 }
 
@@ -1352,6 +1373,18 @@ a.lr-headtel {
      予約導線・扉写真・料金表・フォーム・開閉は**対象にしない**
      （理由は js/lr-reveal.js の冒頭。改修前は予約導線に面が掛かっていた）
 
+   ■ ★ var() は1つでも解けないと「伏せる指定だけが残る」
+   animation の一括指定は、中の var() が1つでも解けないと
+   **計算値時に無効**になり animation-name が none に落ちる。
+   そのとき素の指定（opacity:0 / clip-path: inset(0 100% 0 0)）だけが永久に残り、
+   animationend も来ないので後始末も走らない。
+   data-lr-in は正常に付くので、JS 側の逃げ道は全部「出した」と判定して素通しする。
+   実測（how_to_choose・下まで送ってから）:
+       :root{--lr-t-draw:500}（単位落ち） → 印は58/58付いたのに読めない28個
+       :root{--lr-e-draw:initial}        → 読めない57個
+   だから **すべての var() に既定値を書く**。加えて JS 側が
+   「伏せてよいか」を1個試してから伏せる（js/lr-reveal.js の usable()）。
+
    ■ CLS を出さない
    使うのは opacity と clip-path と scaleX だけ。3つとも版面を動かさない。
    高さも位置も1pxも変わらない（_tools/reveal.py が送りながら実測する）。
@@ -1360,8 +1393,8 @@ a.lr-headtel {
 /* 札 ― 1枚の紙が満ちる。位置も大きさも変えない */
 html.lr-io [data-lr="sheet"] { opacity: 0; }
 html.lr-io [data-lr="sheet"][data-lr-in] {
-	-webkit-animation: lr-fill var(--lr-t-draw) var(--lr-e) var(--lr-d, 0ms) both;
-	animation: lr-fill var(--lr-t-draw) var(--lr-e) var(--lr-d, 0ms) both;
+	-webkit-animation: lr-fill var(--lr-t-in, 1000ms) var(--lr-e-draw, ease-out) var(--lr-d, 0ms) both;
+	animation: lr-fill var(--lr-t-in, 1000ms) var(--lr-e-draw, ease-out) var(--lr-d, 0ms) both;
 }
 
 /* 節の見出し ― 満ちる。場が開いたことを受けて題が在る。
@@ -1378,8 +1411,8 @@ html.lr-io [data-lr="sheet"][data-lr-in] {
    順番は幾何が決める ― 節の見出しは札より上に在るので、先に画面へ入る。 */
 html.lr-io [data-lr="head"] { opacity: 0; }
 html.lr-io [data-lr="head"][data-lr-in] {
-	-webkit-animation: lr-fill var(--lr-t-draw) var(--lr-e) both;
-	animation: lr-fill var(--lr-t-draw) var(--lr-e) both;
+	-webkit-animation: lr-fill var(--lr-t-in, 1000ms) var(--lr-e-draw, ease-out) both;
+	animation: lr-fill var(--lr-t-in, 1000ms) var(--lr-e-draw, ease-out) both;
 }
 
 /* 札の名前 ― 左から右へ書かれる。
@@ -1392,16 +1425,19 @@ html.lr-io [data-lr="name"] {
 	clip-path: inset(0 100% 0 0);
 }
 html.lr-io [data-lr="name"][data-lr-in] {
-	-webkit-animation: lr-write var(--lr-t-draw) var(--lr-e-draw) var(--lr-t) both;
-	animation: lr-write var(--lr-t-draw) var(--lr-e-draw) var(--lr-t) both;
+	/* 700ms（500+200）。紙が満ちる 1000ms より短くして、
+	   紙が落ち着くのと名前が書き終わるのがほぼ揃うようにする
+	   （200 待って 700 かけるので 900ms）。 */
+	-webkit-animation: lr-write var(--lr-t-name, 700ms) var(--lr-e-draw, ease-out) var(--lr-t, 200ms) both;
+	animation: lr-write var(--lr-t-name, 700ms) var(--lr-e-draw, ease-out) var(--lr-t, 200ms) both;
 }
 
 /* 装飾 ― いちばん遅く、いちばん静かに。
    ::before だけに掛ける。親に opacity を掛けると本文まで一緒に薄くなる。 */
 html.lr-io [data-lr="orn"]:before { opacity: 0; }
 html.lr-io [data-lr="orn"][data-lr-in]:before {
-	-webkit-animation: lr-fill var(--lr-t-draw) var(--lr-e) 200ms both;
-	animation: lr-fill var(--lr-t-draw) var(--lr-e) 200ms both;
+	-webkit-animation: lr-fill var(--lr-t-in, 1000ms) var(--lr-e-draw, ease-out) var(--lr-t, 200ms) both;
+	animation: lr-fill var(--lr-t-in, 1000ms) var(--lr-e-draw, ease-out) var(--lr-t, 200ms) both;
 }
 
 /* ★ 走り終えたら animation を外して、元の描き方に戻す。
@@ -1427,8 +1463,13 @@ html.lr-io [data-lr="orn"][data-lr-done]:before {
 /* 携帯ではさらに控えめに ― 動くのは札だけ。
    小さい画面では見出しの掃き出しが画面幅いっぱいの動きになり、
    「静か」ではなくなる。字は動かさず、ただ在る。
-   間（--lr-d）も作らない（JS が携帯では書かない）。 */
-@media screen and (max-width: 640px) {
+   間（--lr-d）も作らない（JS が携帯では書かない）。
+
+   ★ 幅だけで見てはいけない。cgiFolder/js/csLibrary.js が viewport meta を
+   initial-scale=screen.width/1024 に書き換えるので、実機の携帯では版面が
+   **1024x2217** になり max-width:640px は **一度も真にならない**（実測）。
+   指で触る画面かどうか（hover:none / pointer:coarse）でも拾う。 */
+@media screen and (max-width: 640px), (hover: none) and (pointer: coarse) {
 	html.lr-io [data-lr="name"] {
 		-webkit-clip-path: none;
 		clip-path: none;
