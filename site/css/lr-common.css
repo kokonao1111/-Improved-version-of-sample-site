@@ -960,6 +960,35 @@ h4.newslistHeadlineStyle {
 	font-family: 'Noto Serif JP', "ヒラギノ明朝 ProN W3", "Hiragino Mincho ProN", "游明朝", YuMincho, serif;
 }
 
+/* ★ 見出しに掛けても、中の入れ物が自分でゴシックを名乗っていた
+   ------------------------------------------------------------------
+   指摘：「シミ・美白　ケア これだけまだ修正されてない」
+
+     <h4 class="newslistHeadlineStyle"><div id="B">シミ・美白　ケア<br />
+       <span class="box2">90分</span></div></h4>
+
+   文字が **<div>** に入っている（飛び先の目印 id="B" を兼ねている）。
+   このサイトの全体指定
+     h1, h2, h3, h4, p, ul, li, strong, div, span, td, th, … { ゴシック }
+   には **div も span も入っている**ので、h4 を明朝にしても、中の div が
+   自分でゴシックを名乗って上書きする。継承は「自分の指定が無いとき」しか
+   働かない。同じ形の見出しは26箇所あった。
+
+   ■ 私の確認も間違っていた
+   数え直したとき `h.querySelector('.mincho') || h` で **h4 の方**を測って
+   いた。h4 は明朝になっていたので「トライアルはゴシック0個」と報告したが、
+   実際に字が出ているのは中の div で、そちらはゴシックのままだった。
+   **字が描かれている要素を測らないと、直ったことにならない。**
+
+   ■ 直し方
+   見出しの中の子孫にも掛ける。ただし .gothic を名乗るもの（英字の
+   小見出し Staff / Trial course / BODY CARE など）はそのまま残す。
+   ------------------------------------------------------------------ */
+#SF-contents :is(h2, h3, h4).headlineStyle :not(.gothic):not(.gothic *),
+#SF-contents :is(h2, h3, h4).newslistHeadlineStyle :not(.gothic):not(.gothic *) {
+	font-family: 'Noto Serif JP', "ヒラギノ明朝 ProN W3", "Hiragino Mincho ProN", "游明朝", YuMincho, serif;
+}
+
 /* 存在しない書体名の是正。'Noto Sans Japanese' / 'Noto Serif Japanese' は
    Google Fonts に無い綴りで、指定は素通りしていた（extends_style.css:267,293,417
    / trial:153 / faq:109 の計5箇所）。正しい名前で後から当て直す。 */
