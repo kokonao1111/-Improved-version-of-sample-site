@@ -10,6 +10,7 @@
 見るのは7つ。
 
   1. 横のはみ出し ── 器より広い要素
+  1b. 枠から溢れ ── 枠を持った箱の中で、字がその枠から出ていないか
   2. 文字の重なり ── 要素の矩形ではなく「行box」で測る。
      矩形で測ると float の隣にある段落が必ず誤検出になる。
   3. コントラスト ── 大きい文字は3:1、小さい文字は4.5:1（WCAG 1.4.3）
@@ -97,6 +98,13 @@ function CHECK(d,W,out){
  function sig(e){return e.tagName+(e.id?'#'+e.id:'')
   +(e.className?'.'+String(e.className).split(' ')[0]:'');}
 
+ /* 0. 画面に貼り付く部品を、測れる状態にする
+    #page-top は「少し下がってから出す」ので、初期状態では display:none。
+    この検査は巻かないので、そのままだと**一度も見られない**。実際
+    「PAGE TOP の字が枠からはみ出す」を長く取り逃がした。出してから測る。 */
+ [].forEach.call(d.querySelectorAll('#page-top'),function(e){
+  e.style.display='block';});
+
  /* 1. 横のはみ出し */
  [].forEach.call(d.querySelectorAll('body *'),function(e){
   var c=getComputedStyle(e);
@@ -105,6 +113,30 @@ function CHECK(d,W,out){
   var r=e.getBoundingClientRect();
   if(r.width&&r.right>W+1.5&&!clipped(e))
    out.overflow.push(sig(e)+' 右端'+Math.round(r.right));});
+
+ /* 1b. 字が「自分の枠」から出ていないか
+    1 は画面からのはみ出しだけを見ている。枠を持った小さな箱の中で
+    字が溢れる型は、画面には収まっているので素通りする。
+    枠か地色を持っていて、直に字を抱えていて、overflow が visible の
+    ものだけを見る。overflow:hidden / auto は「隠す・巻く」意図なので除く。 */
+ [].forEach.call(d.querySelectorAll('body *'),function(e){
+  var c=getComputedStyle(e);
+  if(c.display==='none'||c.visibility==='hidden')return;
+  if(c.overflowX!=='visible')return;
+  if(e.closest('.flexslider,.slides,.flex-viewport'))return;
+  var bw=parseFloat(c.borderTopWidth)+parseFloat(c.borderRightWidth)
+        +parseFloat(c.borderBottomWidth)+parseFloat(c.borderLeftWidth);
+  var bg=c.backgroundColor;
+  var painted=bw>0||(bg&&bg!=='rgba(0, 0, 0, 0)'&&bg!=='transparent'&&!/,\s*0\)$/.test(bg));
+  if(!painted)return;
+  var hasText=false;
+  [].forEach.call(e.childNodes,function(n){
+   if(n.nodeType===3&&n.nodeValue.replace(/\s/g,''))hasText=true;});
+  if(!hasText)return;
+  var r=e.getBoundingClientRect();
+  if(r.width<=1||r.height<=1)return;
+  if(e.scrollWidth>e.clientWidth+1)
+   out.spill.push(sig(e)+' 中身'+e.scrollWidth+' > 枠'+e.clientWidth);});
 
  /* 2. 文字の重なり（行box同士） */
  var boxes=[],walk=d.createTreeWalker(d.body,NodeFilter.SHOW_TEXT,null),n;
@@ -221,7 +253,7 @@ function run(){
  var res={};
  frames.forEach(function(f){
   var W=+f.dataset.w;
-  var out={overflow:[],overlap:[],contrast:[],holes:[],rulecross:[],clipped:[],images:[],
+  var out={overflow:[],spill:[],overlap:[],contrast:[],holes:[],rulecross:[],clipped:[],images:[],
            errors:ERR[W]||[],inner:null};
   try{ CHECK(f.contentDocument,W,out); }catch(e){ out.errors.push('検査中の例外: '+e); }
   res[W]=out;});
@@ -258,7 +290,8 @@ def probe(page, widths, wait=2600):
         shutil.rmtree(cache, ignore_errors=True)
 
 
-KINDS = [('overflow', 'はみ出し'), ('overlap', '重なり'), ('contrast', 'コントラスト'),
+KINDS = [('overflow', 'はみ出し'), ('spill', '枠から溢れ'), ('overlap', '重なり'),
+         ('contrast', 'コントラスト'),
          ('holes', '段の空き'), ('rulecross', '罫が貫通'), ('clipped', '切り落とし'),
          ('images', '画像不在'), ('errors', 'JSエラー')]
 
