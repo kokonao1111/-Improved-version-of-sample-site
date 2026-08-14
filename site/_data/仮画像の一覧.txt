@@ -32,9 +32,9 @@ sp_slide_003.jpg
 staff_1.jpg
 staff_1_1.jpg
 staff_2.jpg
-staff_3._2jpg
 staff_3.jpg
 staff_3_1.jpg
+staff_3_2.jpg
 staff_4.jpg
 staff_4_1.jpg
 staff_5.jpg
