@@ -6365,14 +6365,18 @@ html.lr-pre-done .lr-pre {
 	column-gap: 50px;
 	margin-top: 10px;
 }
+/* ★ 枠は外した
+   置いた当初は仮画像（平らな地に枠と文字）だったので、囲うと
+   「絵が入る場所」に見えて都合が良かった。実物の写真が入った今、
+   同じ枠は額縁になる。**このサイトで写真を囲っているのは地図だけ**で、
+   コース札もスタッフ写真も枠を持たない。地図だけ囲うのは、
+   彩度の高い他所の面をこちら側に馴染ませるためで、理由が違う。
+   写真は写真のまま置く。 */
 #SF-contents .lr-choice-img {
 	-ms-flex: 0 0 auto;
 	flex: 0 0 auto;
 	box-sizing: border-box;
 	width: 400px;
-	padding: 3px;
-	background: #F5F1E7;
-	border: 1px solid #D9C79E;
 }
 #SF-contents .lr-choice-img img {
 	display: block;
@@ -6560,9 +6564,6 @@ html.lr-pre-done .lr-pre {
 	box-sizing: border-box;
 	width: 300px;
 	margin: 0;
-	padding: 3px;
-	background: #F5F1E7;
-	border: 1px solid #D9C79E;
 }
 #SF-contents .lr-choice-row img { display: block; width: 100%; height: auto; }
 @media screen and (max-width: 900px) {
