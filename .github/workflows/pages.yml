@@ -1,7 +1,7 @@
 # =====================================================================
 # GitHub Pages へ公開する
 # ---------------------------------------------------------------------
-# 公開されるのは site/ の中身だけ。_tools/ と _data/ は出さない
+# 公開されるのは site/ の中身だけ。_tools/ _data/ _incoming/ は出さない
 # （検査の道具と、原稿の一元管理。客に見せるものではない）。
 #
 # ■ なぜ Actions なのか
@@ -44,7 +44,7 @@ jobs:
       - name: 公開するものだけを取り出す
         run: |
           mkdir -p _site
-          rsync -a --exclude '_tools/' --exclude '_data/' site/ _site/
+          rsync -a --exclude '_tools/' --exclude '_data/' --exclude '_incoming/' site/ _site/
           # Jekyll を通さない。通すと _ で始まる名前が落ちる
           touch _site/.nojekyll
           echo "── 公開するファイル数 ──"

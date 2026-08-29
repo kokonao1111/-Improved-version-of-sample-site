@@ -6527,3 +6527,45 @@ html.lr-pre-done .lr-pre {
 	background-image: none;
 	background-color: transparent;
 }
+
+/* 美容液の区画に添える3枚
+   ------------------------------------------------------------------
+   「満遍なく」＝美容液のUIの中で、という意味だと分かったので、
+   もらった素材はここに集める。
+
+   3枚が語るのは **材料 → 施術 → 仕上がり**。
+   1枚だけだと製品の紹介で終わるが、3枚並ぶと「私たちはこれを
+   こう使っています」になる。聞き取りの中心（安心・信頼）に近い。
+
+   並べ方は、このサイトが既に持っている3列と同じ数を使う。
+     幅300px ／ 段間50px ／ 枠1px #D9C79E ＋ 内3pxの生成り
+   （トップの「おすすめプラン」3枚、地図、予約ボタンと同じ作り）
+   説明文は付けない。付ければ原稿が3つ増えるうえ、上の本文と
+   同じことを繰り返す。**絵だけで足りる場所には字を置かない。**
+   ------------------------------------------------------------------ */
+#SF-contents .lr-choice-row {
+	display: -ms-flexbox;
+	display: flex;
+	-ms-flex-pack: center;
+	justify-content: center;
+	-ms-flex-wrap: wrap;
+	flex-wrap: wrap;
+	column-gap: 50px;
+	row-gap: 30px;
+	margin: 40px 0 0;
+}
+#SF-contents .lr-choice-row figure {
+	-ms-flex: 0 0 auto;
+	flex: 0 0 auto;
+	box-sizing: border-box;
+	width: 300px;
+	margin: 0;
+	padding: 3px;
+	background: #F5F1E7;
+	border: 1px solid #D9C79E;
+}
+#SF-contents .lr-choice-row img { display: block; width: 100%; height: auto; }
+@media screen and (max-width: 900px) {
+	#SF-contents .lr-choice-row { column-gap: 20px; row-gap: 20px; margin-top: 30px; }
+	#SF-contents .lr-choice-row figure { width: min(300px, 100%); }
+}

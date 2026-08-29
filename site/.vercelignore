@@ -17,3 +17,4 @@ cgiFolder/analysis/
 
 # 退役済み。転送するだけのページで、SP専用JSは読まれない
 cgiFolder/js/csSpLibrary.js
+_incoming/

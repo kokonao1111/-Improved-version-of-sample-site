@@ -72,7 +72,8 @@ def targets(with_cgi=False):
     for p in glob.glob('**/*', recursive=True):
         if not os.path.isfile(p):
             continue
-        if p.startswith(('_tools' + os.sep, '_data' + os.sep)):
+        # _incoming は「いただいた素材の置き場」。公開もしないので数えない
+        if p.startswith(('_tools' + os.sep, '_data' + os.sep, '_incoming' + os.sep)):
             continue
         if p.startswith('cgiFolder' + os.sep) and not with_cgi:
             continue
