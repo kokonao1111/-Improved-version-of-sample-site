@@ -6645,3 +6645,6 @@ html.lr-pre-done .lr-pre {
 		vertical-align: -.1em;
 	}
 }
+
+/* 電話・ふりがなの知らせも、日付と同じ扱い（案内行を差し色にする） */
+#SF-contents .control2[data-lr-bad="1"] { color: #944A38; }

@@ -295,7 +295,170 @@
 		sync();
 	}
 
-	function boot() { run(); gate(); }
+	/* 送信を押したのに、画面が動かない
+	   ------------------------------------------------------------------
+	   必須が空のまま「入力内容確認」を押すと、Spry は各欄の脇に
+	   エラーを出すが、**画面は1pxも動かない**。実測すると、7つの必須欄は
+	   すべて y=958 以下（押した時点の表示より下）にあり、押した人からは
+	   「ボタンが壊れている」としか見えない。予約の直前で取りこぼす形。
+
+	   ■ Spry は書き換えない
+	   生成物なので作り直すと戻る。**印が付いた後に読む**だけにする。
+	   Spry は無効な欄の器（fieldset）に ***RequiredState / ***InvalidState を
+	   足す。押した直後にそれを探して、いちばん上のものへ送る。
+
+	   ■ 送信自体は止めない
+	   止めるのは Spry の仕事で、こちらは画面を動かすだけ。
+	   万一 Spry が動かない環境でも、余計なことをしない。 */
+	function scrollToFirstError() {
+		var form = document.getElementById('SF-contact');
+		if (!form) { return; }
+		var btn = form.querySelector('.lr-submit');
+		if (!btn) { return; }
+
+		function look() {
+			var bad = form.querySelectorAll(
+				'[class*="RequiredState"],[class*="InvalidState"],' +
+				'[class*="MinCharsState"],[class*="MaxCharsState"],' +
+				'[class*="MinSelectionsState"],[class*="MaxSelectionsState"]');
+			if (!bad.length) { return; }
+
+			/* 画面上の位置ではなく、頁の中の位置で「いちばん上」を選ぶ */
+			var top = null, ty = Infinity;
+			Array.prototype.forEach.call(bad, function (e) {
+				var r = e.getBoundingClientRect();
+				if (!r.height) { return; }
+				var y = r.top + (window.pageYOffset || document.documentElement.scrollTop || 0);
+				if (y < ty) { ty = y; top = e; }
+			});
+			if (!top) { return; }
+
+			/* 見出しや案内も一緒に見えるよう、少し上に余裕を取る */
+			var y = Math.max(0, ty - 120);
+			/* なめらかに動かさない。理由は2つある。
+			   ① これは飾りではなく、間違いからの復帰。待たせずに着く方が親切。
+			   ② **こちらで検証できない。** ヘッドレスの仮想時間では
+			      なめらかスクロールが進まず、直ったかどうかを測れない。
+			      測れないものを入れて「直りました」と言う失敗を、
+			      この仕事で既に2度している。 */
+			window.scrollTo(0, y);
+
+			var input = top.querySelector('input,select,textarea');
+			if (input && !input.disabled) { try { input.focus({ preventScroll: true }); } catch (e) { input.focus(); } }
+		}
+
+		/* Spry が印を付け終えてから読む。押した直後は、まだ付いていない。 */
+		btn.addEventListener('click', function () { setTimeout(look, 60); });
+		form.addEventListener('submit', function () { setTimeout(look, 60); });
+	}
+
+	/* 電話番号とふりがな ― 打った形を受けて整える
+	   ------------------------------------------------------------------
+	   どちらも検証の型が "none"（空欄かどうかだけ）。案内に
+	   「例)000-000-0000」「例)やまだ はなこ」と出ていても、
+	   `あとで連絡します` でも `山田花子` でも通っていた。
+	   完全予約制の店で、折り返す手段が電話番号しか無いのに、
+	   誤りが混ざると予約が成立しない。
+
+	   ■ 日付と同じ考え方
+	   受け取る側を広くして、出す側を1つにする。人は案内どおりには打たない。
+
+	     電話　０９０−１２３４−５６７８ ／ 090 1234 5678 ／ +81 90-1234-5678
+	           → いずれも受ける。**ハイフンの位置は勝手に変えない**
+	             （市外局番は2〜5桁で一定でなく、機械が付けると間違える）
+	     かな　ヤマダ ハナコ（カタカナ）→ やまだ はなこ に直す
+	           全角の空白 → 半角ひとつに
+
+	   ■ 止めるもの
+	     電話　数字が10桁または11桁でない／0で始まらない
+	     かな　ひらがな以外が混ざっている（漢字・英字）
+
+	   知らせは、日付と同じく欄の下の案内行を書き換えて出す。
+	   新しい部品を足さないので、Spry の表示と場所が重ならない。
+	   ------------------------------------------------------------------ */
+	function zen2han(t) {
+		return String(t).replace(/[！-～]/g, function (c) {
+			return String.fromCharCode(c.charCodeAt(0) - 0xFEE0);
+		}).replace(/\u3000/g, ' ');
+	}
+
+	function normTel(raw) {
+		var t = zen2han(raw).replace(/[−ー―‐]/g, '-').replace(/\s+/g, '');
+		if (/^\+81/.test(t)) { t = '0' + t.slice(3).replace(/^-/, ''); }
+		var d = t.replace(/[^0-9]/g, '');
+		if (!/^0\d{9,10}$/.test(d)) { return null; }
+		/* ハイフンは打たれたものを残す。無ければ数字のまま。
+		   市外局番の桁は地域で違うので、こちらで区切らない。 */
+		return /-/.test(t) ? t : d;
+	}
+
+	/* 半角カタカナ（ﾔﾏﾀﾞ）も受ける。iPhone でも打てる文字なので、
+	   弾くと正しく名乗った人をはじくことになる。濁点・半濁点は
+	   後ろに独立して来るので、先に一文字へ合成してから直す。 */
+	var HAN_KANA = {
+		'ｱ':'ア','ｲ':'イ','ｳ':'ウ','ｴ':'エ','ｵ':'オ','ｶ':'カ','ｷ':'キ','ｸ':'ク','ｹ':'ケ','ｺ':'コ',
+		'ｻ':'サ','ｼ':'シ','ｽ':'ス','ｾ':'セ','ｿ':'ソ','ﾀ':'タ','ﾁ':'チ','ﾂ':'ツ','ﾃ':'テ','ﾄ':'ト',
+		'ﾅ':'ナ','ﾆ':'ニ','ﾇ':'ヌ','ﾈ':'ネ','ﾉ':'ノ','ﾊ':'ハ','ﾋ':'ヒ','ﾌ':'フ','ﾍ':'ヘ','ﾎ':'ホ',
+		'ﾏ':'マ','ﾐ':'ミ','ﾑ':'ム','ﾒ':'メ','ﾓ':'モ','ﾔ':'ヤ','ﾕ':'ユ','ﾖ':'ヨ',
+		'ﾗ':'ラ','ﾘ':'リ','ﾙ':'ル','ﾚ':'レ','ﾛ':'ロ','ﾜ':'ワ','ｦ':'ヲ','ﾝ':'ン',
+		'ｧ':'ァ','ｨ':'ィ','ｩ':'ゥ','ｪ':'ェ','ｫ':'ォ','ｬ':'ャ','ｭ':'ュ','ｮ':'ョ','ｯ':'ッ','ｰ':'ー'
+	};
+
+	function han2zenKana(t) {
+		return String(t).replace(/([\uFF61-\uFF9F])([ﾞﾟ]?)/g, function (m0, c, mark) {
+			var base = HAN_KANA[c];
+			if (!base) { return m0; }
+			if (!mark) { return base; }
+			var comp = base.charCodeAt(0) + (mark === 'ﾞ' ? 1 : 2);
+			return String.fromCharCode(comp);
+		});
+	}
+
+	function normKana(raw) {
+		var t = han2zenKana(String(raw));
+		t = zen2han(t).replace(/\s+/g, ' ').replace(/^ | $/g, '');
+		/* カタカナで打たれたら、ひらがなに直す */
+		t = t.replace(/[\u30A1-\u30F6]/g, function (c) {
+			return String.fromCharCode(c.charCodeAt(0) - 0x60);
+		});
+		if (!t) { return ''; }
+		if (!/^[\u3041-\u3096ー 　]+$/.test(t)) { return null; }
+		return t;
+	}
+
+	function textFields() {
+		var form = document.getElementById('SF-contact');
+		if (!form) { return; }
+
+		[{ id: 'value_tel_no_05', fn: normTel,
+		   ng: '電話番号として読み取れません。市外局番から続けてご記入ください。' },
+		 { id: 'value_text_04', fn: normKana,
+		   ng: 'ひらがなでご記入ください。' }].forEach(function (spec) {
+			var el = document.getElementById(spec.id);
+			if (!el) { return; }
+			var fs = el.closest ? el.closest('fieldset') : null;
+			var hint = fs ? fs.querySelector('.control2') : null;
+			var base = hint ? hint.textContent : '';
+
+			function say(msg) {
+				if (!hint) { return; }
+				hint.textContent = msg || base;
+				hint.setAttribute('data-lr-bad', msg ? '1' : '');
+			}
+
+			el.addEventListener('blur', function () {
+				var v = el.value.replace(/^\s+|\s+$/g, '');
+				if (!v) { say(''); return; }
+				var out = spec.fn(v);
+				if (out === null) { say(spec.ng); return; }
+				el.value = out;
+				say('');
+			});
+			el.addEventListener('input', function () { say(''); });
+		});
+	}
+
+	function boot() { run(); gate(); scrollToFirstError(); textFields(); }
 
 	if (document.readyState === 'loading') {
 		document.addEventListener('DOMContentLoaded', boot);
