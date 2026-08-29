@@ -6602,3 +6602,46 @@ html.lr-pre-done .lr-pre {
 	#SF-contents .lr-choice-s { row-gap: 22px; margin: 35px 0 40px; }
 	#SF-contents .lr-choice-s .lr-choice-txt { -ms-flex: 0 1 auto; flex: 0 1 auto; }
 }
+
+/* 表の中に差し込む形 ― コース案内の FACIAL CARE 先頭
+   ------------------------------------------------------------------
+   置き場所は、こちらで決めたのではなく **メニューが決めた**。
+
+     course_plan の FACIAL CARE 先頭
+       ●改善コース　クレストリバースケア　1g　60分　00,000円～
+     トップの「肌質改善メニュー」
+       うるおいハーブトリートメント　1g　￥00,000-
+
+   「クレストリバースケア」は公式の Herbs Crest Reverse Care、
+   「1g」はハーブの原末を量り売りする単位。**この店は既に
+   HERMOSA のコースを載せていた。** だからここに置くのは宣伝ではなく、
+   コース名の説明になる。
+
+   一方 trial の6品（フェイシャル／シミ美白／水素導入／ボディ／
+   ポールシェリー2種）には該当が無い。**だからトライアルには置かない。**
+   置ける場所と置けない場所を、推測ではなくメニューで判断した。
+
+   表の直前に入るので、上下の間合いだけ表に合わせる。
+   ------------------------------------------------------------------ */
+#SF-contents .lr-choice-inline {
+	margin: 10px 0 40px;
+}
+
+/* 狭い幅でのボタン ― 折り返したとき、矢印が宙に浮く
+   ------------------------------------------------------------------
+   inline-flex ＋ align-items:center で組んでいるので、字が2行に
+   なると矢印だけが2行の**上下中央**に置かれ、行の外に取り残される。
+   幅390pxで「HERMOSA（エルモサ）について／詳しく」と割れて実際に起きた。
+   狭いところでは字の流れに戻し、**最後の字のすぐ後ろ**に付ける。 */
+@media screen and (max-width: 900px) {
+	#SF-contents a.lr-choice-a {
+		display: block;
+		text-align: center;
+		line-height: 1.7;
+	}
+	#SF-contents a.lr-choice-a .lr-go {
+		display: inline-block;
+		margin-left: 10px;
+		vertical-align: -.1em;
+	}
+}
