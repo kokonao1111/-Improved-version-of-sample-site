@@ -6472,6 +6472,12 @@ html.lr-pre-done .lr-pre {
 #SF-contents #B000000420 ul.thumbnailList li .newslistHeadlineStyle {
 	margin: 0 0 20px;
 	font-size: 28px;
+	/* ★ 太さも要る。他の節は生成CSS（module_B00000008x.css）が
+	   font-weight: normal を当てているが、こちらには生成CSSが無いので
+	   <h4> の既定＝太字のまま出ていた。**寸法だけ写して太さを写し
+	   忘れると、同じ大きさの別物になる。** 明朝の太字は縦画と横画の
+	   差が潰れるので、並べるとすぐ分かる。 */
+	font-weight: normal;
 	text-align: center;
 }
 #SF-contents #B000000420 ul.thumbnailList li { width: 100%; }
@@ -6673,6 +6679,12 @@ html.lr-pre-done .lr-pre {
 #SF-contents #B000000420 ul.thumbnailList li .newslistHeadlineStyle {
 	margin: 0 0 20px;
 	font-size: 28px;
+	/* ★ 太さも要る。他の節は生成CSS（module_B00000008x.css）が
+	   font-weight: normal を当てているが、こちらには生成CSSが無いので
+	   <h4> の既定＝太字のまま出ていた。**寸法だけ写して太さを写し
+	   忘れると、同じ大きさの別物になる。** 明朝の太字は縦画と横画の
+	   差が潰れるので、並べるとすぐ分かる。 */
+	font-weight: normal;
 	text-align: center;
 }
 #SF-contents #B000000420 ul.thumbnailList li { width: 100%; }
