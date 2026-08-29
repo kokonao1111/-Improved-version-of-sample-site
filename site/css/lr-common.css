@@ -6570,3 +6570,35 @@ html.lr-pre-done .lr-pre {
 	#SF-contents .lr-choice-row { column-gap: 20px; row-gap: 20px; margin-top: 30px; }
 	#SF-contents .lr-choice-row figure { width: min(300px, 100%); }
 }
+
+/* 短い形 ― 他ページで「これを使っています」とだけ言う
+   ------------------------------------------------------------------
+   「初めての方へ」にも置きたい、という依頼。ただしトップと同じ塊を
+   そのまま並べると、同じ文章が2ページに出て、繰り返しに見える。
+
+   ■ 置き場所は文章が決めた
+   このページには既にこう書いてある。
+
+     「使用する粧材や機器は安全性が高く、効果的なものを揃えております」
+
+   **抽象的な約束**である。その直後に商材の名前と公式への線を置くと、
+   同じ一文が**確かめられる事実**に変わる。宣伝を足したのではなく、
+   既にある文の裏づけを置いた形になる。だから見出しも要らない。
+
+   ■ 短くする
+   写真は300×200（トップの400×400より一段小さい）。文章は1行。
+   3枚の列は付けない。**主役はトップに置き、ここは念押し**にする。
+   ------------------------------------------------------------------ */
+#SF-contents .lr-choice-s {
+	column-gap: 40px;
+	margin: 50px 0 60px;
+}
+#SF-contents .lr-choice-s .lr-choice-img { width: 300px; }
+#SF-contents .lr-choice-s .lr-choice-txt { -ms-flex: 0 1 380px; flex: 0 1 380px; }
+#SF-contents .lr-choice-s .lr-choice-name { margin-bottom: 12px; font-size: 20px; }
+#SF-contents .lr-choice-s .lr-choice-lead { margin-bottom: 20px; }
+#SF-contents .lr-choice-s a.lr-choice-a { padding: 11px 20px; font-size: 14px; }
+@media screen and (max-width: 900px) {
+	#SF-contents .lr-choice-s { row-gap: 22px; margin: 35px 0 40px; }
+	#SF-contents .lr-choice-s .lr-choice-txt { -ms-flex: 0 1 auto; flex: 0 1 auto; }
+}
