@@ -6690,3 +6690,44 @@ html.lr-pre-done .lr-pre {
 #SF-contents #B000000420 ul.thumbnailList li { width: 100%; }
 #SF-contents #B000000420 { margin: 110px 0 0; }
 #SF-contents #B000000024.lr-choice-b { margin-top: 10px; }
+
+/* ══════════════════════════════════════════════════════════════
+   見出しの太さを1つに揃える
+   ──────────────────────────────────────────────────────────────
+   指摘：「店舗のご案内だけフォントが違うくない？」
+
+   数えると、**違うのは「店舗のご案内」ではなく、そちらが多数派**だった。
+
+     .newslistHeadlineStyle    太字 68個 ／ 400 21個
+
+   なぜ割れていたか。生成CSS（module_B0000000xx.css）が
+   font-weight を書いている区画と、**書いていない区画**があり、
+   書いていない方は <h3>/<h4> のブラウザ既定＝太字がそのまま出る。
+   意図して分けたのではなく、生成側の書き漏れが表に出ていた。
+
+     bold と明記   B000000031 ／ B000000169（店舗のご案内）
+     normal と明記 その他の節見出し
+     指定なし      札の見出し（15/16/22/24px）→ 既定の太字
+
+   ■ どちらに揃えるか
+   400 に揃える。理由は3つ。
+     ・この店の見出しは明朝。**明朝の太字は縦画と横画の差が潰れる。**
+       ナビ（12px太字）で一度直したのと同じ話が、見出しでも起きていた
+     ・強弱は級数が持てばよい（28 / 24 / 22 / 18 / 16 / 15px と既にある）
+     ・節見出しの多く（21個）が既に400。**大きい方が細い**のに
+       小さい札の題が太いのは、階層の逆転
+
+   ■ 越え方
+   生成側は #Bxxx ul.thumbnailList li .newslistHeadlineStyle（id1+class2+要素2）。
+   #SF-contents と要素名を足して id1+class2+要素3 にする。
+   ※ 「詳しく見る▼」など押せるものは h2.headlineStyle で別系統。
+     そちらは既に400にしてあるので、ここでは触らない。
+   ══════════════════════════════════════════════════════════════ */
+#SF-contents ul.thumbnailList li h2.newslistHeadlineStyle,
+#SF-contents ul.thumbnailList li h3.newslistHeadlineStyle,
+#SF-contents ul.thumbnailList li h4.newslistHeadlineStyle,
+#SF-contents h2.newslistHeadlineStyle,
+#SF-contents h3.newslistHeadlineStyle,
+#SF-contents h4.newslistHeadlineStyle {
+	font-weight: 400;
+}
