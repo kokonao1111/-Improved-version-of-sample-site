@@ -6313,3 +6313,160 @@ html.lr-pre-done .lr-pre {
 	box-shadow: inset 0 0 0 1px #A4896A, inset 0 0 0 2px #D9C79E;
 	color: #ffffff;
 }
+
+
+/* ══════════════════════════════════════════════════════════════
+   私たちが使うもの ― 主力の美容液を、設備の一覧から引き上げる
+   ──────────────────────────────────────────────────────────────
+   聞き取り：
+     ・エルモサという美容液を使う
+     ・このお店はそれを売り出していきたい
+     ・「私たちは使っています」＝ いいものだからこその安心・信頼
+     ・その公式サイトへ誘導したい
+
+   ■ いまどう置かれていたか
+   店舗案内の About に、**10項目の一覧の1行**として入っていた。
+
+     日本エステティック協会認定エステサロン
+     国際美容医療協会認定エステティシャン
+     ポールシェリー認定エステサロン
+     エラバシェ認定エステサロン
+     エルモサ導入サロン        ← これ
+     シャワー設備有            ← と同格
+     …
+
+   **売りにしたいものが「シャワー設備有」と同じ重さで置かれている。**
+   一覧の中では、読む人は資格の羅列としてしか受け取らない。
+
+   ■ 何を作ったか
+   トップに1つの節を足した。位置は「おすすめプラン」の後、
+   「営業日のご案内」の前 ── **内容の話が終わる最後**で、
+   案内の帯に入る直前。ここが「私たちについて」を置ける唯一の場所。
+
+   ■ 「売り込み」ではなく「私たちが選んでいるもの」として組む
+   聞き取りの中心は **信頼** だった（いいものだからこその安心）。
+   だから値段も効能も出さない。写真・名前・ひとこと・公式への線だけ。
+   見出しも「エルモサのご紹介」ではなく **「私たちが使うもの」**。
+   主語を店に置くと、宣伝ではなく姿勢の表明になる。
+
+   ■ 寸法はすべて既存の数から採る
+   写真400×400（staff と同じ正方）／段間50px（index の3列と同じ）／
+   罫1px #D9C79E（地図・予約ボタンと同じ）／
+   リンクは 2px #A4896A（この店の「押せる印」）。
+   新しい色・新しい形は1つも足していない。
+   ══════════════════════════════════════════════════════════════ */
+#SF-contents .lr-choice-b {
+	display: -ms-flexbox;
+	display: flex;
+	-ms-flex-align: center;
+	align-items: center;
+	-ms-flex-pack: center;
+	justify-content: center;
+	column-gap: 50px;
+	margin-top: 10px;
+}
+#SF-contents .lr-choice-img {
+	-ms-flex: 0 0 auto;
+	flex: 0 0 auto;
+	box-sizing: border-box;
+	width: 400px;
+	padding: 3px;
+	background: #F5F1E7;
+	border: 1px solid #D9C79E;
+}
+#SF-contents .lr-choice-img img {
+	display: block;
+	width: 100%;
+	height: auto;
+}
+#SF-contents .lr-choice-txt {
+	-ms-flex: 0 1 460px;
+	flex: 0 1 460px;
+	min-width: 0;
+}
+#SF-contents .lr-choice-name {
+	margin: 0 0 18px;
+	font-size: 24px;
+	line-height: 1.5;
+	letter-spacing: .08em;
+	color: #614E3B;
+}
+#SF-contents .lr-choice-lead {
+	margin: 0 0 14px;
+	font-size: 14px;
+	line-height: 1.9;
+	color: #6E5C48;
+}
+/* 「どう扱っているか」は本文より一段下げる。事実の補足で、売り文句ではない */
+#SF-contents .lr-choice-note {
+	margin: 0 0 26px;
+	font-size: 12px;
+	line-height: 1.8;
+	color: #6E5C48;
+}
+#SF-contents .lr-choice-go { margin: 0; }
+#SF-contents a.lr-choice-a {
+	display: -ms-inline-flexbox;
+	display: inline-flex;
+	-ms-flex-align: center;
+	align-items: center;
+	column-gap: 12px;
+	box-sizing: border-box;
+	padding: 14px 26px;
+	border: 2px solid #A4896A;
+	color: #614E3B;
+	font-family: 'Noto Serif JP', "ヒラギノ明朝 ProN W3", "Hiragino Mincho ProN", serif;
+	font-size: 15px;
+	letter-spacing: .1em;
+	text-decoration: none;
+	-webkit-transition: background-color var(--lr-t) var(--lr-e), color var(--lr-t) var(--lr-e);
+	transition: background-color var(--lr-t) var(--lr-e), color var(--lr-t) var(--lr-e);
+}
+#SF-contents a.lr-choice-a:hover,
+#SF-contents a.lr-choice-a:focus {
+	background: #A4896A;
+	color: #ffffff;
+}
+/* 外部サイトへ出ることを、字で言わずに示す小さな印 */
+#SF-contents a.lr-choice-a .lr-go { color: currentColor; }
+
+/* 狭いところでは積む。写真は幅なりに、上限は元の400px */
+@media screen and (max-width: 900px) {
+	#SF-contents .lr-choice-b {
+		-ms-flex-direction: column;
+		flex-direction: column;
+		row-gap: 30px;
+	}
+	#SF-contents .lr-choice-img { width: min(400px, 100%); }
+	#SF-contents .lr-choice-txt { -ms-flex: 0 1 auto; flex: 0 1 auto; text-align: center; }
+	#SF-contents .lr-choice-name { font-size: 20px; }
+}
+
+/* 一覧の中から外へ出る1行（店舗案内の「◯◯導入サロン」）。
+   囲みは付けない。資格の並びの中でそこだけ箱になると、
+   一覧が壊れる。字の色と細い下線だけで「押せる」を示す。 */
+#SF-contents a.lr-inline-a {
+	color: #944A38;
+	text-decoration: none;
+	border-bottom: 1px solid #D9C79E;
+	-webkit-transition: border-color var(--lr-t) var(--lr-e);
+	transition: border-color var(--lr-t) var(--lr-e);
+}
+#SF-contents a.lr-inline-a:hover,
+#SF-contents a.lr-inline-a:focus { border-bottom-color: #944A38; }
+#SF-contents a.lr-inline-a .lr-go { font-size: .85em; margin-left: 6px; }
+
+/* ★ 新しく足した節には、生成CSSが無い
+   既存の節は module_B00000019x.css が
+     #B000000190 ul.thumbnailList li .newslistHeadlineStyle
+       { font-size:28px; text-align:center; margin-bottom:20px }
+   を当てている。こちらで足した #B000000420 にはそれが無いので、
+   節見出しではなく素の h4 として出ていた（左寄せ・小さい）。
+   **既存の節から採った同じ数**を与えて、見え方をそろえる。 */
+#SF-contents #B000000420 ul.thumbnailList li .newslistHeadlineStyle {
+	margin: 0 0 20px;
+	font-size: 28px;
+	text-align: center;
+}
+#SF-contents #B000000420 ul.thumbnailList li { width: 100%; }
+#SF-contents #B000000420 { margin-bottom: 0; }

@@ -14,6 +14,7 @@ course_gaz3.jpg
 course_plan_image.jpg
 garage_gaz.jpg
 head_bg.png
+hermosa.jpg
 map.jpg
 ogp.jpg
 qa_img.jpg
