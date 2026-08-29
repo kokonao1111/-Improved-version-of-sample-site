@@ -95,7 +95,17 @@
 	   li.SF-simpleImg は shopinfo の店の写真6枚。棚卸しで
 	   「どの印にも入っていない唯一の写真の並び」と分かったので足した。 */
 	var SEL_SHEET = '#SF-contents .thumbnailList > li, .lr-nav3-list > li, ' +
-		'.lr-tiles > li, .lr-cal-wrap, #SF-contents li.SF-simpleImg';
+		'.lr-tiles > li, .lr-cal-wrap, #SF-contents li.SF-simpleImg, ' +
+		/* ★ HERMOSA の区画。写真だけを札として満たす。
+		   ここを足すまで、周りが全部ふわりと現れる中で**この塊だけが
+		   最初から在る**状態だった。動かさない判断も有り得たが、
+		   同じ頁で扱いが割れているのは、意図ではなく漏れに見える。
+
+		   足すのは写真だけ。名前・本文・ボタンには印を付けない。
+		   ・本文  … この店では本文を動かしていない（読み始めを遅らせない）
+		   ・ボタン … 予約と外部への線は、出てから押せるまでの間を作らない
+		     （既に「予約導線は動かさない」と決めてある。同じ扱いにする） */
+		'#SF-contents .lr-choice-img, #SF-contents .lr-choice-row > figure';
 
 	/* ── 節の見出し：満ちるもの ──
 	   .headlineStyle には「詳しく見る▼」の開閉（h2 > span.csOpenClose）も
@@ -104,7 +114,7 @@
 	var SEL_HEAD = '#SF-contents h2.headlineStyle';
 
 	/* ── 札の名前：字が書かれるもの。左寄せ・下罫つきの題（h3/h4） ── */
-	var SEL_NAME = '#SF-contents .newslistHeadlineStyle';
+	var SEL_NAME = '#SF-contents .newslistHeadlineStyle, #SF-contents .lr-choice-name';
 
 	/* ── 装飾：節の区切り。::before に絵を置いてある9ブロック ── */
 	var SEL_ORN = '#B000000081, #B000000079, #B000000072, #B000000125, #B000000142, ' +
