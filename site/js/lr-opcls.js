@@ -27,6 +27,9 @@
 (function () {
 	'use strict';
 
+	/* 他を閉じている最中かどうか。呼び合いを止めるための歯止め */
+	var closing = false;
+
 	function init() {
 		var marks = document.querySelectorAll('.csOpenClose');
 		if (!marks.length) { return; }
@@ -55,6 +58,43 @@
 					e.preventDefault();
 					title.click();
 				}
+			});
+
+			/* ★ 同じ段では1つだけ開く
+			   開いた中身は版面いっぱい（1000px）に広げてある。2つ同時に
+			   開くと、広がった面どうしが重なって字が読めなくなる。
+			   押した札と同じ段の、他の開いているものを閉じる。
+
+			   閉じる操作は csLibrary の click ハンドラに任せる
+			   （こちらで class や高さを直接いじると、向こうの持っている
+			     状態と食い違う）。開いているものの見出しを押すだけ。 */
+			title.addEventListener('click', function () {
+				/* ★ 歯止めが要る。
+				   閉じるために他の見出しを click すると、**その見出しの
+				   同じ処理が走って、こちらを閉じ返してくる**。実際に
+				   互いを呼び合って、結局2つとも開いたままになった。
+				   閉じている最中は、この処理を止める。 */
+				if (closing) { return; }
+				/* ★ closest('[id^="SF-row"]') では掴めない。
+				   列の中に <div id="SF-row2 .SF-col1"> という、**空白を含む id**
+				   の入れ物があり、そちらが先に一致してしまう（実測：段ではなく
+				   列の中を探していたので、他の開いているものが1つも見つからず、
+				   2つ開いたままになった）。id がちょうど SF-row+数字 のものまで登る。 */
+				var row = title.parentNode;
+				while (row && row.nodeType === 1 && !/^SF-row\d+$/.test(row.id || '')) {
+					row = row.parentNode;
+				}
+				if (!row || row.nodeType !== 1) { return; }
+				setTimeout(function () {
+					if (title.className.indexOf('js-opcls-open') < 0) { return; }
+					var others = row.querySelectorAll('.js-opcls-open');
+					closing = true;
+					try {
+						Array.prototype.forEach.call(others, function (o) {
+							if (o !== title) { o.click(); }
+						});
+					} finally { closing = false; }
+				}, 0);
 			});
 
 			/* 開いたか閉じたかは csLibrary が付け外しする class でしか分からない。

@@ -6732,21 +6732,102 @@ html.lr-pre-done .lr-pre {
 	font-weight: 400;
 }
 
-/* ロゴの上下の空きを釣り合わせる
+/* ロゴの上下の空きを詰めて釣り合わせる
    ------------------------------------------------------------------
-   指摘：「ロゴの周りの空白のバランスが悪い」
+   指摘：「ロゴの周りの空白のバランスが悪い」→「開きすぎ」
 
-   実測すると、上127px ／ 下25px で5倍の開きがあった。
+   実測は 上127px ／ 下25px。**一度こちらは下を100pxに広げて
+   釣り合わせたが、それは方向が逆だった。** 釣り合ってはいても、
+   ロゴが広い余白に浮いてしまう。**減らして釣り合わせる**のが正しい。
 
-   上が広いのは、**前の段の左右で高さが違う**ため。
+   上が広い理由は、前の段の左右で高さが違うこと。
      営業日の段  左（カレンダー）356px ／ 右（Instagram・LINE）472px
-   左の列に116pxの空きが残り、そこへ連絡先の段が続くので、
-   ロゴの上だけが大きく空く。段の作りに由来するので、上は詰められない。
+   左の列に116pxの空きが残り、そこへ連絡先の段が続く。
 
-   詰められない側に合わせて、**下を広げて釣り合わせる**。
-   25px → 100px。上127・下125でほぼ対称になる。
-   段は flex なので、右の地図も同じ高さに伸びる（天地の揃いは保たれる）。
+   ■ 段ごと引き上げるのは駄目だった
+   #SF-row3 に margin-top:-60px を当てたら、**右の列の地図が
+   前の段の LINE の文章に重なった**（「お得なキャンペーン情報を
+   お届けします」が地図の下に隠れた）。前の段の右列は下端まで
+   中身が詰まっているので、段を上げると必ず食い込む。撤回。
+
+   ■ 左の列だけ引き上げる
+   段ごとは駄目でも、**左の列だけなら上げられる**。左の列の上には
+   前の段の空き（116px）しか無いので、重なる相手がいない。
+   右の地図は動かさないので、LINE の文章にも食い込まない。
+
+   結果：上67px ／ 下60px。釣り合ったうえで、余白は半分になる。
+   地図の天とは 50px ずれるが、**左の列の上は空白なので、
+   見えるのはロゴと地図の上端の関係だけ**。紋章が少し上に在る形になる。
    ------------------------------------------------------------------ */
+#SF-contents #B000000031 {
+	margin-top: -60px;
+}
 #SF-contents #B000000031 ul.thumbnailList li .newslistHeadlineStyle:has(> img) {
-	margin-bottom: 100px;
+	margin-bottom: 60px;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   「詳しく見る」で開く中身を、版面いっぱいに出す
+   ──────────────────────────────────────────────────────────────
+   実測：版面1000pxに対し、開いた中身は **320px** しかなかった。
+   3列の札のうち1列ぶんに閉じ込められていたため、料金と説明が
+   その幅に押し込まれ、「日焼け後のケア」「出はじめた。年々、シミが」
+   のように不自然な位置で折り返していた。
+
+   「詳しく見る」は**その札1枚の詳細**なので、3列の中に収まって
+   いる必然が無い。押した札の下に、幅いっぱいで開く。
+
+   ■ 出し方
+   中身は列（.SF-col1/2/3）の中にあり、**列の最後の要素**。
+   開いたときの縦の帯には、他の列の札はもう無い（札は上で終わる）。
+   だから幅を1000pxにして、列の位置ぶん左へ戻せば、
+   段の左端から右端まで届く。列の左位置は実測で 0 / 340 / 680。
+
+   ■ 同じ段で2つ開くと重なる
+   だから **同じ段では1つだけ開く**ようにする（js/lr-opcls.js）。
+   もともと12枚とも閉じている作りなので、1つずつ見る流れに合う。
+   ══════════════════════════════════════════════════════════════ */
+#SF-contents .SF-col1 .js-opcls-contents,
+#SF-contents .SF-col2 .js-opcls-contents,
+#SF-contents .SF-col3 .js-opcls-contents {
+	box-sizing: border-box;
+	width: 1000px;
+	position: relative;
+	z-index: 1;
+}
+#SF-contents .SF-col2 .js-opcls-contents { margin-left: -340px; }
+#SF-contents .SF-col3 .js-opcls-contents { margin-left: -680px; }
+
+/* 中の組み方も、幅が広がったぶん見直す。
+   写真100×80は小さすぎるので、器の左に置いて文章を右へ流す。 */
+#SF-contents .js-opcls-contents ul.thumbnailList > li {
+	display: -ms-flexbox;
+	display: flex;
+	-ms-flex-align: start;
+	align-items: flex-start;
+	column-gap: 30px;
+}
+#SF-contents .js-opcls-contents ul.thumbnailList > li > .thumbnail {
+	-ms-flex: 0 0 auto;
+	flex: 0 0 auto;
+}
+#SF-contents .js-opcls-contents ul.thumbnailList > li > .newslistdata {
+	-ms-flex: 1 1 auto;
+	flex: 1 1 auto;
+	min-width: 0;
+}
+
+/* 狭いところでは元どおり列の幅で、上下に積む */
+@media screen and (max-width: 999px) {
+	#SF-contents .SF-col1 .js-opcls-contents,
+	#SF-contents .SF-col2 .js-opcls-contents,
+	#SF-contents .SF-col3 .js-opcls-contents {
+		width: auto;
+		margin-left: 0;
+	}
+	#SF-contents .js-opcls-contents ul.thumbnailList > li {
+		-ms-flex-direction: column;
+		flex-direction: column;
+		row-gap: 12px;
+	}
 }
