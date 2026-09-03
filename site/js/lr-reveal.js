@@ -186,7 +186,15 @@
 		var heads = list(SEL_HEAD).filter(function (el) {
 			return !el.querySelector('.csOpenClose');
 		});
-		var names = list(SEL_NAME);
+		/* ★ 字が書かれる動きは、字にだけ当てる
+		   連絡先のロゴは <h4 class="newslistHeadlineStyle"> の中に
+		   <img> だけが入っている（題の位置に絵を置いた形）。印の条件が
+		   クラス名だけだったので、**絵に「字が書かれる」掃き出しが
+		   掛かっていた**。左から拭うように出るので、紋章としては不自然。
+		   中に字を持たない見出しは、この印から外す。 */
+		var names = list(SEL_NAME).filter(function (el) {
+			return (el.textContent || '').replace(/\s/g, '') !== '';
+		});
 		var orns = list(SEL_ORN);
 
 		if (!rules.length && !sheets.length && !heads.length &&
