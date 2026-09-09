@@ -4454,14 +4454,6 @@ table.trial td.t_r {
 	min-height: 60px;
 }
 
-/* ── 扉写真の左右の矢印は携帯では出さない ────────────────────
-   flexslider は touch:true が既定で、fade でも除外していない
-   （cgiFolder/tieredworks_libs.js の "touch:!0"）。
-   指で払えば送れるので、写真の上に丸い矢印を2つ重ねる必要がない。
-   PCでは押せる手段が要るので残す。 */
-@media screen and (max-width: 640px) {
-	.flex-direction-nav { display: none; }
-}
 /* 左端が4つともばらばらだった（実測）。
      写真   x137〜450
      名前   x147〜450  ← 生成CSSの margin-left:10px
@@ -6832,83 +6824,10 @@ html.lr-pre-done .lr-pre {
 	}
 }
 
-/* ══════════════════════════════════════════════════════════════
-   扉写真の左右の矢印 ― 黒い丸をやめ、店の線で描く
-   ──────────────────────────────────────────────────────────────
-   もとは assets/SF_direction_nav.png（57×27）を敷いていた。
-   画素を読むと **黒 rgb(0,0,0) を透明度40%** で置いた丸。
-   このサイトの配色に黒は無い（金茶・焦茶・生成り・差し色の赤茶だけ）。
-   予約ボタン・段の矢印・記号と同じで、型にした店の素材が残っていた。
-
-   ■ 画像をやめる
-   線を2本引けば描ける形なので、外の絵に頼らない。
-   ・面   … 生成り rgba(245,241,231,.92)。写真の上に置くので少し透ける
-   ・枠   … 1pxの金 #A4896A（この店の囲いはすべてこの太さ）
-   ・矢印 … 45度に振った四角の2辺。携帯メニューの×印、段の菱形と同じ語彙
-
-   ■ 出方は変えない
-   写真に触れたときだけ現れる（もとの opacity 0 → .8）。
-   常に出していると、写真の上に部品が2つ居座る。
-   ══════════════════════════════════════════════════════════════ */
-#B000000204 .flex-direction-nav a {
-	box-sizing: border-box;
-	width: 46px;
-	height: 46px;
-	margin-top: -23px;
-	background: rgba(245, 241, 231, .92);
-	border: 1px solid #A4896A;
-	border-radius: 0;
-	text-indent: 0;
-	overflow: hidden;
-	-webkit-transition: opacity var(--lr-t, 200ms) var(--lr-e, ease),
-	                    background-color var(--lr-t, 200ms) var(--lr-e, ease);
-	transition: opacity var(--lr-t, 200ms) var(--lr-e, ease),
-	            background-color var(--lr-t, 200ms) var(--lr-e, ease);
-}
-/* 字（Previous / Next）は読み上げに残したまま、目には出さない */
-#B000000204 .flex-direction-nav a {
-	font-size: 0;
-	line-height: 0;
-	color: transparent;
-}
-#B000000204 .flex-direction-nav a:before {
-	content: "";
-	position: absolute;
-	top: 50%;
-	left: 50%;
-	width: 11px;
-	height: 11px;
-	margin: -6px 0 0 -6px;
-	border-top: 1px solid #6E5C48;
-	border-right: 1px solid #6E5C48;
-	-webkit-transform: rotate(45deg);
-	transform: rotate(45deg);
-}
-#B000000204 .flex-direction-nav .flex-prev:before {
-	margin-left: -4px;
-	-webkit-transform: rotate(-135deg);
-	transform: rotate(-135deg);
-}
-/* ── 出入りは「濃さ」だけ。横には動かさない ──────────────────
-   生成CSSは、触れていない時は画面の外（left/right −36px）に置き、
-   触れたら 20px の位置へ **all .3s で滑らせる** 作りだった。
-   指を離すと、**まだ薄く見えているうちに横へ飛ぶ**（実測：
-   opacity が 0 になる前に left が −36px へ戻る）。
-   このサイトの動きは「線が引かれる」と「面が満ちる」の2つだけで、
-   横滑りはその語彙に無い。位置は最初から 20px に留め、
-   面が満ちる／引くだけで出し入れする。
-   （640px 以下では矢印そのものを出さない。上の @media を参照） */
-#B000000204 .flex-direction-nav .flex-prev { left: 20px; }
-#B000000204 .flex-direction-nav .flex-next { right: 20px; }
-
-#B000000204 .flexslider:hover .flex-next,
-#B000000204 .flexslider:hover .flex-prev { opacity: .92; }
-#B000000204 .flexslider:hover .flex-next:hover,
-#B000000204 .flexslider:hover .flex-prev:hover {
-	opacity: 1;
-	background: #A4896A;
-}
-#B000000204 .flex-direction-nav a:hover:before {
-	border-top-color: #ffffff;
-	border-right-color: #ffffff;
-}
+/* ── 扉写真の左右の矢印は出さない ──────────────────────────
+   index.html の flexslider 初期化で directionNav: false にした。
+   もとの矢印は assets/SF_direction_nav.png（黒 40% の丸）で、
+   この店の配色に黒は無い。生成りの箱＋山形、線＋矢羽の2案で
+   描き直したが、どちらもこの店のものに見えなかったので、
+   いったん無しにした。写真は7秒ごとに自動で送り、指では払える。
+   ここに CSS は要らない（要素そのものを作らないため）。 */
