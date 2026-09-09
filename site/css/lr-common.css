@@ -6889,6 +6889,18 @@ html.lr-pre-done .lr-pre {
 	-webkit-transform: rotate(-135deg);
 	transform: rotate(-135deg);
 }
+/* ── 出入りは「濃さ」だけ。横には動かさない ──────────────────
+   生成CSSは、触れていない時は画面の外（left/right −36px）に置き、
+   触れたら 20px の位置へ **all .3s で滑らせる** 作りだった。
+   指を離すと、**まだ薄く見えているうちに横へ飛ぶ**（実測：
+   opacity が 0 になる前に left が −36px へ戻る）。
+   このサイトの動きは「線が引かれる」と「面が満ちる」の2つだけで、
+   横滑りはその語彙に無い。位置は最初から 20px に留め、
+   面が満ちる／引くだけで出し入れする。
+   （640px 以下では矢印そのものを出さない。上の @media を参照） */
+#B000000204 .flex-direction-nav .flex-prev { left: 20px; }
+#B000000204 .flex-direction-nav .flex-next { right: 20px; }
+
 #B000000204 .flexslider:hover .flex-next,
 #B000000204 .flexslider:hover .flex-prev { opacity: .92; }
 #B000000204 .flexslider:hover .flex-next:hover,
