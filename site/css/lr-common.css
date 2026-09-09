@@ -6831,3 +6831,72 @@ html.lr-pre-done .lr-pre {
 		row-gap: 12px;
 	}
 }
+
+/* ══════════════════════════════════════════════════════════════
+   扉写真の左右の矢印 ― 黒い丸をやめ、店の線で描く
+   ──────────────────────────────────────────────────────────────
+   もとは assets/SF_direction_nav.png（57×27）を敷いていた。
+   画素を読むと **黒 rgb(0,0,0) を透明度40%** で置いた丸。
+   このサイトの配色に黒は無い（金茶・焦茶・生成り・差し色の赤茶だけ）。
+   予約ボタン・段の矢印・記号と同じで、型にした店の素材が残っていた。
+
+   ■ 画像をやめる
+   線を2本引けば描ける形なので、外の絵に頼らない。
+   ・面   … 生成り rgba(245,241,231,.92)。写真の上に置くので少し透ける
+   ・枠   … 1pxの金 #A4896A（この店の囲いはすべてこの太さ）
+   ・矢印 … 45度に振った四角の2辺。携帯メニューの×印、段の菱形と同じ語彙
+
+   ■ 出方は変えない
+   写真に触れたときだけ現れる（もとの opacity 0 → .8）。
+   常に出していると、写真の上に部品が2つ居座る。
+   ══════════════════════════════════════════════════════════════ */
+#B000000204 .flex-direction-nav a {
+	box-sizing: border-box;
+	width: 46px;
+	height: 46px;
+	margin-top: -23px;
+	background: rgba(245, 241, 231, .92);
+	border: 1px solid #A4896A;
+	border-radius: 0;
+	text-indent: 0;
+	overflow: hidden;
+	-webkit-transition: opacity var(--lr-t, 200ms) var(--lr-e, ease),
+	                    background-color var(--lr-t, 200ms) var(--lr-e, ease);
+	transition: opacity var(--lr-t, 200ms) var(--lr-e, ease),
+	            background-color var(--lr-t, 200ms) var(--lr-e, ease);
+}
+/* 字（Previous / Next）は読み上げに残したまま、目には出さない */
+#B000000204 .flex-direction-nav a {
+	font-size: 0;
+	line-height: 0;
+	color: transparent;
+}
+#B000000204 .flex-direction-nav a:before {
+	content: "";
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	width: 11px;
+	height: 11px;
+	margin: -6px 0 0 -6px;
+	border-top: 1px solid #6E5C48;
+	border-right: 1px solid #6E5C48;
+	-webkit-transform: rotate(45deg);
+	transform: rotate(45deg);
+}
+#B000000204 .flex-direction-nav .flex-prev:before {
+	margin-left: -4px;
+	-webkit-transform: rotate(-135deg);
+	transform: rotate(-135deg);
+}
+#B000000204 .flexslider:hover .flex-next,
+#B000000204 .flexslider:hover .flex-prev { opacity: .92; }
+#B000000204 .flexslider:hover .flex-next:hover,
+#B000000204 .flexslider:hover .flex-prev:hover {
+	opacity: 1;
+	background: #A4896A;
+}
+#B000000204 .flex-direction-nav a:hover:before {
+	border-top-color: #ffffff;
+	border-right-color: #ffffff;
+}
