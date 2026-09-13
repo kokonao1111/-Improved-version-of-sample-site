@@ -119,14 +119,67 @@
 			});
 		}
 
+		var batch = [];
+		var batchAt = 0;
+		var flushTimer = null;
+		var lastStart = 0;
+
+		/* 観測の通知と掃き取りが別々に来るので、最後の印から 120ms（最長 250ms）待って1つの組にする */
 		function take(el) {
-			if (el.hasAttribute('data-lr-in')) { return; }
-			el.setAttribute('data-lr-in', '');
-			try { io.unobserve(el); } catch (e) {}
 			var i = left.indexOf(el);
-			if (i >= 0) { left.splice(i, 1); }
+			if (i < 0) { return; }
+			left.splice(i, 1);
+			try { io.unobserve(el); } catch (e) {}
+			batch.push(el);
+			var now = new Date().getTime();
+			if (!batchAt) { batchAt = now; }
+			if (flushTimer) { window.clearTimeout(flushTimer); }
+			var wait = batchAt + 250 - now;
+			if (wait > 120) { wait = 120; }
+			if (wait < 0) { wait = 0; }
+			flushTimer = window.setTimeout(flush, wait);
 			if (!left.length) { off(); }
-			check(el);
+		}
+
+		/* 同時に入ったものは、上から順・同じ段は左から順に出す。
+		   前の組で予定した開始より前には出さない（速く送っても順が崩れない） */
+		function hidden(el) {
+			for (var p = el; p && p.nodeType === 1; p = p.parentNode) {
+				var c = window.getComputedStyle(p);
+				if (c.display === 'none') { return true; }
+				if (c.overflow === 'hidden' && p.offsetHeight === 0) { return true; }
+			}
+			return false;
+		}
+
+		function flush() {
+			flushTimer = null;
+			batchAt = 0;
+			var els = batch;
+			batch = [];
+			var now = new Date().getTime();
+			var items = els.map(function (el) {
+				var r = el.getBoundingClientRect();
+				return { el: el, top: r.top, left: r.left, hid: hidden(el) };
+			});
+			items.sort(function (a, b) { return (a.top - b.top) || (a.left - b.left); });
+			var floor = SP ? 0 : Math.min(600, Math.max(0, lastStart - now));
+			var row = 0, col = 0, rowTop = null, maxD = 0;
+			items.forEach(function (it) {
+				var d = 0;
+				/* 閉じた「詳しく見る」の中など、見えないものは段に数えない */
+				if (!SP && !it.hid) {
+					if (rowTop === null) { rowTop = it.top; }
+					else if (it.top - rowTop > 40) { row++; col = 0; rowTop = it.top; }
+					else { col++; }
+					d = floor + Math.min(1000, row * 200 + Math.min(col, 5) * 60);
+				}
+				it.el.style.setProperty('--lr-d', Math.round(d) + 'ms');
+				if (d > maxD) { maxD = d; }
+				it.el.setAttribute('data-lr-in', '');
+				check(it.el);
+			});
+			lastStart = now + maxD;
 		}
 
 		function check(el) {
@@ -190,12 +243,6 @@
 		els.forEach(function (el) {
 			el.setAttribute('data-lr', kind);
 			if (SP) { return; }
-			if (kind === 'sheet') {
-				var n = 0;
-				for (var s = el.previousElementSibling; s; s = s.previousElementSibling) { n++; }
-				el.style.setProperty('--lr-d', (n < 5 ? n : 5) * 100 + 'ms');
-				return;
-			}
 			if (kind === 'name') {
 				var w = 0;
 				try { w = el.getBoundingClientRect().width; } catch (e) { w = 0; }

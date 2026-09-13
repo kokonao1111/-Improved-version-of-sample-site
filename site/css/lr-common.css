@@ -1024,8 +1024,8 @@ html.lr-io [data-lr="sheet"][data-lr-in] {
 
 html.lr-io [data-lr="head"] { opacity: 0; }
 html.lr-io [data-lr="head"][data-lr-in] {
-	-webkit-animation: lr-fill var(--lr-t-in, 1000ms) var(--lr-e-draw, ease-out) both;
-	animation: lr-fill var(--lr-t-in, 1000ms) var(--lr-e-draw, ease-out) both;
+	-webkit-animation: lr-fill var(--lr-t-in, 1000ms) var(--lr-e-draw, ease-out) var(--lr-d, 0ms) both;
+	animation: lr-fill var(--lr-t-in, 1000ms) var(--lr-e-draw, ease-out) var(--lr-d, 0ms) both;
 }
 
 html.lr-io [data-lr="name"] {
@@ -1033,14 +1033,14 @@ html.lr-io [data-lr="name"] {
 	clip-path: inset(0 100% 0 0);
 }
 html.lr-io [data-lr="name"][data-lr-in] {
-	-webkit-animation: lr-write var(--lr-t-name, 1000ms) var(--lr-e-draw, ease-out) var(--lr-t, 200ms) both;
-	animation: lr-write var(--lr-t-name, 1000ms) var(--lr-e-draw, ease-out) var(--lr-t, 200ms) both;
+	-webkit-animation: lr-write var(--lr-t-name, 1000ms) var(--lr-e-draw, ease-out) var(--lr-d, var(--lr-t, 200ms)) both;
+	animation: lr-write var(--lr-t-name, 1000ms) var(--lr-e-draw, ease-out) var(--lr-d, var(--lr-t, 200ms)) both;
 }
 
 html.lr-io [data-lr="orn"]:before { opacity: 0; }
 html.lr-io [data-lr="orn"][data-lr-in]:before {
-	-webkit-animation: lr-fill var(--lr-t-in, 1000ms) var(--lr-e-draw, ease-out) var(--lr-t, 200ms) both;
-	animation: lr-fill var(--lr-t-in, 1000ms) var(--lr-e-draw, ease-out) var(--lr-t, 200ms) both;
+	-webkit-animation: lr-fill var(--lr-t-in, 1000ms) var(--lr-e-draw, ease-out) var(--lr-d, var(--lr-t, 200ms)) both;
+	animation: lr-fill var(--lr-t-in, 1000ms) var(--lr-e-draw, ease-out) var(--lr-d, var(--lr-t, 200ms)) both;
 }
 
 html.lr-io [data-lr][data-lr-done] {
@@ -3496,7 +3496,7 @@ body {
 		-webkit-box-ordinal-group: 2;
 		-ms-flex-order: 1;
 		order: 1;
-		width: auto;
+		width: 100%; /* auto だと遅延画像が来るまで幅0になり、版面が動く */
 		max-width: 100%;
 		margin: 0 0 20px;
 
