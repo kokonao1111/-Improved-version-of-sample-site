@@ -1,45 +1,4 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-"""スクロール駆動の出現を、実際に送って測る（CDP 版）。
-
-  前提:  python3 -m http.server 8899   （site/ で）
-  使い方: python3 reveal2.py [ページ名の一部 ...]
-  戻り値: 0 なら合格。1 なら「読めないまま残るもの」か「出現が働いていない」
-
-■ なぜ枠（iframe）+ --dump-dom をやめたか ― 実測して判った
-
-  _tools/reveal.py は  --headless --dump-dom --virtual-time-budget=120000  で
-  枠の中の頁を送っていた。この組合せは使えない：
-
-    ・--virtual-time-budget を付けると、タイマだけが早送りされて
-      **描画の機会が作られない**。IntersectionObserver の観測手順も
-      requestAnimationFrame も、描画の機会に紐づいて走る。だから
-      「IO の通知が0回」に見える。IO は壊れていない。計り方が壊れていた。
-      （実測：同じ枠ページを --virtual-time-budget 付きで走らせると
-        結果を書き込む <pre> が空のまま返る。外すと --dump-dom が
-        いつまでも返らない。どちらでも測れない）
-    ・--dump-dom は「1回だけ DOM を吐く」ので、送りながら何度も読めない。
-
-  代わりに --remote-debugging-port で CDP を開き、Runtime.evaluate で
-  scrollTo と getComputedStyle を直に叩く。枠も要らない。
-  実測：IO の callback は 1→7 回、isIntersecting は 0→22 件と
-  scrollY にきちんと追従した（index.html / 1440x900）。
-  「枠は scrollTo で送れる」という仮説は正しい。ただし枠は要らなかった。
-
-■ 測ること
-
-  A. 読み込んで6秒待った時点で、**初回画面の中**に読めない印が無いか。
-     画面の外で伏せられているのは出現が働いている証拠なので、事故ではない
-     （前の版はそれも失格に数えていた。数え方が厳しすぎた）
-  B. 下まで送ったあと、印の付いた要素が1つも「読めないまま」でないか
-       ・読めない＝実効不透明度<0.5 か clip-path が inset(... 100% ...)
-       ・実効＝先祖の opacity を全部掛けた値
-  C. ★ data-lr-in は付いたのに読めないもの（＝ animation が走らなかった）
-     これは5段の逃げ道が全部素通しする種類の事故なので独立に数える
-  D. 送っている間、画面の中に在って読めない印の最大数
-  E. 送る前に画面の下で伏せられているものが1つ以上あるか（出現が働いている証拠）
-  F. 送っている間に版面の高さが変わらないか（CLS）
-"""
+"""スクロール駆動の出現を、実際に送って測る（CDP 版）"""
 import base64, json, os, re, socket, struct, subprocess, sys, tempfile, time
 import urllib.request
 
@@ -54,8 +13,6 @@ PAGES = ['index.html', 'beginner/index.html', 'campaign/index.html',
          'singlefolder/staff_4.html', 'singlefolder/staff_5.html',
          'singlefolder/staff_6.html', '404.html']
 
-
-# ── 最小の WebSocket / CDP（標準ライブラリだけ。pip 不要） ──────────────
 class WS(object):
     def __init__(self, url):
         m = re.match(r'ws://([^:/]+):(\d+)(/.*)', url)
@@ -112,7 +69,6 @@ class WS(object):
                 return json.loads(f.decode('utf-8', 'replace'))
             if op == 8:
                 raise EOFError
-
 
 class Chrome(object):
     def __init__(self, w, h):
@@ -188,9 +144,6 @@ class Chrome(object):
             except Exception:
                 pass
 
-
-# ── 枠の中で走らせる測り屋 ──────────────────────────────────────────
-# 「読めない」の定義を1箇所に置く。実効不透明度と clip-path の両方を見る。
 READ = r'''(function(){
   function unread(e){
     var op=1, clipped=false;
@@ -227,24 +180,22 @@ READ = r'''(function(){
           sy:scrollY, vh:innerHeight, docH:document.documentElement.scrollHeight};
 })()'''
 
-
 def measure(c, page, w, h):
     """1ページ1窓ぶん測る"""
-    c.js("try{sessionStorage.setItem('lr-pre','1')}catch(e){}")   # 幕は「見た」扱い
+    c.js("try{sessionStorage.setItem('lr-pre','1')}catch(e){}")
     c.goto(BASE + page, wait=6.0)
-    a = c.js(READ)                                   # A：一度も送っていない
+    a = c.js(READ)
     peak = a['inview']
     y, vh = 0, a['vh']
     while y < a['docH'] + vh:
         c.js('scrollTo(0,%d)' % y)
         time.sleep(0.30)
-        peak = max(peak, c.js(READ)['inview'])       # D：画面内で読めない最大
+        peak = max(peak, c.js(READ)['inview'])
         y += int(vh * 0.7)
     c.js('scrollTo(0,0)')
     time.sleep(1.5)
-    b = c.js(READ)                                   # B/C：送り終えた後
+    b = c.js(READ)
     return a, b, peak
-
 
 def main():
     want = sys.argv[1:]
@@ -261,12 +212,10 @@ def main():
                 n = len(b['marks'])
                 A = a['chars']['lost']
                 B = [x for x in b['marks'] if x['bad']]
-                C = [x for x in B if x['in_']]        # in は付いたのに読めない
+                C = [x for x in B if x['in_']]
                 ng += len(B) + (1 if b['docH'] != a['docH'] else 0)
-                ng += a['infold']       # 初回画面の中で読めないものは事故
-                # 伏せが0個でも、画面の外に印が無いなら正しい（伏せる相手が居ない）。
-                # ★ 携帯では版面が 1024x2217 になるので、短い頁は印が全部
-                #   初回画面に入る（campaign / staff_* / 404 が実際にそう）。
+                ng += a['infold']
+
                 outside = len([m for m in a['marks'] if m['y'] > a['vh']])
                 if n and outside and not a['below']:
                     ng += 1
@@ -287,7 +236,6 @@ def main():
     print()
     print('問題 %d 件' % ng)
     return 1 if ng else 0
-
 
 if __name__ == '__main__':
     sys.exit(main())

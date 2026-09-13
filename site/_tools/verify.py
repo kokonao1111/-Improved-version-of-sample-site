@@ -1,38 +1,4 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-"""
-表示の検査。ヘッドレス Chrome で実際に描かせて測る。
-
-  使い方:  python3 -m http.server 8899   （site/ で）
-           python3 _tools/verify.py [ページ名の一部 ...]
-  戻り値:  1 なら問題あり
-
-見るのは7つ。
-
-  1. 横のはみ出し ── 器より広い要素
-  1b. 枠から溢れ ── 枠を持った箱の中で、字がその枠から出ていないか
-  2. 文字の重なり ── 要素の矩形ではなく「行box」で測る。
-     矩形で測ると float の隣にある段落が必ず誤検出になる。
-  3. コントラスト ── 大きい文字は3:1、小さい文字は4.5:1（WCAG 1.4.3）
-  4. 段組みの空き ── 3枚しかない札が2列で並ぶと4枠目が必ず空く
-  5. 罫が文字を貫通 ── 下罫を持つ箱から中身が溢れていないか
-  5b. 切り落とし ── 固定の高さ＋overflow:hidden で中身が黙って消えていないか
-  6. 画像の不在 / JS のエラー
-  7. 版面 ── 1040px以上で中身がちょうど1000pxか
-
-■ 幅は22点とる。
-以前は 320/390/640/1040/1440 の5点しか測っておらず、しかも2点は
-折り返す幅そのものだった。そのため 700〜1000px の崩れを全部見落とし、
-・3枚組の札の4枠目が空く
-・見出しが2行になって下罫が文字を貫通する
-・写真と文が左に寄る
-・コース表が潰れる
-を利用者に指摘されて初めて知った。**隙間を測らない検査は検査ではない。**
-
-■ 1ページ1起動。
-同じページを幅の違う iframe に並べて一度に測る。
-1幅ごとに Chrome を起動すると 22×11 = 242 回になり40分かかる。
-"""
+"""表示の検査。ヘッドレス Chrome で実際に描かせて測る"""
 import html as H
 import json
 import os
@@ -263,7 +229,6 @@ function run(){
 </script></body>
 '''
 
-
 def probe(page, widths, wait=2600):
     cache = tempfile.mkdtemp(prefix='verify-')
     tmp = os.path.join(ROOT, '__probe.html')
@@ -289,12 +254,10 @@ def probe(page, widths, wait=2600):
         os.path.exists(tmp) and os.remove(tmp)
         shutil.rmtree(cache, ignore_errors=True)
 
-
 KINDS = [('overflow', 'はみ出し'), ('spill', '枠から溢れ'), ('overlap', '重なり'),
          ('contrast', 'コントラスト'),
          ('holes', '段の空き'), ('rulecross', '罫が貫通'), ('clipped', '切り落とし'),
          ('images', '画像不在'), ('errors', 'JSエラー')]
-
 
 def main():
     want = sys.argv[1:]
@@ -343,7 +306,6 @@ def main():
         print()
     print('%d ページ × %d 幅 = %d 組 ─ 問題 %d 組' % (len(pages), len(WIDTHS), total, bad))
     return 1 if bad else 0
-
 
 if __name__ == '__main__':
     sys.exit(main())

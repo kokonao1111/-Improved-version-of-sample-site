@@ -3,16 +3,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<!-- ▼画面の幅を実機のままにする。**これを外すと携帯で全部が小さくなる**▼
-     cgiFolder/js/csLibrary.js:21-34（生成物・編集しない）が読み込み時と
-     リサイズ時に viewport を
-       width=device-width, initial-scale=screen.width/1024
-     へ書き換える。iPhone（screen.width=390）だと initial-scale=0.38 になり、
-     **版面が 1024x2217 に広がって38%に縮小表示**される。実測で確認。
-     その結果 @media (max-width: 640px) も (max-width: 900px) も一度も真にならず、
-     携帯用の指定が**全部効かない**（段を積む閾値・料金表・メニュー・写真の寸法）。
-     旧・携帯版（sp/）が現役だった頃の名残りで、いまのレスポンシブとは噛み合わない。
-     生成物は触らず、書き換えられた側を戻し続ける。 -->
+<!-- viewport を実機の幅に保つ。csLibrary.js が書き換えるので戻し続ける -->
 <script>
 (function () {
 	var WANT = "width=device-width, initial-scale=1";
@@ -23,7 +14,6 @@
 			m.setAttribute("name", "viewport");
 			document.head.appendChild(m);
 		}
-		/* 同じ値なら書かない。書くと自分の監視がまた発火して往復する。 */
 		if (m.getAttribute("content") !== WANT) { m.setAttribute("content", WANT); }
 	}
 	fix();
@@ -33,19 +23,13 @@
 			attributes: true, attributeFilter: ["content", "name"]
 		});
 	} catch (e) {}
-	/* 監視が使えない環境の保険。csLibrary はリサイズでも書き換える。 */
 	window.addEventListener("resize", function () { window.setTimeout(fix, 250); });
 	window.addEventListener("orientationchange", function () { window.setTimeout(fix, 250); });
 }());
 </script>
-<!-- ▲ここまで▲ -->
-<!-- ▼確認用サイトを検索に載せないための1行。**本番公開前に外す**▼ -->
+<!-- 本番公開前に外す -->
 <meta name="robots" content="noindex,follow" />
-<!-- ▲ここまで▲ -->
-<!-- ▼アクセス解析（GA4）。測定IDが入るまでは**何も読み込まない**▼
-     _data/shop.json の {{GA4測定ID}} に G-XXXXXXXXXX を入れて
-     python3 _tools/fill.py --apply を走らせると有効になる。
-     伏せ字のままだと下の判定で弾かれ、通信もCookieも発生しない。 -->
+<!-- GA4。{{GA4測定ID}} が入るまで読み込まない -->
 <script>
 (function () {
 	var id = "{{GA4測定ID}}";
@@ -61,7 +45,6 @@
 	gtag("config", id);
 }());
 </script>
-<!-- ▲ここまで▲ -->
 <meta http-equiv="Content-Style-Type" content="text/css" />
 <meta http-equiv="Content-Script-Type" content="text/javascript" />
 <meta name="generator" content="TieredWorks 1.4.1.3" />
@@ -382,7 +365,8 @@ CALDINA（{{店名カナ}}）は全ての女性に満足できる結果にこだ
 </div>
 
 <div id="B000000314" style="min-width:15px;min-height:15px;">
-<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous"></div>
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+</div>
 
 </div></div>
 </div>
